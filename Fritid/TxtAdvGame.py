@@ -72,14 +72,37 @@ def MainScreen(Choosen):
             MainScreen("Start")
         else:
             MainScreen("Start")
-        
+
+    elif Choosen == "Sell" and Area == "Shop":
+        print("")
+        if Inventory != []:
+            print("Items in inventory. V")
+            iNum = 0
+            for i in Inventory:
+                iNum += 1
+                print("ID: " + str(iNum) + " | " + str(i) + ": With sell value of : " + str(2) + " Gold")
+            isSelling = input("Sell something? (Y/N) ")
+            if isSelling == "Y":
+                SoldItemID = int(input("ID of item to sell: ")) - 1
+                del Inventory[SoldItemID]
+                print("Sold Item")
+                input("Done? ")
+                MainScreen("Start")
+            else:
+                MainScreen("Start")
+        else:
+            print("Nothing to sell...")
+            input("Done?")
+            MainScreen("Start") 
+    
     elif Choosen == "Start":
         print("Use Help if stuck")
+    
     Choice = input()
 
     MainScreen(Choice)
 
-print("Whats your name?")
+print("What's your name?")
 Name = input()
 print("Hello " + Name)
 print("And your age?")

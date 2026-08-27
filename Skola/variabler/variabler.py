@@ -11,3 +11,12 @@ print(händer)
 print(type(händer))
 print(lever)
 print(type(lever))
+
+poäng = 0
+print(poäng)
+poäng += 2
+print(poäng)
+poäng += 3
+print(poäng)
+poäng += 4
+print(poäng)

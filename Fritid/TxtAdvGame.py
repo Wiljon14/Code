@@ -1,12 +1,12 @@
-Name = str
-Age = str
-Gold = int
-Area = "Home"
-Areas = ["Home", "Shop", "Forest"]
+name = str
+age = str
+gold = int
+area = "Home"
+areas = ["Home", "Shop", "Forest"]
 
 
-Inventory = ["Iron Sword"]
-RawItemValue = {
+inventory = ["Iron Sword"]
+raw_item_value = {
     "Iron Sword" : {
         "Name" : "Iron Sword",
         "Value" : 5,
@@ -24,63 +24,63 @@ RawItemValue = {
     },
 }
 
-ShopItems = [RawItemValue["Iron Sword"],RawItemValue["Health Potion"],RawItemValue["Gold Crown of Doom"]]
+shop_items = [raw_item_value["Iron Sword"],raw_item_value["Health Potion"],raw_item_value["Gold Crown of Doom"]]
 
 def MainScreen(Choosen):
-    global Area
-    global Name
-    global Age
-    global Areas
-    global Gold
-    global ShopItems
-    global Inventory
+    global area
+    global name
+    global age
+    global areas
+    global gold
+    global shop_items
+    global inventory
 
 
     print("---------------------------")
-    print("Player: " + Name)
-    print("Age: " + Age)
-    print("Gold: " + str(Gold))
-    print("Area: " + Area)
+    print("Player: " + name)
+    print("Age: " + age)
+    print("Gold: " + str(gold))
+    print("Area: " + area)
     if Choosen == "Help":
         print("")
         print("Go to area. - goes to different area if possible")
         print("Inventory. - See inventory")
         print("Location specific stuff. V")
-        if Area == "Shop":
+        if area == "Shop":
             print("Browse. - See what the shop has")
 
     elif Choosen == "Go to area":
-        print("Areas: " + str(Areas))
+        print("Areas: " + str(areas))
         print("Select a area")
         select = input()
-        if select in Areas:
-            Area = select
+        if select in areas:
+            area = select
         MainScreen("Start")
 
     elif Choosen == "Inventory":
-        print(Inventory)
+        print(inventory)
         input("Done? ")
         MainScreen("Start")
 
-    elif Choosen == "Browse" and Area == "Shop":
+    elif Choosen == "Browse" and area == "Shop":
         print("")
         print("Items in the shop. V")
-        iNum = 0
-        for i in ShopItems:
-            iNum += 1
-            print("ID: " + str(iNum) + " | " + str(i["Name"]) + ": With cost of: " + str(i["Value"]) + " Gold")
+        i_num = 0
+        for i in shop_items:
+            i_num += 1
+            print("ID: " + str(i_num) + " | " + str(i["Name"]) + ": With cost of: " + str(i["Value"]) + " Gold")
         print("")
-        Buying = input("Buy something? (Y/N) ")
-        if Buying == "Y":
-            BuyChoice = input("Insert Item ID to buy: ")
-            if BuyChoice == "":
+        buying = input("Buy something? (Y/N) ")
+        if buying == "Y":
+            buy_choice = input("Insert Item ID to buy: ")
+            if buy_choice == "":
                 MainScreen("Start")
 
-            if Gold >= ShopItems[int(BuyChoice) - 1]["Value"]:
-                Gold -= ShopItems[int(BuyChoice) - 1]["Value"]
-                print("Remaining Gold: " + str(Gold))
-                print("Bought: " + ShopItems[int(BuyChoice) - 1]["Name"])
-                Inventory.append(ShopItems[int(BuyChoice) - 1]["Name"])
+            if gold >= shop_items[int(buy_choice) - 1]["Value"]:
+                gold -= shop_items[int(buy_choice) - 1]["Value"]
+                print("Remaining Gold: " + str(gold))
+                print("Bought: " + shop_items[int(buy_choice) - 1]["Name"])
+                inventory.append(shop_items[int(buy_choice) - 1]["Name"])
             else:
                 print("Not enough Gold")
 
@@ -90,17 +90,18 @@ def MainScreen(Choosen):
         else:
             MainScreen("Start")
 
-    elif Choosen == "Sell" and Area == "Shop":
+    elif Choosen == "Sell" and area == "Shop":
         print("")
-        if Inventory != []:
+        if inventory != []:
             print("Items in inventory. V")
-            iNum = 0
-            for i in Inventory:
-                iNum += 1
-                i2 = RawItemValue[i]
-                print("ID: " + str(iNum) + " | " + str(i) + ": With sell value of : " + str(i2["Value"] - 1) + " Gold")
-            isSelling = input("Sell something? (Y/N) ")
-            if isSelling == "Y":
+            i_num = 0
+            for i in inventory:
+                i_num += 1
+                i2 = raw_item_value[i]
+                print("ID: " + str(i_num) + " | " + str(i) + ": With sell value of : " + str(i2["Value"] - 1) + " Gold")
+            is_selling = input("Sell something? (Y/N) ")
+            if is_selling == "Y":
+                #fix here
                 SoldItemID = int(input("ID of item to sell: ")) - 1
                 print("Sold Item: " + Inventory[SoldItemID] + " for " + str(i2["Value"] - 1) + " Gold")
                 Gold += i2["Value"] - 1

@@ -1,9 +1,8 @@
 name = str
 age = str
 gold = int
-area = "Home"
+area = "Shop"
 areas = ["Home", "Shop", "Forest"]
-
 
 inventory = ["Iron Sword"]
 raw_item_value = {
@@ -26,7 +25,7 @@ raw_item_value = {
 
 shop_items = [raw_item_value["Iron Sword"],raw_item_value["Health Potion"],raw_item_value["Gold Crown of Doom"]]
 
-def MainScreen(Choosen):
+def MainScreen(choosen):
     global area
     global name
     global age
@@ -41,7 +40,7 @@ def MainScreen(Choosen):
     print("Age: " + age)
     print("Gold: " + str(gold))
     print("Area: " + area)
-    if Choosen == "Help":
+    if choosen == "Help":
         print("")
         print("Go to area. - goes to different area if possible")
         print("Inventory. - See inventory")
@@ -49,7 +48,7 @@ def MainScreen(Choosen):
         if area == "Shop":
             print("Browse. - See what the shop has")
 
-    elif Choosen == "Go to area":
+    elif choosen == "Go to area":
         print("Areas: " + str(areas))
         print("Select a area")
         select = input()
@@ -57,12 +56,12 @@ def MainScreen(Choosen):
             area = select
         MainScreen("Start")
 
-    elif Choosen == "Inventory":
+    elif choosen == "Inventory":
         print(inventory)
         input("Done? ")
         MainScreen("Start")
 
-    elif Choosen == "Browse" and area == "Shop":
+    elif choosen == "Browse" and area == "Shop":
         print("")
         print("Items in the shop. V")
         i_num = 0
@@ -90,7 +89,7 @@ def MainScreen(Choosen):
         else:
             MainScreen("Start")
 
-    elif Choosen == "Sell" and area == "Shop":
+    elif choosen == "Sell" and area == "Shop":
         print("")
         if inventory != []:
             print("Items in inventory. V")
@@ -100,13 +99,14 @@ def MainScreen(Choosen):
                 i2 = raw_item_value[i]
                 print("ID: " + str(i_num) + " | " + str(i) + ": With sell value of : " + str(i2["Value"] - 1) + " Gold")
             is_selling = input("Sell something? (Y/N) ")
+            #error should not use i2 for item selection as it takes newest item. V
             if is_selling == "Y":
-                #fix here
-                SoldItemID = int(input("ID of item to sell: ")) - 1
-                print("Sold Item: " + Inventory[SoldItemID] + " for " + str(i2["Value"] - 1) + " Gold")
-                Gold += i2["Value"] - 1
-                print("Current Gold: " + str(Gold))
-                del Inventory[SoldItemID]
+                sold_item_ID = int(input("ID of item to sell: ")) - 1
+                sell_value = raw_item_value[inventory[sold_item_ID]]["Value"] - 1
+                print("Sold Item: " + inventory[sold_item_ID] + " for " + str(sell_value) + " Gold")
+                gold += sell_value
+                print("Current Gold: " + str(gold))
+                del inventory[sold_item_ID]
                 input("Done? ")
                 MainScreen("Start")
             else:
@@ -116,20 +116,20 @@ def MainScreen(Choosen):
             input("Done?")
             MainScreen("Start") 
     
-    elif Choosen == "Start":
+    elif choosen == "Start":
         print("Use Help if stuck")
     
-    Choice = input()
+    choice = input()
 
-    MainScreen(Choice)
+    MainScreen(choice)
 
 print("What's your name?")
-Name = input()
-print("Hello " + Name)
+name = input()
+print("Hello " + name)
 print("And your age?")
-Age = input()
-print("You are " + Age)
-Gold = 15
+age = input()
+print("You are " + age)
+gold = 15
 
 MainScreen("Start")
 

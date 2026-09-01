@@ -1,4 +1,4 @@
-print("\033c", end="")
+import random
 
 name = str
 age = str
@@ -7,9 +7,11 @@ health = int
 max_health = int
 starting_max_health = 20
 char_class = "Not choosen"
-char_classes = {
-    "Wizard" : [],
-    "Warrior" : [],
+char_choice_class = ["Mage","Knight","Druid"]
+char_class_stats = {
+    "Mage" : [],
+    "Knight" : [],
+    "Druid" : [],
 }
 
 area = "Shop"
@@ -36,7 +38,7 @@ raw_item_value = {
 
 shop_items = [raw_item_value["Iron Sword"],raw_item_value["Health Potion"],raw_item_value["Gold Crown of Doom"]]
 
-def MainScreen(choosen):
+def main_screen(choosen):
     print("\033c", end="")
     
 
@@ -51,11 +53,12 @@ def MainScreen(choosen):
     global max_health
 
     print("---------------------------")
-    print("Player: " + name)
-    print("Age: " + age)
+    print("Player: " + str(name))
+    print("Class: " + str(char_class))
+    print("Age: " + str(age))
     print("Gold: " + str(gold))
     print("HP: " + str(health) +"/"+ str(max_health))
-    print("Area: " + area)
+    print("Area: " + str(area))
     print("---------------------------")
     if choosen == "Help":
         print("")
@@ -71,12 +74,12 @@ def MainScreen(choosen):
         select = input("Select a area: ")
         if select in areas:
             area = select
-        MainScreen("")
+        main_screen("")
 
     elif choosen == "Inventory":
         print(inventory)
         input("Done? ")
-        MainScreen("")
+        main_screen("")
 
     elif choosen == "Browse" and area == "Shop":
         print("")
@@ -90,7 +93,7 @@ def MainScreen(choosen):
         if buying == "Y":
             buy_choice = input("Insert Item ID to buy: ")
             if buy_choice == "":
-                MainScreen("")
+                main_screen("")
 
             if gold >= shop_items[int(buy_choice) - 1]["Value"]:
                 gold -= shop_items[int(buy_choice) - 1]["Value"]
@@ -102,9 +105,9 @@ def MainScreen(choosen):
 
             input("Done? ")
 
-            MainScreen("")
+            main_screen("")
         else:
-            MainScreen("")
+            main_screen("")
 
     elif choosen == "Sell" and area == "Shop":
         print("")
@@ -125,13 +128,13 @@ def MainScreen(choosen):
                 print("Current Gold: " + str(gold))
                 del inventory[sold_item_ID]
                 input("Done? ")
-                MainScreen("")
+                main_screen("")
             else:
-                MainScreen("")
+                main_screen("")
         else:
             print("Nothing to sell...")
             input("Done?")
-            MainScreen("") 
+            main_screen("") 
     
     elif choosen == "":
         print("Use Help if stuck")
@@ -139,18 +142,50 @@ def MainScreen(choosen):
     
     choice = input()
 
-    MainScreen(choice)
+    main_screen(choice)
 
-print("What's your name?")
-name = input()
-print("Hello " + name)
-print("And your age?")
-age = input()
-print("You are " + age)
+def name_select(redo):
+    global name
+    print("\033c", end="")
+    if redo is False:
+        print("What's your name?")
+    if redo is True:
+        print("Please enter name")
+    name = input()
+    if name == "":
+        name_select(True)
+name_select(False)
+
+def age_select(redo):
+    global age
+    print("\033c", end="")
+    if redo is False:
+        print("And your age?")
+    if redo is True:
+        print("Please enter a whole number (ex. 16, 35)")
+    age = input()
+    if not age.isdigit():
+        age_select(True)
+age_select(False)
+
+def class_select(redo):
+    global char_class
+    print("\033c", end="")
+    if redo is False:
+        print("Lastly what class do you whant to play?")
+        print("Valid choices: " + str(char_choice_class))
+    if redo is True:
+        print("Please enter a valid class")
+        print("Valid choices: " + str(char_choice_class))
+    char_class = input()
+    if not char_class in char_choice_class:
+        class_select(True)
+class_select(False)
+
 gold = 15
 max_health = starting_max_health
 health = max_health
 
-MainScreen("")
+main_screen("")
 
 

@@ -1,6 +1,17 @@
+print("\033c", end="")
+
 name = str
 age = str
 gold = int
+health = int
+max_health = int
+starting_max_health = 20
+char_class = "Not choosen"
+char_classes = {
+    "Wizard" : [],
+    "Warrior" : [],
+}
+
 area = "Shop"
 areas = ["Home", "Shop", "Forest"]
 
@@ -26,6 +37,9 @@ raw_item_value = {
 shop_items = [raw_item_value["Iron Sword"],raw_item_value["Health Potion"],raw_item_value["Gold Crown of Doom"]]
 
 def MainScreen(choosen):
+    print("\033c", end="")
+    
+
     global area
     global name
     global age
@@ -33,33 +47,36 @@ def MainScreen(choosen):
     global gold
     global shop_items
     global inventory
-
+    global health
+    global max_health
 
     print("---------------------------")
     print("Player: " + name)
     print("Age: " + age)
     print("Gold: " + str(gold))
+    print("HP: " + str(health) +"/"+ str(max_health))
     print("Area: " + area)
+    print("---------------------------")
     if choosen == "Help":
         print("")
         print("Go to area. - goes to different area if possible")
         print("Inventory. - See inventory")
         print("Location specific stuff. V")
         if area == "Shop":
-            print("Browse. - See what the shop has")
-
+            print("  Browse. - See what the shop has")
+            print("  Sell - Sell stuff from your inventory")
+        print("")
     elif choosen == "Go to area":
         print("Areas: " + str(areas))
-        print("Select a area")
-        select = input()
+        select = input("Select a area: ")
         if select in areas:
             area = select
-        MainScreen("Start")
+        MainScreen("")
 
     elif choosen == "Inventory":
         print(inventory)
         input("Done? ")
-        MainScreen("Start")
+        MainScreen("")
 
     elif choosen == "Browse" and area == "Shop":
         print("")
@@ -73,7 +90,7 @@ def MainScreen(choosen):
         if buying == "Y":
             buy_choice = input("Insert Item ID to buy: ")
             if buy_choice == "":
-                MainScreen("Start")
+                MainScreen("")
 
             if gold >= shop_items[int(buy_choice) - 1]["Value"]:
                 gold -= shop_items[int(buy_choice) - 1]["Value"]
@@ -85,9 +102,9 @@ def MainScreen(choosen):
 
             input("Done? ")
 
-            MainScreen("Start")
+            MainScreen("")
         else:
-            MainScreen("Start")
+            MainScreen("")
 
     elif choosen == "Sell" and area == "Shop":
         print("")
@@ -108,16 +125,17 @@ def MainScreen(choosen):
                 print("Current Gold: " + str(gold))
                 del inventory[sold_item_ID]
                 input("Done? ")
-                MainScreen("Start")
+                MainScreen("")
             else:
-                MainScreen("Start")
+                MainScreen("")
         else:
             print("Nothing to sell...")
             input("Done?")
-            MainScreen("Start") 
+            MainScreen("") 
     
-    elif choosen == "Start":
+    elif choosen == "":
         print("Use Help if stuck")
+        print("")
     
     choice = input()
 
@@ -130,7 +148,9 @@ print("And your age?")
 age = input()
 print("You are " + age)
 gold = 15
+max_health = starting_max_health
+health = max_health
 
-MainScreen("Start")
+MainScreen("")
 
 

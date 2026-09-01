@@ -13,9 +13,12 @@ char_class_stats = {
     "Knight" : [],
     "Druid" : [],
 }
-
-area = "Shop"
+area = "Forest"
 areas = ["Home", "Shop", "Forest"]
+enemy_stats = {
+    "Wolf" : [15],
+    "Bear" : [30],
+}
 
 inventory = ["Iron Sword"]
 raw_item_value = {
@@ -66,8 +69,11 @@ def main_screen(choosen):
         print("Inventory. - See inventory")
         print("Location specific stuff. V")
         if area == "Shop":
-            print("  Browse. - See what the shop has")
+            print("  Browse - See what the shop has")
             print("  Sell - Sell stuff from your inventory")
+        if area == "Forest":
+            print("  Battle - Starts a battle against a random enemy")
+        
         print("")
     elif choosen == "Go to area":
         print("Areas: " + str(areas))
@@ -119,7 +125,6 @@ def main_screen(choosen):
                 i2 = raw_item_value[i]
                 print("ID: " + str(i_num) + " | " + str(i) + ": With sell value of : " + str(i2["Value"] - 1) + " Gold")
             is_selling = input("Sell something? (Y/N) ")
-            #error should not use i2 for item selection as it takes newest item. V
             if is_selling == "Y":
                 sold_item_ID = int(input("ID of item to sell: ")) - 1
                 sell_value = raw_item_value[inventory[sold_item_ID]]["Value"] - 1
@@ -135,6 +140,9 @@ def main_screen(choosen):
             print("Nothing to sell...")
             input("Done?")
             main_screen("") 
+
+    elif choosen == "Battle" and area == "Forest":
+        battle_screen(1,"Wolf",0)
     
     elif choosen == "":
         print("Use Help if stuck")
@@ -143,6 +151,37 @@ def main_screen(choosen):
     choice = input()
 
     main_screen(choice)
+
+
+
+def battle_screen(turn, enemy, hp_left):
+    if turn == 1:
+        enemy_hp = enemy_stats[enemy][0]
+    else:
+        enemy_hp = hp_left
+
+    print("\033c", end="")
+    print("---------------------------")
+    print("Player: " + str(name))
+    print("Class: " + str(char_class))
+    print("Age: " + str(age))
+    print("Gold: " + str(gold))
+    print("HP: " + str(health) +"/"+ str(max_health))
+    print("Area: " + str(area))
+    print("---------------------------")
+    print("Battle turn: " + str(turn))
+    print("Enemy: " + str(enemy) + " | (" + str(enemy_hp) + "/" + str(enemy_stats[enemy][0]) + ")" )
+    print("---------------------------")
+
+    if enemy_hp <= 0:
+        print(hp_left)
+        input("Battle over. Well done :)")
+        main_screen("")
+    else:
+        input("Next turn?")
+        battle_screen(turn+1,enemy,enemy_hp)
+
+
 
 def name_select(redo):
     global name

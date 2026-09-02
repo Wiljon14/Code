@@ -173,6 +173,10 @@ def battle_screen(turn, enemy, hp_left):
     print("Enemy: " + str(enemy) + " | (" + str(enemy_hp) + "/" + str(enemy_stats[enemy][0]) + ")" )
     print("---------------------------")
 
+
+    choosen_attack = choose_attack()
+    print(choosen_attack)
+
     if enemy_hp <= 0:
         print(hp_left)
         input("Battle over. Well done :)")
@@ -181,6 +185,24 @@ def battle_screen(turn, enemy, hp_left):
         input("Next turn?")
         battle_screen(turn+1,enemy,enemy_hp)
 
+
+def choose_attack():
+    print("\033c", end="")
+    print("---------------------------")
+    print("Player: " + str(name))
+    print("Class: " + str(char_class))
+    print("Age: " + str(age))
+    print("Gold: " + str(gold))
+    print("HP: " + str(health) +"/"+ str(max_health))
+    print("Area: " + str(area))
+    print("---------------------------")
+    print("Avaible Moves")
+    print("---------------------------")
+    input("Choose attack")
+    choosen_attack = "Sword hit"
+
+
+    return choosen_attack
 
 
 def name_select(redo):

@@ -19,9 +19,10 @@ char_class_stats = {
 }
 area = "Forest"
 areas = ["Home", "Shop", "Forest"]
-enemy_stats = {
-    "Wolf" : [15,10],
-    "Bear" : [30,20],
+available_enemys = ["Wolf","Bear"]
+enemy_stats = { #HP,EXP,Gold
+    "Wolf" : [15,10,5],
+    "Bear" : [30,20,10],
 }
 available_moves = ["Sword Slash", "Punch"]
 move_stats = {
@@ -83,7 +84,7 @@ def main_screen(choosen):
     global level
 
     if exp >= exp_to_level_up:
-        exp = 0
+        exp = exp - exp_to_level_up
         level += 1
     exp_to_level_up = (level*20) - 10
 
@@ -168,7 +169,7 @@ def main_screen(choosen):
             main_screen("") 
 
     elif choosen == "Battle" and area == "Forest":
-        battle_screen(1,"Wolf",0)
+        battle_screen(1,available_enemys[random.randint(0,1)],0)
     
     elif choosen == "":
         print("Use Help if stuck")
@@ -183,6 +184,7 @@ def main_screen(choosen):
 def battle_screen(turn, enemy, hp_left):
 
     global exp
+    global gold
 
     if turn == 1:
         enemy_hp = enemy_stats[enemy][0]
@@ -197,12 +199,14 @@ def battle_screen(turn, enemy, hp_left):
 
     input("Attack!")
     choosen_attack = choose_attack()
-    enemy_hp -= (random.randint(move_stats[choosen_attack][0],move_stats[choosen_attack][1])) + level
+    enemy_hp -= (random.randint(move_stats[choosen_attack][0],move_stats[choosen_attack][1])) + (level - 1)
 
     if enemy_hp <= 0:
         print("Battle over. Well done :)")
         print("EXP gained: " + str(enemy_stats[enemy][1]))
+        print("Gold gained: " + str(enemy_stats[enemy][2]))
         exp += enemy_stats[enemy][1]
+        gold += enemy_stats[enemy][2]
         input("")
         main_screen("")
     else:

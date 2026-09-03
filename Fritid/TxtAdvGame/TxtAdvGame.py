@@ -6,6 +6,10 @@ gold = int
 health = int
 max_health = int
 starting_max_health = 20
+exp = 0
+level = 1
+exp_to_level_up = (level*20) - 10
+
 char_class = "Not choosen"
 char_choice_class = ["Mage","Knight","Druid"]
 char_class_stats = {
@@ -16,8 +20,17 @@ char_class_stats = {
 area = "Forest"
 areas = ["Home", "Shop", "Forest"]
 enemy_stats = {
-    "Wolf" : [15],
-    "Bear" : [30],
+    "Wolf" : [15,10],
+    "Bear" : [30,20],
+}
+available_moves = ["Sword Slash", "Punch"]
+move_stats = {
+    "Sword Slash" : [
+        4, 6
+    ],
+    "Punch" : [
+        2, 4
+    ],
 }
 
 inventory = ["Iron Sword"]
@@ -41,6 +54,17 @@ raw_item_value = {
 
 shop_items = [raw_item_value["Iron Sword"],raw_item_value["Health Potion"],raw_item_value["Gold Crown of Doom"]]
 
+def stat_menu():
+    print("---------------------------")
+    print("Player: " + str(name))
+    print("Class: " + str(char_class))
+    print("Age: " + str(age))
+    print("Gold: " + str(gold))
+    print("HP: " + str(health) +"/"+ str(max_health))
+    print("Level: " + str(level) + "("+ str(exp) +"/"+ str(exp_to_level_up) +")")
+    print("Area: " + str(area))
+    print("---------------------------")
+
 def main_screen(choosen):
     print("\033c", end="")
     
@@ -54,15 +78,17 @@ def main_screen(choosen):
     global inventory
     global health
     global max_health
+    global exp
+    global exp_to_level_up
+    global level
 
-    print("---------------------------")
-    print("Player: " + str(name))
-    print("Class: " + str(char_class))
-    print("Age: " + str(age))
-    print("Gold: " + str(gold))
-    print("HP: " + str(health) +"/"+ str(max_health))
-    print("Area: " + str(area))
-    print("---------------------------")
+    if exp >= exp_to_level_up:
+        exp = 0
+        level += 1
+    exp_to_level_up = (level*20) - 10
+
+    stat_menu()
+
     if choosen == "Help":
         print("")
         print("Go to area. - goes to different area if possible")
@@ -155,55 +181,49 @@ def main_screen(choosen):
 
 
 def battle_screen(turn, enemy, hp_left):
+
+    global exp
+
     if turn == 1:
         enemy_hp = enemy_stats[enemy][0]
     else:
         enemy_hp = hp_left
 
     print("\033c", end="")
-    print("---------------------------")
-    print("Player: " + str(name))
-    print("Class: " + str(char_class))
-    print("Age: " + str(age))
-    print("Gold: " + str(gold))
-    print("HP: " + str(health) +"/"+ str(max_health))
-    print("Area: " + str(area))
-    print("---------------------------")
+    stat_menu()
     print("Battle turn: " + str(turn))
     print("Enemy: " + str(enemy) + " | (" + str(enemy_hp) + "/" + str(enemy_stats[enemy][0]) + ")" )
     print("---------------------------")
 
-
+    input("Attack!")
     choosen_attack = choose_attack()
-    print(choosen_attack)
+    enemy_hp -= (random.randint(move_stats[choosen_attack][0],move_stats[choosen_attack][1])) + level
 
     if enemy_hp <= 0:
-        print(hp_left)
-        input("Battle over. Well done :)")
+        print("Battle over. Well done :)")
+        print("EXP gained: " + str(enemy_stats[enemy][1]))
+        exp += enemy_stats[enemy][1]
+        input("")
         main_screen("")
     else:
-        input("Next turn?")
         battle_screen(turn+1,enemy,enemy_hp)
 
 
 def choose_attack():
     print("\033c", end="")
+    stat_menu()
+    print("Avaible Moves: " + str(available_moves))
     print("---------------------------")
-    print("Player: " + str(name))
-    print("Class: " + str(char_class))
-    print("Age: " + str(age))
-    print("Gold: " + str(gold))
-    print("HP: " + str(health) +"/"+ str(max_health))
-    print("Area: " + str(area))
-    print("---------------------------")
-    print("Avaible Moves")
-    print("---------------------------")
-    input("Choose attack")
-    choosen_attack = "Sword hit"
 
+    return choice_in_choose_attack()
 
-    return choosen_attack
-
+def choice_in_choose_attack():
+    while True:
+        choosen_attack = input("Choose Move: ")
+        if choosen_attack in available_moves:
+            return choosen_attack
+        else:
+            print("Invalid")
 
 def name_select(redo):
     global name
@@ -246,6 +266,8 @@ class_select(False)
 gold = 15
 max_health = starting_max_health
 health = max_health
+
+
 
 main_screen("")
 

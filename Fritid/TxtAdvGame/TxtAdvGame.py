@@ -11,11 +11,10 @@ level = 1
 exp_to_level_up = (level*20) - 10
 
 char_class = "Not choosen"
-char_choice_class = ["Mage","Knight","Druid"]
+char_choice_class = ["Mage","Knight"]
 char_class_stats = {
     "Mage" : [],
     "Knight" : [],
-    "Druid" : [],
 }
 area = "Forest"
 areas = ["Home", "Shop", "Forest"]
@@ -24,32 +23,70 @@ enemy_stats = { #HP,EXP,Gold
     "Wolf" : [15,10,5],
     "Bear" : [30,20,10],
 }
-available_moves = ["Sword Slash", "Punch"]
+available_moves = [] #make it so it changes depending on items in inventory :)
 move_stats = {
-    "Sword Slash" : [
+    "Iron Blade Slash" : [
         4, 6
     ],
     "Punch" : [
         2, 4
     ],
+    "Golden Doom Blast" : [
+        1,20
+    ],
+    "Dull Slash" : [
+        3,5
+    ],
+    "Lesser Ball of Flame" : [
+        0,10
+    ],
 }
 
-inventory = ["Iron Sword"]
+inventory = ["Wolf Tooth"]
 raw_item_value = {
+    #Weapons
     "Iron Sword" : {
         "Name" : "Iron Sword",
         "Value" : 5,
         "Description" : "A well made sword of iron. Great at cutting down foes.",
+        "Move" : "Iron Blade Slash"
     },
-    "Health Potion" : {
-        "Name" : "Health Potion",
-        "Value" : 3,
-        "Description" : "A potion that regenerates flesh & mind, even lost limbs",
+
+    "Rusty Iron Sword" : {
+        "Name" : "Rusty Iron Sword",
+        "Value" : 1,
+        "Description" : "It's a very old sword. Better than nothing, maybe?",
+        "Move" : "Dull Slash"
     },
+
+    "Old SpellBook Page" : {
+        "Name" : "Old SpellBook Page",
+        "Value" : 1,
+        "Description" : "A page from your old SpellBook from magic school. Its a bit damaged",
+        "Move" : "Lesser Ball of Flame",
+    },
+
     "Gold Crown of Doom" : {
         "Name" : "Gold Crown of Doom",
         "Value" : 100,
         "Description" : "A Golden crown of doom and despair",
+        "Move" : "Golden Doom Blast",
+    },
+
+    #Potions
+    "Health Potion" : {
+        "Name" : "Health Potion",
+        "Value" : 3,
+        "Description" : "A potion that regenerates flesh & mind, even lost limbs",
+        "Move" : "N/A",
+    },
+
+    #Item Drops
+    "Wolf Tooth" : {
+        "Name" : "Wolf Tooth",
+        "Value" : 4,
+        "Description" : "The tooth from the local wolf population, could be sold",
+        "Move" : "N/A",
     },
 }
 
@@ -66,6 +103,14 @@ def stat_menu():
     print("Area: " + str(area))
     print("---------------------------")
 
+def inventory_items_to_moves():
+    global available_moves
+    global inventory
+
+    available_moves = ["Punch"]
+    for i in inventory:
+        if raw_item_value[i]["Move"] != "N/A":
+            available_moves.append(raw_item_value[i]["Move"])
 def main_screen(choosen):
     print("\033c", end="")
     
@@ -82,6 +127,10 @@ def main_screen(choosen):
     global exp
     global exp_to_level_up
     global level
+    global available_moves
+
+    available_moves = ["Punch"]
+    
 
     if exp >= exp_to_level_up:
         exp = exp - exp_to_level_up
@@ -89,6 +138,7 @@ def main_screen(choosen):
     exp_to_level_up = (level*20) - 10
 
     stat_menu()
+    inventory_items_to_moves()
 
     if choosen == "Help":
         print("")
@@ -111,8 +161,16 @@ def main_screen(choosen):
 
     elif choosen == "Inventory":
         print(inventory)
-        input("Done? ")
-        main_screen("")
+        if input("Look closer at an item? (Y/N) ") == "Y":
+            item_looked_closer_at = input("Item Name: ")
+            if item_looked_closer_at in inventory:
+                print("")
+                print("Description: " + str(raw_item_value[item_looked_closer_at]["Description"]))
+                print("Move it gives: " + str(raw_item_value[item_looked_closer_at]["Move"]))
+            else:
+                main_screen("")
+        else:
+            main_screen("")
 
     elif choosen == "Browse" and area == "Shop":
         print("")
@@ -266,6 +324,12 @@ def class_select(redo):
     if not char_class in char_choice_class:
         class_select(True)
 class_select(False)
+
+if char_class == "Knight":
+    inventory.append("Rusty Iron Sword")
+if char_class == "Mage":
+    inventory.append("Old SpellBook Page")
+
 
 gold = 15
 max_health = starting_max_health

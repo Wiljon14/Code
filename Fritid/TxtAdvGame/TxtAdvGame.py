@@ -10,7 +10,7 @@ exp = 0
 level = 1
 exp_to_level_up = (level*20) - 10
 
-char_class = "Not choosen"
+char_class = "Not chosen"
 char_choice_class = ["Mage","Knight"]
 char_class_stats = {
     "Mage" : [],
@@ -59,10 +59,10 @@ raw_item_value = {
         "Move" : "Dull Slash"
     },
 
-    "Old SpellBook Page" : {
-        "Name" : "Old SpellBook Page",
+    "Old Spellbook Page" : {
+        "Name" : "Old Spellbook Page",
         "Value" : 1,
-        "Description" : "A page from your old SpellBook from magic school. Its a bit damaged",
+        "Description" : "A page from your old Spellbook from magic school. Its a bit damaged",
         "Move" : "Lesser Ball of Flame",
     },
 
@@ -111,7 +111,7 @@ def inventory_items_to_moves():
     for i in inventory:
         if raw_item_value[i]["Move"] != "N/A":
             available_moves.append(raw_item_value[i]["Move"])
-def main_screen(choosen):
+def main_screen(chosen):
     print("\033c", end="")
     
 
@@ -140,7 +140,7 @@ def main_screen(choosen):
     stat_menu()
     inventory_items_to_moves()
 
-    if choosen == "Help":
+    if chosen == "Help":
         print("")
         print("Go to area. - goes to different area if possible")
         print("Inventory. - See inventory")
@@ -152,14 +152,14 @@ def main_screen(choosen):
             print("  Battle - Starts a battle against a random enemy")
         
         print("")
-    elif choosen == "Go to area":
+    elif chosen == "Go to area":
         print("Areas: " + str(areas))
         select = input("Select a area: ")
         if select in areas:
             area = select
         main_screen("")
 
-    elif choosen == "Inventory":
+    elif chosen == "Inventory":
         print(inventory)
         if input("Look closer at an item? (Y/N) ") == "Y":
             item_looked_closer_at = input("Item Name: ")
@@ -172,7 +172,7 @@ def main_screen(choosen):
         else:
             main_screen("")
 
-    elif choosen == "Browse" and area == "Shop":
+    elif chosen == "Browse" and area == "Shop":
         print("")
         print("Items in the shop. V")
         i_num = 0
@@ -200,7 +200,7 @@ def main_screen(choosen):
         else:
             main_screen("")
 
-    elif choosen == "Sell" and area == "Shop":
+    elif chosen == "Sell" and area == "Shop":
         print("")
         if inventory != []:
             print("Items in inventory. V")
@@ -226,10 +226,10 @@ def main_screen(choosen):
             input("Done?")
             main_screen("") 
 
-    elif choosen == "Battle" and area == "Forest":
+    elif chosen == "Battle" and area == "Forest":
         battle_screen(1,available_enemys[random.randint(0,1)],0)
     
-    elif choosen == "":
+    elif chosen == "":
         print("Use Help if stuck")
         print("")
     
@@ -256,8 +256,8 @@ def battle_screen(turn, enemy, hp_left):
     print("---------------------------")
 
     input("Attack!")
-    choosen_attack = choose_attack()
-    enemy_hp -= (random.randint(move_stats[choosen_attack][0],move_stats[choosen_attack][1])) + (level - 1)
+    chosen_attack = choose_attack()
+    enemy_hp -= (random.randint(move_stats[chosen_attack][0],move_stats[chosen_attack][1])) + (level - 1)
 
     if enemy_hp <= 0:
         print("Battle over. Well done :)")
@@ -281,9 +281,9 @@ def choose_attack():
 
 def choice_in_choose_attack():
     while True:
-        choosen_attack = input("Choose Move: ")
-        if choosen_attack in available_moves:
-            return choosen_attack
+        chosen_attack = input("Choose Move: ")
+        if chosen_attack in available_moves:
+            return chosen_attack
         else:
             print("Invalid")
 
@@ -328,7 +328,7 @@ class_select(False)
 if char_class == "Knight":
     inventory.append("Rusty Iron Sword")
 if char_class == "Mage":
-    inventory.append("Old SpellBook Page")
+    inventory.append("Old Spellbook Page")
 
 
 gold = 15

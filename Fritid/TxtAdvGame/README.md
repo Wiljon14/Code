@@ -1,5 +1,5 @@
 # game description
-## A classic rpg with different classes and mosters. Level up to get stronger and beat the Evil Overlord of Darkness and Dispair (TM). (Not added just yet)
+## A classic rpg with different classes and mosters. Level up to get stronger and beat Timmy the Evil Overlord of Darkness and Dispair (TM). (Not added just yet)
 
 # tips for new players
 ## Use the command "Go to area" than choose "Forest". This puts you in the forest, after that use "Battle" to start a battle.

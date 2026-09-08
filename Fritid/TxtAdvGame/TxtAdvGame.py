@@ -1,14 +1,16 @@
 import random
+import TxtAdvGame
 
 name = str
 age = str
 gold = int
-health = int
-max_health = int
+health = float
+max_health = float
 starting_max_health = 20
 exp = 0
 level = 1
 exp_to_level_up = (level*20) - 10
+power_modifier = 0
 
 char_class = "Not chosen"
 char_choice_class = ["Mage","Knight"]
@@ -19,27 +21,49 @@ char_class_stats = {
 area = "Forest"
 areas = ["Home", "Shop", "Forest"]
 available_enemys = ["Wolf","Bear"]
-enemy_stats = { #HP,EXP,Gold
-    "Wolf" : [15,10,5],
-    "Bear" : [30,20,10],
+enemy_stats = {
+    "Wolf" : {
+    "HP" : 15,
+    "EXP" : 10,
+    "Gold" : 5,
+    "Moves" : ["Wolf Bite"],
+    },
+
+    "Bear" : {
+    "HP" : 30,
+    "EXP" : 20,
+    "Gold" : 10,
+    "Moves" : ["Bear Bite"],
+
+    },
 }
 available_moves = [] #make it so it changes depending on items in inventory :)
 move_stats = {
-    "Iron Blade Slash" : [
-        4, 6
-    ],
-    "Punch" : [
-        2, 4
-    ],
-    "Golden Doom Blast" : [
-        1,20
-    ],
-    "Dull Slash" : [
-        3,5
-    ],
-    "Lesser Ball of Flame" : [
-        0,10
-    ],
+    "player" : {
+        "Iron Blade Slash" : [
+            4, 6
+        ],
+        "Punch" : [
+            2, 4
+        ],
+        "Golden Doom Blast" : [
+            1,20
+        ],
+        "Dull Slash" : [
+            3,5
+        ],
+        "Lesser Ball of Flame" : [
+            0,10
+        ],
+    },
+    "enemys" : {
+        "Wolf Bite" : [
+            1, 3
+        ],
+        "Bear Bite" : [
+            4,5
+        ]
+    }
 }
 
 inventory = ["Wolf Tooth"]
@@ -128,14 +152,31 @@ def main_screen(chosen):
     global exp_to_level_up
     global level
     global available_moves
+    global power_modifier
 
     available_moves = ["Punch"]
     
-
+    leveld_up = False
     if exp >= exp_to_level_up:
         exp = exp - exp_to_level_up
         level += 1
+        leveld_up = True
     exp_to_level_up = (level*20) - 10
+
+
+    #Power modifier
+    if char_class == "Mage":
+        power_modifier = int((level * 1.2) - 1.2)
+    else:
+        power_modifier = level - 1
+    #Health modifier
+    if char_class == "Knight":
+        max_health = int(starting_max_health + (3.5 * (level - 1)))
+    else:
+        max_health = starting_max_health + (3 * (level - 1))
+
+    if leveld_up == True:
+        health = max_health
 
     stat_menu()
     inventory_items_to_moves()
@@ -227,7 +268,7 @@ def main_screen(chosen):
             main_screen("") 
 
     elif chosen == "Battle" and area == "Forest":
-        battle_screen(1,available_enemys[random.randint(0,1)],0)
+        battle_screen(1,available_enemys[random.randint(0,1)],random.randint(1,3),0,0)
     
     elif chosen == "":
         print("Use Help if stuck")
@@ -238,42 +279,87 @@ def main_screen(chosen):
     main_screen(choice)
 
 
-
-def battle_screen(turn, enemy, hp_left):
+#Battle stuff
+def battle_screen(turn, enemy, enemy_lv,hp_left,enemy_max_hp):
 
     global exp
     global gold
+    global health
+    global area
 
     if turn == 1:
-        enemy_hp = enemy_stats[enemy][0]
+        enemy_hp = int(enemy_stats[enemy]["HP"]  + ((enemy_lv - 1) * enemy_stats[enemy]["HP"] * 0.2))
+        enemy_max_hp = int(enemy_stats[enemy]["HP"]  + ((enemy_lv - 1) * enemy_stats[enemy]["HP"] * 0.2))
     else:
         enemy_hp = hp_left
 
     print("\033c", end="")
     stat_menu()
     print("Battle turn: " + str(turn))
-    print("Enemy: " + str(enemy) + " | (" + str(enemy_hp) + "/" + str(enemy_stats[enemy][0]) + ")" )
+    print(f"Enemy: {enemy} LV:{enemy_lv} | ({enemy_hp}/{enemy_max_hp})")
     print("---------------------------")
 
     input("Attack!")
-    chosen_attack = choose_attack()
-    enemy_hp -= (random.randint(move_stats[chosen_attack][0],move_stats[chosen_attack][1])) + (level - 1)
+    chosen_attack = choose_attack(turn,enemy,enemy_lv,enemy_hp,enemy_max_hp)
+    enemy_hp_to_lose = (random.randint(move_stats["player"][chosen_attack][0],move_stats["player"][chosen_attack][1])) + (power_modifier)
+    enemy_hp -= enemy_hp_to_lose
+    #Refreshes battle screen to accuret HP
+    print("\033c", end="")
+    stat_menu()
+    print("Battle turn: " + str(turn))
+    print(f"Enemy: {enemy} LV:{enemy_lv} | ({enemy_hp}/{enemy_max_hp})")
+    print("---------------------------")
 
+    print(f"Enemy lost {enemy_hp_to_lose} HP to {chosen_attack}")
+    print("")
+    #
     if enemy_hp <= 0:
         print("Battle over. Well done :)")
-        print("EXP gained: " + str(enemy_stats[enemy][1]))
-        print("Gold gained: " + str(enemy_stats[enemy][2]))
-        exp += enemy_stats[enemy][1]
-        gold += enemy_stats[enemy][2]
+        #rewards for winning
+        exp_gain = int(enemy_stats[enemy]["EXP"] + ((enemy_lv - 1) * enemy_stats[enemy]["EXP"] * 0.2))
+        gold_gain = int(enemy_stats[enemy]["Gold"] + ((enemy_lv - 1) * enemy_stats[enemy]["Gold"] * 0.2))
+        print("EXP gained: " + str(exp_gain))
+        print("Gold gained: " + str(gold_gain))
+        exp += exp_gain
+        gold += gold_gain
         input("")
         main_screen("")
     else:
-        battle_screen(turn+1,enemy,enemy_hp)
+        #Enemy Attack
+        enemy_chosen_move = random.choice(enemy_stats[enemy]["Moves"])
+        enemy_chosen_move_damage_random_part = random.randint(move_stats["enemys"][enemy_chosen_move][0],move_stats["enemys"][enemy_chosen_move][1])
+        enemy_chosen_move_damage = int(enemy_chosen_move_damage_random_part + ((enemy_lv-1) * 0.2 * enemy_chosen_move_damage_random_part))
+        health -= enemy_chosen_move_damage
+        #Refreshes battle screen to accuret HP
+        print("\033c", end="")
+        stat_menu()
+        print("Battle turn: " + str(turn))
+        print(f"Enemy: {enemy} LV:{enemy_lv} | ({enemy_hp}/{enemy_max_hp})")
+        print("---------------------------")
 
+        print(f"Enemy lost {enemy_hp_to_lose} HP to {chosen_attack}")
+        print("")
+        print(f"{enemy} used {enemy_chosen_move}, dealt {enemy_chosen_move_damage} damage")
+        #
+        if health <= 0:
+            print("")
+            print("You lost. To bad so sad :(")
+            print("Lost half your Gold")
+            health = max_health
+            area = "Home"
+            gold = int(gold / 2)
+            input()
+            main_screen("")
+        else:
+            input("")
+            battle_screen(turn+1,enemy,enemy_lv,enemy_hp,enemy_max_hp)
 
-def choose_attack():
+def choose_attack(turn,enemy,enemy_lv,enemy_hp,enemy_max_hp):
     print("\033c", end="")
     stat_menu()
+    print("Battle turn: " + str(turn))
+    print(f"Enemy: {enemy} LV:{enemy_lv} | ({enemy_hp}/{enemy_max_hp})")
+    print("---------------------------")    
     print("Avaible Moves: " + str(available_moves))
     print("---------------------------")
 
@@ -287,6 +373,8 @@ def choice_in_choose_attack():
         else:
             print("Invalid")
 
+
+#Pre-game choices
 def name_select(redo):
     global name
     print("\033c", end="")

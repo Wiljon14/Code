@@ -3,8 +3,16 @@
 
 # tips for new players
 ## Use the command "Go to area" than choose "Forest". This puts you in the forest, after that use "Battle" to start a battle.
-## After beating a few enemys you should go to the shop, using "Go to area" than "Shop". In the shop use "Browse" to look in the shop or "Sell to sell stuff"
+## After beating a few enemys you should go to the shop, using "Go to area" than "Shop". In the shop use "Browse" to look in the shop or "Sell" to sell stuff"
 
 # project log
+## 10/9/2026: upd: 0.1.1: ---
+### gameplay additions
+* commands are no longer case sensative
+* added new command "sleep" that heals you (home only).
+* added new item "sleeping bag" allows sleep outside home.
+### internal changes / bug fixes
+* cleaned up code
+
 ## 8/9/2026: upd: 0.1.0: Playable State.
 #### game is in a playable state. Yippy

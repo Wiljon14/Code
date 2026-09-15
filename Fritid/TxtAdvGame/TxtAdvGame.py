@@ -12,11 +12,25 @@ level = 1
 exp_to_level_up = (level*20) - 10
 power_modifier = 0
 
+enemy = str
+enemy_hp = 0
+enemy_max_hp = 0
+enemy_lv = 0
+
 char_class = "Not chosen"
 char_choice_class = ["mage","knight"]
 char_class_stats = {
-    "mage" : [],
-    "knight" : [],
+    "mage" : {
+        "power_multi" : 1.2,
+        "health_multi" : 1,
+        "starting_gear" : [],
+    },
+    "knight" : {
+        "power_multi" : 1,
+        "health_multi" : 1.2,
+        "starting_gear" : [],
+
+    },
 }
 area = "forest"
 areas = ["home", "store", "forest"]
@@ -140,7 +154,7 @@ def stat_menu(clear):
     print("Area: " + str(area).capitalize())
     print("---------------------------")
 
-def battle_stat_menu(turn,enemy,enemy_lv,enemy_hp,enemy_max_hp):
+def battle_stat_menu(turn):
     print("Battle turn: " + str(turn))
     print(f"Enemy: {enemy.capitalize()} LV:{enemy_lv} | ({enemy_hp}/{enemy_max_hp})")
     print("---------------------------")
@@ -177,16 +191,9 @@ def main_screen(chosen):
     exp_to_level_up = (level*20) - 10
 
 
-    #Power modifier
-    if char_class == "mage":
-        power_modifier = int((level * 1.2) - 1.2)
-    else:
-        power_modifier = level - 1
-    #Health modifier
-    if char_class == "knight":
-        max_health = int(starting_max_health + (3.5 * (level - 1)))
-    else:
-        max_health = starting_max_health + (3 * (level - 1))
+    #Stat setter
+    power_modifier = int(level * char_class_stats[char_class]["power_multi"]) #temp int class, be float later when otehr stuff works
+    max_health = int(starting_max_health + (3 * (level - 1)) * char_class_stats[char_class]["health_multi"])
 
     if leveld_up == True:
         health = max_health
@@ -207,8 +214,9 @@ def main_screen(chosen):
 #command menu choices
 def help():
         print("")
-        print("Go to area. - goes to different area if possible")
-        print("Inventory. - See inventory")
+        print("Go to area - goes to different area if possible")
+        print("Inventory - See inventory")
+        print("Stats - See additional stats")
         print("Location specific stuff. V")
         if area == "store":
             print("  Shop - See what the store has")
@@ -233,6 +241,10 @@ def check_inventory():
     else:
         main_screen("")
 
+#more of a debug thing rn, subject to change
+def check_stats():
+    print(power_modifier)
+
 def go_to_area():
     global area
 
@@ -244,7 +256,11 @@ def go_to_area():
 
 def start_battle():
     if area == "forest":
-        battle_screen(1,available_enemys[random.randint(0,1)],random.randint(1,3),0,0)
+        global enemy
+        global enemy_lv
+        enemy = available_enemys[random.randint(0,1)]
+        enemy_lv = random.randint(1,3)
+        battle_screen(1)
     else:
         print("No enemys around")
         main_screen(input())
@@ -340,6 +356,7 @@ commands = {
     "help" : help,
     "go to area" : go_to_area,
     "inventory" : check_inventory,
+    "stats" : check_stats,
     #area specific
     "battle" : start_battle,
     "shop" : shop,
@@ -347,29 +364,30 @@ commands = {
     "sleep" : sleep,
     }
 #Battle stuff
-def battle_screen(turn, enemy, enemy_lv,hp_left,enemy_max_hp):
+def battle_screen(turn):
 
     global exp
     global gold
     global health
     global area
+    global enemy_hp
+    global enemy_max_hp
 
     if turn == 1:
         enemy_hp = int(enemy_stats[enemy]["HP"]  + ((enemy_lv - 1) * enemy_stats[enemy]["HP"] * 0.2))
         enemy_max_hp = int(enemy_stats[enemy]["HP"]  + ((enemy_lv - 1) * enemy_stats[enemy]["HP"] * 0.2))
-    else:
-        enemy_hp = hp_left
 
     stat_menu(True)
-    battle_stat_menu(turn, enemy, enemy_lv,enemy_hp,enemy_max_hp)
+    battle_stat_menu(turn)
 
     input("Attack!")
-    chosen_attack = choose_attack(turn,enemy,enemy_lv,enemy_hp,enemy_max_hp)
+    chosen_attack = choose_attack(turn)
+    do_attack("player","enemy",chosen_attack)
     enemy_hp_to_lose = (random.randint(move_stats["player"][chosen_attack][0],move_stats["player"][chosen_attack][1])) + (power_modifier)
     enemy_hp -= enemy_hp_to_lose
     #Refreshes battle screen to accuret HP
     stat_menu(True)
-    battle_stat_menu(turn, enemy, enemy_lv,enemy_hp,enemy_max_hp)
+    battle_stat_menu(turn)
 
 
     print(f"Enemy lost {enemy_hp_to_lose} HP to {chosen_attack}")
@@ -394,7 +412,7 @@ def battle_screen(turn, enemy, enemy_lv,hp_left,enemy_max_hp):
         health -= enemy_chosen_move_damage
         #Refreshes battle screen to accuret HP
         stat_menu(True)
-        battle_stat_menu(turn, enemy, enemy_lv,enemy_hp,enemy_max_hp)
+        battle_stat_menu(turn)
 
 
         print(f"Enemy lost {enemy_hp_to_lose} HP to {chosen_attack}")
@@ -412,11 +430,11 @@ def battle_screen(turn, enemy, enemy_lv,hp_left,enemy_max_hp):
             main_screen("")
         else:
             input("")
-            battle_screen(turn+1,enemy,enemy_lv,enemy_hp,enemy_max_hp)
+            battle_screen(turn+1)
 
-def choose_attack(turn,enemy,enemy_lv,enemy_hp,enemy_max_hp):
+def choose_attack(turn):
     stat_menu(True)
-    battle_stat_menu(turn, enemy, enemy_lv,enemy_hp,enemy_max_hp)
+    battle_stat_menu(turn)
     print("Avaible Moves: " + str(available_moves))
     print("---------------------------")
 
@@ -430,6 +448,20 @@ def choice_in_choose_attack():
         else:
             print("Invalid")
 
+def do_attack(attacker,defender,chosen_attack):
+    if attacker == "player":
+        attacker_name = name
+    else:
+        attacker_name = enemy
+    if defender == "player":
+        defender_name = name
+    else:
+        defender_name = enemy
+
+
+    print(attacker_name + " attacked " + str(defender_name).capitalize() + " with " + chosen_attack + "!")
+    input()
+    return
 
 #Pre-game choices
 def name_select(redo):

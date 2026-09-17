@@ -38,31 +38,38 @@ area = "forest"
 areas = ["home", "store", "forest"]
 enemy_stats = {
     "wolf" : {
-    "HP" : 15,
-    "EXP" : 10,
-    "gold" : 5,
-    "moves" : ["wolf bite"],
+        "HP" : 15,
+        "EXP" : 10,
+        "gold" : 5,
+        "moves" : ["wolf bite"],
+    },
+
+    "alpha wolf" : {
+        "HP" : 20,
+        "EXP" : 15,
+        "gold" : 7,
+        "moves" : ["alpha wolf bite","prime alpha howl"],
     },
 
     "bear" : {
-    "HP" : 25,
-    "EXP" : 20,
-    "gold" : 8,
-    "moves" : ["bear bite"],
+        "HP" : 25,
+        "EXP" : 20,
+        "gold" : 8,
+        "moves" : ["bear bite"],
     },
 
     "tree beast" : {
-    "HP" : 35,
-    "EXP" : 30,
-    "gold" : 10,
-    "moves" : ["tree slam","leaf beam"],
+        "HP" : 35,
+        "EXP" : 30,
+        "gold" : 10,
+        "moves" : ["tree slam","leaf beam"],
     },
 }
 
 enemys_in_area = {
     "forest" : {
         "easy" : ["wolf"],
-        "medium" : ["bear"],
+        "medium" : ["bear","alpha wolf"],
         "hard" : ["tree beast"],
     } 
 }
@@ -88,6 +95,12 @@ move_stats = {
     "enemys" : {
         "wolf bite" : [
             1, 3
+        ],
+        "alpha wolf bite" : [
+            2, 4
+        ],
+        "prime alpha howl" : [
+            2,8,
         ],
         "bear bite" : [
             4, 5
@@ -279,22 +292,18 @@ def start_battle():
         global enemy
         global enemy_lv
         global turn
-        dif_num = random.randint(1,10)
+        dif_num = random.randint(1,level)
 
-        if dif_num <= 6:
+        if dif_num <= 3:
             difficulty = "easy"
             enemy_lv = random.randint(1,3)
-        elif dif_num <= 9:
+
+        elif dif_num <= 6:
             difficulty = "medium"
             enemy_lv = random.randint(3,4)
-
         else:
-            if level >= 5:
-                difficulty = "hard"
-                enemy_lv = random.randint(6,6)
-            else:
-                difficulty = "medium"
-                enemy_lv = random.randint(4,5)
+            difficulty = "hard"
+            enemy_lv = random.randint(6,6)
 
 
         turn = 0

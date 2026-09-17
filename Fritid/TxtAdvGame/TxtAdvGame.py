@@ -4,7 +4,7 @@ import TxtAdvGame
 name = str
 age = str
 gold = int
-health = float
+player_hp = float
 max_health = float
 starting_max_health = 20
 exp = 0
@@ -12,29 +12,30 @@ level = 1
 exp_to_level_up = (level*20) - 10
 power_modifier = 0
 
+#battle variables
 enemy = str
 enemy_hp = 0
 enemy_max_hp = 0
 enemy_lv = 0
+turn = 0
 
 char_class = "Not chosen"
 char_choice_class = ["mage","knight"]
 char_class_stats = {
     "mage" : {
-        "power_multi" : 1.2,
-        "health_multi" : 1,
+        "power_multi" : 0.15, #per level
+        "health_multi" : 1, 
         "starting_gear" : [],
     },
     "knight" : {
-        "power_multi" : 1,
-        "health_multi" : 1.2,
+        "power_multi" : 0.1, #per level
+        "health_multi" : 1.2, 
         "starting_gear" : [],
 
     },
 }
 area = "forest"
 areas = ["home", "store", "forest"]
-available_enemys = ["wolf","bear"]
 enemy_stats = {
     "wolf" : {
     "HP" : 15,
@@ -44,30 +45,44 @@ enemy_stats = {
     },
 
     "bear" : {
-    "HP" : 30,
+    "HP" : 25,
     "EXP" : 20,
-    "gold" : 10,
+    "gold" : 8,
     "moves" : ["bear bite"],
-
     },
+
+    "tree beast" : {
+    "HP" : 35,
+    "EXP" : 30,
+    "gold" : 10,
+    "moves" : ["tree slam","leaf beam"],
+    },
+}
+
+enemys_in_area = {
+    "forest" : {
+        "easy" : ["wolf"],
+        "medium" : ["bear"],
+        "hard" : ["tree beast"],
+    } 
 }
 available_moves = [] #make it so it changes depending on items in inventory :)
 move_stats = {
     "player" : {
         "iron blade slash" : [
-            4, 6
+            5, 7
         ],
         "punch" : [
             2, 4
         ],
         "golden doom blast" : [
-            1,20
+            1, 20
         ],
         "dull slash" : [
-            3,5
+            4, 6
         ],
         "lesser ball of flame" : [
-            0,10
+            1, 10
         ],
     },
     "enemys" : {
@@ -75,7 +90,13 @@ move_stats = {
             1, 3
         ],
         "bear bite" : [
-            4,5
+            4, 5
+        ],
+        "tree slam" : [
+            6, 6
+        ],
+        "leaf beam" : [
+            0, 15
         ]
     }
 }
@@ -149,12 +170,12 @@ def stat_menu(clear):
     print("Class: " + str(char_class).capitalize())
     print("Age: " + str(age))
     print("Gold: " + str(gold))
-    print("HP: " + str(health) +"/"+ str(max_health))
+    print("HP: " + str(player_hp) +"/"+ str(max_health))
     print("Level: " + str(level) + "("+ str(exp) +"/"+ str(exp_to_level_up) +")")
     print("Area: " + str(area).capitalize())
     print("---------------------------")
 
-def battle_stat_menu(turn):
+def battle_stat_menu():
     print("Battle turn: " + str(turn))
     print(f"Enemy: {enemy.capitalize()} LV:{enemy_lv} | ({enemy_hp}/{enemy_max_hp})")
     print("---------------------------")
@@ -173,7 +194,7 @@ def inventory_items_to_moves():
 def main_screen(chosen):
 
 
-    global health
+    global player_hp
     global max_health
     global exp
     global exp_to_level_up
@@ -192,11 +213,11 @@ def main_screen(chosen):
 
 
     #Stat setter
-    power_modifier = int(level * char_class_stats[char_class]["power_multi"]) #temp int class, be float later when otehr stuff works
-    max_health = int(starting_max_health + (3 * (level - 1)) * char_class_stats[char_class]["health_multi"])
+    power_modifier = 1 + (level * char_class_stats[char_class]["power_multi"]) #temp int class, be float later when otehr stuff works
+    max_health = starting_max_health + int((3 * (level - 1)) * char_class_stats[char_class]["health_multi"])
 
     if leveld_up == True:
-        health = max_health
+        player_hp = max_health
 
     stat_menu(True)
 
@@ -207,9 +228,8 @@ def main_screen(chosen):
     else:
         print("Use Help if stuck")
         print("")
-        main_screen(input())
-    main_screen(input())
 
+    return
 
 #command menu choices
 def help():
@@ -258,9 +278,28 @@ def start_battle():
     if area == "forest":
         global enemy
         global enemy_lv
-        enemy = available_enemys[random.randint(0,1)]
-        enemy_lv = random.randint(1,3)
-        battle_screen(1)
+        global turn
+        dif_num = random.randint(1,10)
+
+        if dif_num <= 6:
+            difficulty = "easy"
+            enemy_lv = random.randint(1,3)
+        elif dif_num <= 9:
+            difficulty = "medium"
+            enemy_lv = random.randint(3,4)
+
+        else:
+            if level >= 5:
+                difficulty = "hard"
+                enemy_lv = random.randint(6,6)
+            else:
+                difficulty = "medium"
+                enemy_lv = random.randint(4,5)
+
+
+        turn = 0
+        enemy = random.choice(enemys_in_area["forest"][difficulty])
+        battle_screen()
     else:
         print("No enemys around")
         main_screen(input())
@@ -335,14 +374,14 @@ def sell():
         main_screen("")
 
 def sleep():
-    global health
+    global player_hp
     if area == "home":
-        health = max_health
+        player_hp = max_health
         print("You took a nice nap in your bed, and feel refreshed")
         input("")
         main_screen("")
     elif "sleeping bag" in inventory:
-        health = max_health
+        player_hp = max_health
         print("You took a nap in a potato bag(?), at least you feel refreshed")
         input("")
         main_screen("")
@@ -364,34 +403,28 @@ commands = {
     "sleep" : sleep,
     }
 #Battle stuff
-def battle_screen(turn):
+def battle_screen():
 
     global exp
     global gold
-    global health
+    global player_hp
     global area
     global enemy_hp
     global enemy_max_hp
+    global turn
+
+    turn += 1
 
     if turn == 1:
         enemy_hp = int(enemy_stats[enemy]["HP"]  + ((enemy_lv - 1) * enemy_stats[enemy]["HP"] * 0.2))
         enemy_max_hp = int(enemy_stats[enemy]["HP"]  + ((enemy_lv - 1) * enemy_stats[enemy]["HP"] * 0.2))
 
     stat_menu(True)
-    battle_stat_menu(turn)
+    battle_stat_menu()
 
     input("Attack!")
-    chosen_attack = choose_attack(turn)
+    chosen_attack = choose_attack()
     do_attack("player","enemy",chosen_attack)
-    enemy_hp_to_lose = (random.randint(move_stats["player"][chosen_attack][0],move_stats["player"][chosen_attack][1])) + (power_modifier)
-    enemy_hp -= enemy_hp_to_lose
-    #Refreshes battle screen to accuret HP
-    stat_menu(True)
-    battle_stat_menu(turn)
-
-
-    print(f"Enemy lost {enemy_hp_to_lose} HP to {chosen_attack}")
-    print("")
     #
     if enemy_hp <= 0:
         print("Battle over. Well done :)")
@@ -407,34 +440,23 @@ def battle_screen(turn):
     else:
         #Enemy Attack
         enemy_chosen_move = random.choice(enemy_stats[enemy]["moves"])
-        enemy_chosen_move_damage_random_part = random.randint(move_stats["enemys"][enemy_chosen_move][0],move_stats["enemys"][enemy_chosen_move][1])
-        enemy_chosen_move_damage = int(enemy_chosen_move_damage_random_part + ((enemy_lv-1) * 0.2 * enemy_chosen_move_damage_random_part))
-        health -= enemy_chosen_move_damage
-        #Refreshes battle screen to accuret HP
-        stat_menu(True)
-        battle_stat_menu(turn)
-
-
-        print(f"Enemy lost {enemy_hp_to_lose} HP to {chosen_attack}")
-        print("")
-        print(f"{enemy} used {enemy_chosen_move}, dealt {enemy_chosen_move_damage} damage")
-        #
-        if health <= 0:
+        do_attack("enemy","player",enemy_chosen_move)
+        
+        if player_hp <= 0:
             print("")
             print("You lost. To bad so sad :(")
             print("Lost half your Gold")
-            health = max_health
+            player_hp = max_health
             area = "home"
             gold = int(gold / 2)
             input()
             main_screen("")
         else:
-            input("")
-            battle_screen(turn+1)
+            battle_screen()
 
-def choose_attack(turn):
+def choose_attack():
     stat_menu(True)
-    battle_stat_menu(turn)
+    battle_stat_menu()
     print("Avaible Moves: " + str(available_moves))
     print("---------------------------")
 
@@ -449,6 +471,8 @@ def choice_in_choose_attack():
             print("Invalid")
 
 def do_attack(attacker,defender,chosen_attack):
+    global enemy_hp
+    global player_hp
     if attacker == "player":
         attacker_name = name
     else:
@@ -458,8 +482,31 @@ def do_attack(attacker,defender,chosen_attack):
     else:
         defender_name = enemy
 
+    if attacker_name == name:
+        base_damage = random.randint(move_stats["player"][chosen_attack][0],move_stats["player"][chosen_attack][1])
+        damage_to_deal = int(base_damage * power_modifier)
+    else:
+        base_damage = random.randint(move_stats["enemys"][chosen_attack][0],move_stats["enemys"][chosen_attack][1])
+        enemy_power_modifier = (enemy_lv * 0.2) + 0.8
+        damage_to_deal = int(base_damage * enemy_power_modifier)
 
-    print(attacker_name + " attacked " + str(defender_name).capitalize() + " with " + chosen_attack + "!")
+
+    if defender_name == enemy:
+        enemy_hp -= damage_to_deal
+    else:
+        player_hp -= damage_to_deal
+
+    stat_menu(True)
+    battle_stat_menu()
+    
+    print(str(attacker_name).capitalize() + " attacked " + str(defender_name).capitalize() + " with " + str(chosen_attack).capitalize() + "!")
+    print(f"Base damage: {base_damage}")
+    if attacker_name == name:
+        print(f"Modifier: {power_modifier}")
+    else:
+        print(f"Modifier: {enemy_power_modifier}")
+    print(f"Total damage {damage_to_deal}")
+ 
     input()
     return
 
@@ -510,9 +557,10 @@ if char_class == "mage":
 
 gold = 15
 max_health = starting_max_health
-health = max_health
-
+player_hp = max_health
 
 main_screen("")
+while True:
+    main_screen(input())
 
 

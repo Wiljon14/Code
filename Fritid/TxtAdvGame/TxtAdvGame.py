@@ -1,5 +1,4 @@
 import random
-import TxtAdvGame
 
 name = str
 age = str
@@ -45,21 +44,21 @@ enemy_stats = {
     },
 
     "alpha wolf" : {
-        "HP" : 20,
+        "HP" : 18,
         "EXP" : 15,
         "gold" : 7,
-        "moves" : ["alpha wolf bite","prime alpha howl"],
+        "moves" : ["wolf bite","prime alpha howl"],
     },
 
     "bear" : {
-        "HP" : 25,
+        "HP" : 22,
         "EXP" : 20,
         "gold" : 8,
         "moves" : ["bear bite"],
     },
 
     "tree beast" : {
-        "HP" : 35,
+        "HP" : 28,
         "EXP" : 30,
         "gold" : 10,
         "moves" : ["tree slam","leaf beam"],
@@ -94,10 +93,7 @@ move_stats = {
     },
     "enemys" : {
         "wolf bite" : [
-            1, 3
-        ],
-        "alpha wolf bite" : [
-            2, 4
+            3, 4
         ],
         "prime alpha howl" : [
             2,8,
@@ -109,7 +105,7 @@ move_stats = {
             6, 6
         ],
         "leaf beam" : [
-            0, 15
+            0, 10
         ]
     }
 }
@@ -121,14 +117,17 @@ raw_item_value = {
         "name" : "iron sword",
         "value" : 5,
         "description" : "A well made sword of iron. Great at cutting down foes.",
-        "move" : "iron blade slash"
+        "move" : "iron blade slash",
+        "consumable" : False,
     },
 
     "rusty iron sword" : {
         "name" : "rusty iron sword",
         "value" : 1,
         "description" : "It's a very old sword. Better than nothing, maybe?",
-        "move" : "dull slash"
+        "move" : "dull slash",
+        "consumable" : False,
+
     },
 
     "old spellbook page" : {
@@ -136,6 +135,7 @@ raw_item_value = {
         "value" : 1,
         "description" : "A page from your old Spellbook from magic school. Its a bit damaged",
         "move" : "lesser ball of flame",
+        "consumable" : False,
     },
 
     "gold crown of doom" : {
@@ -143,6 +143,7 @@ raw_item_value = {
         "value" : 100,
         "description" : "A Golden crown of doom and despair",
         "move" : "golden doom blast",
+        "consumable" : False,
     },
 
     #Potions
@@ -151,6 +152,7 @@ raw_item_value = {
         "value" : 3,
         "description" : "A potion that regenerates flesh & mind, even lost limbs",
         "move" : "N/A",
+        "consumable" : True,
     },
 
     #Item Drops
@@ -159,6 +161,7 @@ raw_item_value = {
         "value" : 4,
         "description" : "The tooth from the local wolf population, could be sold",
         "move" : "N/A",
+        "consumable" : False,
     },
 
     #Artifacts
@@ -167,6 +170,7 @@ raw_item_value = {
         "value" : 15,
         "description" : "A potato bag with some wool in it, guess you could sleep in it. (Allows. you to sleep anywhere)",
         "move" : "N/A",
+        "consumable" : False,
     },
     
 }
@@ -263,7 +267,7 @@ def help():
 
 def check_inventory():
     print(inventory)
-    if input("Look closer at an item? (Y/N) ") == "Y":
+    if input("Look closer at an item? (Y/N) ").lower() == "y":
         item_looked_closer_at = input("Item Name: ").lower()
         if item_looked_closer_at in inventory:
             print("")
@@ -325,28 +329,23 @@ def shop():
             i_num += 1
             print("ID: " + str(i_num) + " | " + str(i["name"]) + ": With cost of: " + str(i["value"]) + " Gold")
         print("")
-        buying = input("Buy something? (Y/N) ")
-        if buying == "Y":
-            buy_choice = input("Insert Item ID to buy: ")
-            if buy_choice == "":
-                main_screen("")
+        buy_choice = input("Insert Item ID to buy: ")
+        if buy_choice.isdigit():
+            if int(buy_choice) <= i_num and int(buy_choice) > 0:
+                if gold >= shop_items[int(buy_choice) - 1]["value"]:
+                    gold -= shop_items[int(buy_choice) - 1]["value"]
+                    print("Remaining Gold: " + str(gold))
+                    print("Bought: " + shop_items[int(buy_choice) - 1]["name"])
+                    inventory.append(shop_items[int(buy_choice) - 1]["name"])
+                else:
+                    print("Not enough Gold")
+                input("")
 
-            if gold >= shop_items[int(buy_choice) - 1]["value"]:
-                gold -= shop_items[int(buy_choice) - 1]["value"]
-                print("Remaining Gold: " + str(gold))
-                print("Bought: " + shop_items[int(buy_choice) - 1]["name"])
-                inventory.append(shop_items[int(buy_choice) - 1]["name"])
-            else:
-                print("Not enough Gold")
 
-            input("Done? ")
-
-            main_screen("")
-        else:
-            main_screen("")
     else:
         print("there is no store around")
         main_screen(input())
+    main_screen("")
 
 def sell():
     global inventory
@@ -361,26 +360,29 @@ def sell():
                 i_num += 1
                 i2 = raw_item_value[i]
                 print("ID: " + str(i_num) + " | " + str(i) + ": With sell value of : " + str(i2["value"] - 1) + " Gold")
-            is_selling = input("Sell something? (Y/N) ")
-            if is_selling == "Y":
-                sold_item_ID = int(input("ID of item to sell: ")) - 1
-                sell_value = raw_item_value[inventory[sold_item_ID]]["value"] - 1
-                print("Sold Item: " + inventory[sold_item_ID] + " for " + str(sell_value) + " Gold")
-                gold += sell_value
-                print("Current Gold: " + str(gold))
-                del inventory[sold_item_ID]
-                input("Done? ")
-                main_screen("")
-            else:
-                main_screen("")
+
+            sold_item_ID = input("ID of item to sell: ")
+            if sold_item_ID.isdigit():
+                sold_item_ID = int(sold_item_ID)
+                if sold_item_ID <= i_num and sold_item_ID > 0:
+                    sold_item_ID -= 1
+                    sell_value = raw_item_value[inventory[sold_item_ID]]["value"] - 1
+
+                    print("Sold Item: " + inventory[sold_item_ID] + " for " + str(sell_value) + " Gold")
+                    gold += sell_value
+                    print("Current Gold: " + str(gold))
+                    del inventory[sold_item_ID]
+                    input("")
+
         else:
             print("Nothing to sell...")
             input("Done?")
-            main_screen("")          
     else:
         print("Theres is no one here to sell to")
         input("")
-        main_screen("")
+
+
+    main_screen("")
 
 def sleep():
     global player_hp
@@ -431,9 +433,11 @@ def battle_screen():
     stat_menu(True)
     battle_stat_menu()
 
-    input("Attack!")
-    chosen_attack = choose_attack()
-    do_attack("player","enemy",chosen_attack)
+    move_type = select_move_type()
+    if move_type == "run":
+        stat_menu(True)
+        return
+    
     #
     if enemy_hp <= 0:
         print("Battle over. Well done :)")
@@ -479,6 +483,28 @@ def choice_in_choose_attack():
         else:
             print("Invalid")
 
+def select_move_type():
+    print("Move choice options: attack / item / run")
+    select_input = input("").lower()
+    if select_input == "run":
+        return "run"
+    if select_input == "item":
+        do_item_combat()
+    else:
+        chosen_attack = choose_attack()
+        do_attack("player","enemy",chosen_attack)
+        return
+
+def do_item_combat():
+    stat_menu(True)
+    battle_stat_menu()
+
+    for i in inventory:
+        if raw_item_value[i]["consumable"] == True:
+            print(i)
+    input()
+    return
+
 def do_attack(attacker,defender,chosen_attack):
     global enemy_hp
     global player_hp
@@ -509,12 +535,8 @@ def do_attack(attacker,defender,chosen_attack):
     battle_stat_menu()
     
     print(str(attacker_name).capitalize() + " attacked " + str(defender_name).capitalize() + " with " + str(chosen_attack).capitalize() + "!")
-    print(f"Base damage: {base_damage}")
-    if attacker_name == name:
-        print(f"Modifier: {power_modifier}")
-    else:
-        print(f"Modifier: {enemy_power_modifier}")
-    print(f"Total damage {damage_to_deal}")
+    print("")
+    print(f"Dealt damage {damage_to_deal}!")
  
     input()
     return
@@ -527,7 +549,7 @@ def name_select(redo):
         print("What's your name?")
     if redo is True:
         print("Please enter name")
-    name = input()
+    name = input().capitalize()
     if name == "":
         name_select(True)
 name_select(False)

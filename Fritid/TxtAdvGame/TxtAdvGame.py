@@ -110,7 +110,7 @@ move_stats = {
     }
 }
 
-inventory = ["wolf tooth"]
+inventory = ["wolf tooth","health potion"]
 raw_item_value = {
     #Weapons
     "iron sword" : {
@@ -470,6 +470,7 @@ def battle_screen():
 def choose_attack():
     stat_menu(True)
     battle_stat_menu()
+    print("Input (Back) to go back to choices")
     print("Avaible Moves: " + str(available_moves))
     print("---------------------------")
 
@@ -480,34 +481,74 @@ def choice_in_choose_attack():
         chosen_attack = input("Choose Move: ").lower()
         if chosen_attack in available_moves:
             return chosen_attack
+        elif chosen_attack == "back":
+            return "back"
         else:
             print("Invalid")
 
 def select_move_type():
-    print("Move choice options: attack / item / run")
-    select_input = input("").lower()
-    if select_input == "run":
-        return "run"
-    if select_input == "item":
-        do_item_combat()
-    else:
-        chosen_attack = choose_attack()
-        do_attack("player","enemy",chosen_attack)
-        return
+    while True:
+        stat_menu(True)
+        battle_stat_menu()
+        print("Move choice options: attack / item / run")
+        select_input = input("").lower()
 
-def do_item_combat():
+        if select_input == "run":
+            return "run"
+        if select_input == "item":
+            usable = False
+            for i in inventory:
+                if raw_item_value[i]["consumable"] == True:
+                    usable = True
+            if usable == True:
+                selected_combat_item = item_combat_selector()
+                if selected_combat_item != "back":
+
+                    do_item_combat(selected_combat_item)
+                    return
+            else:
+                print("No usable items")
+                input()
+        else:
+            chosen_attack = choose_attack()
+            if chosen_attack != "back":
+                do_attack("player","enemy",chosen_attack)
+                return
+
+def item_combat_selector():
+    while True:
+        stat_menu(True)
+        battle_stat_menu()
+        i_num = 0
+        usable_items = []
+        print("Input (Back) to go back to choices")
+        print("Usable items. V")
+        for i in inventory:
+            if raw_item_value[i]["consumable"] == True:
+                i_num += 1
+                print("ID: " + str(i_num) + " | " + str(i))
+                usable_items.append(i)
+
+        selected_item_id = input("Insert Item ID to use: ")
+        if selected_item_id == "back":
+            return "back"
+        if selected_item_id.isdigit():
+            selected_item_id = int(selected_item_id)
+            if selected_item_id <= i_num and selected_item_id > 0:
+                selected_item = usable_items[selected_item_id - 1]
+                return selected_item
+
+def do_item_combat(combat_selected_item):
     stat_menu(True)
-    battle_stat_menu()
-
-    for i in inventory:
-        if raw_item_value[i]["consumable"] == True:
-            print(i)
+    battle_stat_menu() 
+    print(combat_selected_item)   # make this actually do stuff instead of just taking a value and printing it
     input()
     return
 
 def do_attack(attacker,defender,chosen_attack):
     global enemy_hp
     global player_hp
+
     if attacker == "player":
         attacker_name = name
     else:
@@ -537,9 +578,10 @@ def do_attack(attacker,defender,chosen_attack):
     print(str(attacker_name).capitalize() + " attacked " + str(defender_name).capitalize() + " with " + str(chosen_attack).capitalize() + "!")
     print("")
     print(f"Dealt damage {damage_to_deal}!")
- 
+
     input()
     return
+
 
 #Pre-game choices
 def name_select(redo):

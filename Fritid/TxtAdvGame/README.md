@@ -8,10 +8,14 @@
 # project log
 
 ## 22/9/2026: upd: 0.1.3: ---
+### gameplay additions
+* you can now choose multiple differnet things in combat instead of just attack (limited to run and attack at the moment)
 ### gameplay fixes / changes
 * shop/sell is faster now
 ### internal changes / bug fixes
 * shop/sell no longer crashes when inputing wrong item ID
+### work in progress
+* adding (item) to combat usage, almost done
 
 
 ## 21/9/2026: upd: 0.1.2: ---

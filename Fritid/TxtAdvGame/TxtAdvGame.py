@@ -1,19 +1,22 @@
 import random
 
-power_modifier_god_please_remove = 0
-
 characters = {
     "allied" : {
         "player" : {
             "name" : str,
             "age" : str,
             "gold" : int,
+
+            "class" : "Not chosen",
+            
             "health" : int,
             "max_health" : int,
             "starting_max_health" : 20,
+
             "exp" : 0,
             "level" : 1,
             "exp_to_level_up" : 10, # (level*20) - 10 
+
             "power_modifier" : 0,
         }
     },
@@ -21,8 +24,7 @@ characters = {
         
     }
 }
-
-characters["allied"]["player"]["power_modifier"]
+characters["allied"]["player"]["class"]
 #battle variables
 enemy = str
 enemy_hp = 0
@@ -30,7 +32,6 @@ enemy_max_hp = 0
 enemy_lv = 0
 turn = 0
 
-char_class = "Not chosen"
 char_choice_class = ["mage","knight"]
 char_class_stats = {
     "mage" : {
@@ -205,7 +206,7 @@ def stat_menu(clear):
         print("\033c", end="")
     print("---------------------------")
     print("Player: " + str(characters["allied"]["player"]["name"]))
-    print("Class: " + str(char_class).capitalize())
+    print("Class: " + str(characters["allied"]["player"]["class"]).capitalize())
     print("Age: " + str(characters["allied"]["player"]["age"]))
     print("Gold: " + str(characters["allied"]["player"]["gold"]))
     print("HP: " + str(characters["allied"]["player"]["health"]) +"/"+ str(characters["allied"]["player"]["max_health"]))
@@ -230,11 +231,8 @@ def inventory_items_to_moves():
 
 
 def main_screen(chosen):
-
-
     global characters
     global available_moves
-    global power_modifier_god_please_remove
 
     available_moves = ["Punch"]
     
@@ -247,8 +245,8 @@ def main_screen(chosen):
 
 
     #Stat setter
-    power_modifier_god_please_remove = 1 + (characters["allied"]["player"]["level"] * char_class_stats[char_class]["power_multi"]) #temp int class, be float later when otehr stuff works
-    characters["allied"]["player"]["max_health"] = characters["allied"]["player"]["starting_max_health"] + int((3 * (characters["allied"]["player"]["level"] - 1)) * char_class_stats[char_class]["health_multi"])
+    characters["allied"]["player"]["power_modifier"] = 1 + (characters["allied"]["player"]["level"] * char_class_stats[characters["allied"]["player"]["class"]]["power_multi"]) #temp int class, be float later when otehr stuff works
+    characters["allied"]["player"]["max_health"] = characters["allied"]["player"]["starting_max_health"] + int((3 * (characters["allied"]["player"]["level"] - 1)) * char_class_stats[characters["allied"]["player"]["class"]]["health_multi"])
 
     if leveld_up == True:
         characters["allied"]["player"]["health"] = characters["allied"]["player"]["max_health"]
@@ -297,7 +295,7 @@ def check_inventory():
 
 #more of a debug thing rn, subject to change
 def check_stats():
-    print(power_modifier_god_please_remove)
+    print(characters["allied"]["player"]["power_modifier"])
 
 def go_to_area():
     global area
@@ -592,7 +590,7 @@ def do_attack(attacker,defender,chosen_attack):
 
     if attacker_name == characters["allied"]["player"]["name"]:
         base_damage = random.randint(move_stats["player"][chosen_attack][0],move_stats["player"][chosen_attack][1])
-        damage_to_deal = int(base_damage * power_modifier_god_please_remove)
+        damage_to_deal = int(base_damage * characters["allied"]["player"]["power_modifier"])
     else:
         base_damage = random.randint(move_stats["enemys"][chosen_attack][0],move_stats["enemys"][chosen_attack][1])
         enemy_power_modifier = (enemy_lv * 0.2) + 0.8
@@ -641,7 +639,7 @@ def age_select(redo):
 age_select(False)
 
 def class_select(redo):
-    global char_class
+    global characters
     print("\033c", end="")
     if redo is False:
         print("Lastly what class do you whant to play?")
@@ -649,14 +647,14 @@ def class_select(redo):
     if redo is True:
         print("Please enter a valid class")
         print("Valid choices: " + str(char_choice_class))
-    char_class = input().lower()
-    if not char_class in char_choice_class:
+    characters["allied"]["player"]["class"] = input().lower()
+    if not characters["allied"]["player"]["class"] in char_choice_class:
         class_select(True)
 class_select(False)
 
-if char_class == "knight":
+if characters["allied"]["player"]["class"] == "knight":
     inventory.append("rusty iron sword")
-if char_class == "mage":
+if characters["allied"]["player"]["class"] == "mage":
     inventory.append("old spellbook page")
 
 

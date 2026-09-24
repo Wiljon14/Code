@@ -1,11 +1,6 @@
 import random
 
-max_health = float
-starting_max_health = 20
-exp = 0
-level = 1
-exp_to_level_up = (level*20) - 10
-power_modifier = 0
+power_modifier_god_please_remove = 0
 
 characters = {
     "allied" : {
@@ -27,7 +22,7 @@ characters = {
     }
 }
 
-characters["allied"]["player"]["health"]
+characters["allied"]["player"]["power_modifier"]
 #battle variables
 enemy = str
 enemy_hp = 0
@@ -213,8 +208,8 @@ def stat_menu(clear):
     print("Class: " + str(char_class).capitalize())
     print("Age: " + str(characters["allied"]["player"]["age"]))
     print("Gold: " + str(characters["allied"]["player"]["gold"]))
-    print("HP: " + str(characters["allied"]["player"]["health"]) +"/"+ str(max_health))
-    print("Level: " + str(level) + "("+ str(exp) +"/"+ str(exp_to_level_up) +")")
+    print("HP: " + str(characters["allied"]["player"]["health"]) +"/"+ str(characters["allied"]["player"]["max_health"]))
+    print("Level: " + str(characters["allied"]["player"]["level"]) + "("+ str(characters["allied"]["player"]["exp"]) +"/"+ str(characters["allied"]["player"]["exp_to_level_up"]) +")")
     print("Area: " + str(area).capitalize())
     print("---------------------------")
 
@@ -238,29 +233,25 @@ def main_screen(chosen):
 
 
     global characters
-    global max_health
-    global exp
-    global exp_to_level_up
-    global level
     global available_moves
-    global power_modifier
+    global power_modifier_god_please_remove
 
     available_moves = ["Punch"]
     
     leveld_up = False
-    if exp >= exp_to_level_up:
-        exp = exp - exp_to_level_up
-        level += 1
+    if characters["allied"]["player"]["exp"] >= characters["allied"]["player"]["exp_to_level_up"]:
+        characters["allied"]["player"]["exp"] -= characters["allied"]["player"]["exp_to_level_up"]
+        characters["allied"]["player"]["level"] += 1
         leveld_up = True
-    exp_to_level_up = (level*20) - 10
+    characters["allied"]["player"]["exp_to_level_up"] = (characters["allied"]["player"]["level"]*20) - 10
 
 
     #Stat setter
-    power_modifier = 1 + (level * char_class_stats[char_class]["power_multi"]) #temp int class, be float later when otehr stuff works
-    max_health = starting_max_health + int((3 * (level - 1)) * char_class_stats[char_class]["health_multi"])
+    power_modifier_god_please_remove = 1 + (characters["allied"]["player"]["level"] * char_class_stats[char_class]["power_multi"]) #temp int class, be float later when otehr stuff works
+    characters["allied"]["player"]["max_health"] = characters["allied"]["player"]["starting_max_health"] + int((3 * (characters["allied"]["player"]["level"] - 1)) * char_class_stats[char_class]["health_multi"])
 
     if leveld_up == True:
-        characters["allied"]["player"]["health"] = max_health
+        characters["allied"]["player"]["health"] = characters["allied"]["player"]["max_health"]
 
     stat_menu(True)
 
@@ -306,7 +297,7 @@ def check_inventory():
 
 #more of a debug thing rn, subject to change
 def check_stats():
-    print(power_modifier)
+    print(power_modifier_god_please_remove)
 
 def go_to_area():
     global area
@@ -322,7 +313,7 @@ def start_battle():
         global enemy
         global enemy_lv
         global turn
-        dif_num = random.randint(1,level)
+        dif_num = random.randint(1,characters["allied"]["player"]["level"])
 
         if dif_num <= 3:
             difficulty = "easy"
@@ -413,12 +404,12 @@ def sell():
 def sleep():
     global characters
     if area == "home":
-        characters["allied"]["player"]["health"] = max_health
+        characters["allied"]["player"]["health"] = characters["allied"]["player"]["max_health"]
         print("You took a nice nap in your bed, and feel refreshed")
         input("")
         main_screen("")
     elif "sleeping bag" in inventory:
-        characters["allied"]["player"]["health"] = max_health
+        characters["allied"]["player"]["health"] = characters["allied"]["player"]["max_health"]
         print("You took a nap in a potato bag(?), at least you feel refreshed")
         input("")
         main_screen("")
@@ -442,7 +433,6 @@ commands = {
 #Battle stuff
 def battle_screen():
 
-    global exp
     global characters
     global area
     global enemy_hp
@@ -471,7 +461,7 @@ def battle_screen():
         gold_gain = int(enemy_stats[enemy]["gold"] + ((enemy_lv - 1) * enemy_stats[enemy]["gold"] * 0.2))
         print("EXP gained: " + str(exp_gain))
         print("Gold gained: " + str(gold_gain))
-        exp += exp_gain
+        characters["allied"]["player"]["exp"] += exp_gain
         characters["allied"]["player"]["gold"] += gold_gain
         input("")
         main_screen("")
@@ -484,7 +474,7 @@ def battle_screen():
             print("")
             print("You lost. To bad so sad :(")
             print("Lost half your Gold")
-            characters["allied"]["player"]["health"] = max_health
+            characters["allied"]["player"]["health"] = characters["allied"]["player"]["max_health"]
             area = "home"
             characters["allied"]["player"]["gold"] = int(characters["allied"]["player"]["gold"] / 2)
             input()
@@ -578,8 +568,8 @@ def combat_item_effect(item):
     global characters
     if raw_item_value[item]["consumable_effect"][0] == "heal":
         characters["allied"]["player"]["health"] += raw_item_value[item]["consumable_effect"][1]
-        if characters["allied"]["player"]["health"] > max_health:
-            characters["allied"]["player"]["health"] = max_health
+        if characters["allied"]["player"]["health"] > characters["allied"]["player"]["max_health"]:
+            characters["allied"]["player"]["health"] = characters["allied"]["player"]["max_health"]
         stat_menu(True)
         battle_stat_menu()
         print(f"regained {raw_item_value[item]["consumable_effect"][1]} health")
@@ -602,7 +592,7 @@ def do_attack(attacker,defender,chosen_attack):
 
     if attacker_name == characters["allied"]["player"]["name"]:
         base_damage = random.randint(move_stats["player"][chosen_attack][0],move_stats["player"][chosen_attack][1])
-        damage_to_deal = int(base_damage * power_modifier)
+        damage_to_deal = int(base_damage * power_modifier_god_please_remove)
     else:
         base_damage = random.randint(move_stats["enemys"][chosen_attack][0],move_stats["enemys"][chosen_attack][1])
         enemy_power_modifier = (enemy_lv * 0.2) + 0.8
@@ -671,8 +661,8 @@ if char_class == "mage":
 
 
 characters["allied"]["player"]["gold"] = 15
-max_health = starting_max_health
-characters["allied"]["player"]["health"] = max_health
+characters["allied"]["player"]["max_health"] = characters["allied"]["player"]["starting_max_health"]
+characters["allied"]["player"]["health"] = characters["allied"]["player"]["max_health"]
 
 main_screen("")
 while True:

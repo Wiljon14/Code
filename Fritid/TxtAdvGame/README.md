@@ -7,6 +7,16 @@
 
 # project log
 
+## 24/9/2026: upd: 0.1.4: ---
+### gameplay additions
+* added item(s) - "greater healing potion"
+* changed price of "healing potion"
+* potions can now be used in combat
+### gameplay fixes / changes
+### internal changes / bug fixes
+### work in progress
+
+
 ## 22/9/2026: upd: 0.1.3: ---
 ### gameplay additions
 * you can now choose multiple differnet things in combat instead of just attack (limited to run and attack at the moment)

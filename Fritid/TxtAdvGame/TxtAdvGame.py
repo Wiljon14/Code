@@ -1,9 +1,5 @@
 import random
 
-name = str
-age = str
-gold = int
-player_hp = float
 max_health = float
 starting_max_health = 20
 exp = 0
@@ -11,6 +7,27 @@ level = 1
 exp_to_level_up = (level*20) - 10
 power_modifier = 0
 
+characters = {
+    "allied" : {
+        "player" : {
+            "name" : str,
+            "age" : str,
+            "gold" : int,
+            "health" : int,
+            "max_health" : int,
+            "starting_max_health" : 20,
+            "exp" : 0,
+            "level" : 1,
+            "exp_to_level_up" : 10, # (level*20) - 10 
+            "power_modifier" : 0,
+        }
+    },
+    "enemys" : {
+        
+    }
+}
+
+characters["allied"]["player"]["health"]
 #battle variables
 enemy = str
 enemy_hp = 0
@@ -105,12 +122,12 @@ move_stats = {
             6, 6
         ],
         "leaf beam" : [
-            0, 10
+            5, 10
         ]
     }
 }
 
-inventory = ["wolf tooth","health potion"]
+inventory = ["wolf tooth","health potion","greater health potion"]
 raw_item_value = {
     #Weapons
     "iron sword" : {
@@ -149,10 +166,19 @@ raw_item_value = {
     #Potions
     "health potion" : {
         "name" : "health potion",
-        "value" : 3,
+        "value" : 13,
         "description" : "A potion that regenerates flesh & mind, even lost limbs",
         "move" : "N/A",
         "consumable" : True,
+        "consumable_effect" : ["heal",15],
+    },
+    "greater health potion" : {
+        "name" : "greater health potion",
+        "value" : 25,
+        "description" : "A greater potion that regenerates flesh & mind, even lost limbs",
+        "move" : "N/A",
+        "consumable" : True,
+        "consumable_effect" : ["heal",30],
     },
 
     #Item Drops
@@ -183,11 +209,11 @@ def stat_menu(clear):
     if clear == True:
         print("\033c", end="")
     print("---------------------------")
-    print("Player: " + str(name))
+    print("Player: " + str(characters["allied"]["player"]["name"]))
     print("Class: " + str(char_class).capitalize())
-    print("Age: " + str(age))
-    print("Gold: " + str(gold))
-    print("HP: " + str(player_hp) +"/"+ str(max_health))
+    print("Age: " + str(characters["allied"]["player"]["age"]))
+    print("Gold: " + str(characters["allied"]["player"]["gold"]))
+    print("HP: " + str(characters["allied"]["player"]["health"]) +"/"+ str(max_health))
     print("Level: " + str(level) + "("+ str(exp) +"/"+ str(exp_to_level_up) +")")
     print("Area: " + str(area).capitalize())
     print("---------------------------")
@@ -211,7 +237,7 @@ def inventory_items_to_moves():
 def main_screen(chosen):
 
 
-    global player_hp
+    global characters
     global max_health
     global exp
     global exp_to_level_up
@@ -234,7 +260,7 @@ def main_screen(chosen):
     max_health = starting_max_health + int((3 * (level - 1)) * char_class_stats[char_class]["health_multi"])
 
     if leveld_up == True:
-        player_hp = max_health
+        characters["allied"]["player"]["health"] = max_health
 
     stat_menu(True)
 
@@ -319,7 +345,7 @@ def start_battle():
 
 def shop():
     global inventory
-    global gold
+    global characters
 
     if area == "store":
         print("")
@@ -332,9 +358,9 @@ def shop():
         buy_choice = input("Insert Item ID to buy: ")
         if buy_choice.isdigit():
             if int(buy_choice) <= i_num and int(buy_choice) > 0:
-                if gold >= shop_items[int(buy_choice) - 1]["value"]:
-                    gold -= shop_items[int(buy_choice) - 1]["value"]
-                    print("Remaining Gold: " + str(gold))
+                if characters["allied"]["player"]["gold"] >= shop_items[int(buy_choice) - 1]["value"]:
+                    characters["allied"]["player"]["gold"] -= shop_items[int(buy_choice) - 1]["value"]
+                    print("Remaining Gold: " + str(characters["allied"]["player"]["gold"]))
                     print("Bought: " + shop_items[int(buy_choice) - 1]["name"])
                     inventory.append(shop_items[int(buy_choice) - 1]["name"])
                 else:
@@ -349,7 +375,7 @@ def shop():
 
 def sell():
     global inventory
-    global gold
+    global characters
 
     if area == "store":
         print("")
@@ -369,8 +395,8 @@ def sell():
                     sell_value = raw_item_value[inventory[sold_item_ID]]["value"] - 1
 
                     print("Sold Item: " + inventory[sold_item_ID] + " for " + str(sell_value) + " Gold")
-                    gold += sell_value
-                    print("Current Gold: " + str(gold))
+                    characters["allied"]["player"]["gold"] += sell_value
+                    print("Current Gold: " + str(characters["allied"]["player"]["gold"]))
                     del inventory[sold_item_ID]
                     input("")
 
@@ -385,14 +411,14 @@ def sell():
     main_screen("")
 
 def sleep():
-    global player_hp
+    global characters
     if area == "home":
-        player_hp = max_health
+        characters["allied"]["player"]["health"] = max_health
         print("You took a nice nap in your bed, and feel refreshed")
         input("")
         main_screen("")
     elif "sleeping bag" in inventory:
-        player_hp = max_health
+        characters["allied"]["player"]["health"] = max_health
         print("You took a nap in a potato bag(?), at least you feel refreshed")
         input("")
         main_screen("")
@@ -417,8 +443,7 @@ commands = {
 def battle_screen():
 
     global exp
-    global gold
-    global player_hp
+    global characters
     global area
     global enemy_hp
     global enemy_max_hp
@@ -447,7 +472,7 @@ def battle_screen():
         print("EXP gained: " + str(exp_gain))
         print("Gold gained: " + str(gold_gain))
         exp += exp_gain
-        gold += gold_gain
+        characters["allied"]["player"]["gold"] += gold_gain
         input("")
         main_screen("")
     else:
@@ -455,13 +480,13 @@ def battle_screen():
         enemy_chosen_move = random.choice(enemy_stats[enemy]["moves"])
         do_attack("enemy","player",enemy_chosen_move)
         
-        if player_hp <= 0:
+        if characters["allied"]["player"]["health"] <= 0:
             print("")
             print("You lost. To bad so sad :(")
             print("Lost half your Gold")
-            player_hp = max_health
+            characters["allied"]["player"]["health"] = max_health
             area = "home"
-            gold = int(gold / 2)
+            characters["allied"]["player"]["gold"] = int(characters["allied"]["player"]["gold"] / 2)
             input()
             main_screen("")
         else:
@@ -539,26 +564,43 @@ def item_combat_selector():
                 return selected_item
 
 def do_item_combat(combat_selected_item):
+    global inventory
+    inventory.remove(combat_selected_item)
     stat_menu(True)
     battle_stat_menu() 
-    print(combat_selected_item)   # make this actually do stuff instead of just taking a value and printing it
+    print(f"Used {combat_selected_item}")
+    combat_item_effect(combat_selected_item)
+
     input()
     return
 
+def combat_item_effect(item):
+    global characters
+    if raw_item_value[item]["consumable_effect"][0] == "heal":
+        characters["allied"]["player"]["health"] += raw_item_value[item]["consumable_effect"][1]
+        if characters["allied"]["player"]["health"] > max_health:
+            characters["allied"]["player"]["health"] = max_health
+        stat_menu(True)
+        battle_stat_menu()
+        print(f"regained {raw_item_value[item]["consumable_effect"][1]} health")
+    elif item == "temp":
+        return
+
+
 def do_attack(attacker,defender,chosen_attack):
     global enemy_hp
-    global player_hp
+    global characters
 
     if attacker == "player":
-        attacker_name = name
+        attacker_name = characters["allied"]["player"]["name"]
     else:
         attacker_name = enemy
     if defender == "player":
-        defender_name = name
+        defender_name = characters["allied"]["player"]["name"]
     else:
         defender_name = enemy
 
-    if attacker_name == name:
+    if attacker_name == characters["allied"]["player"]["name"]:
         base_damage = random.randint(move_stats["player"][chosen_attack][0],move_stats["player"][chosen_attack][1])
         damage_to_deal = int(base_damage * power_modifier)
     else:
@@ -570,7 +612,7 @@ def do_attack(attacker,defender,chosen_attack):
     if defender_name == enemy:
         enemy_hp -= damage_to_deal
     else:
-        player_hp -= damage_to_deal
+        characters["allied"]["player"]["health"] -= damage_to_deal
 
     stat_menu(True)
     battle_stat_menu()
@@ -585,26 +627,26 @@ def do_attack(attacker,defender,chosen_attack):
 
 #Pre-game choices
 def name_select(redo):
-    global name
+    global characters
     print("\033c", end="")
     if redo is False:
         print("What's your name?")
     if redo is True:
         print("Please enter name")
-    name = input().capitalize()
-    if name == "":
+    characters["allied"]["player"]["name"] = input().capitalize()
+    if characters["allied"]["player"]["name"] == "":
         name_select(True)
 name_select(False)
 
 def age_select(redo):
-    global age
+    global characters
     print("\033c", end="")
     if redo is False:
         print("And your age?")
     if redo is True:
         print("Please enter a whole number (ex. 16, 35)")
-    age = input()
-    if not age.isdigit():
+    characters["allied"]["player"]["age"] = input()
+    if not characters["allied"]["player"]["age"].isdigit():
         age_select(True)
 age_select(False)
 
@@ -628,9 +670,9 @@ if char_class == "mage":
     inventory.append("old spellbook page")
 
 
-gold = 15
+characters["allied"]["player"]["gold"] = 15
 max_health = starting_max_health
-player_hp = max_health
+characters["allied"]["player"]["health"] = max_health
 
 main_screen("")
 while True:

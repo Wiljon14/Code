@@ -7,14 +7,14 @@
 
 # project log
 
-## 28/9/2026: upd: 0.1.5: ---
+## 28/9/2026: upd: 0.1.5: --- (current)
 ### gameplay additions
+* new enemy - "wolf pup"
 ### gameplay fixes / changes
 * game now allows multiple enemys in combat
 ### internal changes / bug fixes
 * reworked combat system (only code wise, gameplay is essentily the same)
 ### work in progress
-* fix the enemy spawning with the new system
 * and make the combat more dynamic
 
 ## 24/9/2026: upd: 0.1.4: ---

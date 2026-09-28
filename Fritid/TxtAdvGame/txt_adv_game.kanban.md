@@ -14,6 +14,10 @@
 <!-- id: task-1789987094820-45 -->
 <!-- priority: low -->
 
+#### translate, item/enemy stat dics to JSON or simalar
+<!-- id: task-1790589983426-81 -->
+<!-- priority: low -->
+
 ## In Progress
 
 ## Done
@@ -28,4 +32,12 @@
 #### fix, char structure for both players and enemys
 <!-- id: task-1790237439979-106 -->
 put both players and enemys inside of a big dictonary
+<!-- workload: hard -->
+
+#### fix, run in battle
+<!-- id: task-1790589047433-25 -->
+<!-- workload: easy -->
+
+#### fix, enemy spawning.
+<!-- id: task-1790589061999-38 -->
 <!-- workload: hard -->

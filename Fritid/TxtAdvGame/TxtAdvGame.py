@@ -26,11 +26,6 @@ characters = {
 }
 characters["allied"]["player"]["class"]
 #battle variables
-enemy = str
-enemy_hp = 0
-enemy_max_hp = 0
-enemy_lv = 0
-
 exp_gain = 0
 gold_gain = 0
 turn = 0
@@ -55,9 +50,16 @@ char_class_stats = {
 area = "forest"
 areas = ["home", "store", "forest"]
 enemy_stats = {
+    "wolf pup" : {
+        "HP" : 8,
+        "EXP" : 10,
+        "gold" : 3,
+        "moves" : ["baby gnaw"],
+    },
+
     "wolf" : {
         "HP" : 15,
-        "EXP" : 10,
+        "EXP" : 12,
         "gold" : 5,
         "moves" : ["wolf bite"],
     },
@@ -86,9 +88,10 @@ enemy_stats = {
 
 enemys_in_area = {
     "forest" : {
-        "easy" : ["wolf"],
-        "medium" : ["bear","alpha wolf"],
-        "hard" : ["tree beast"],
+        1 : ["wolf pup"],
+        2 : ["wolf"],
+        3 : ["bear","alpha wolf"],
+        5 : ["tree beast"],
     } 
 }
 available_moves = [] #make it so it changes depending on items in inventory :)
@@ -111,6 +114,9 @@ move_stats = {
         ],
     },
     "enemys" : {
+        "baby gnaw" : [
+            1, 3
+        ],
         "wolf bite" : [
             3, 4
         ],
@@ -129,7 +135,7 @@ move_stats = {
     }
 }
 
-inventory = ["wolf tooth","health potion","greater health potion"]
+inventory = []
 raw_item_value = {
     #Weapons
     "iron sword" : {
@@ -203,7 +209,13 @@ raw_item_value = {
     
 }
 
-shop_items = [raw_item_value["iron sword"],raw_item_value["health potion"],raw_item_value["gold crown of doom"],raw_item_value["sleeping bag"]]
+shop_items = [
+    raw_item_value["iron sword"],
+    raw_item_value["health potion"],
+    raw_item_value["greater health potion"],
+    raw_item_value["gold crown of doom"],
+    raw_item_value["sleeping bag"]
+]
 
 
 #stat menus
@@ -344,8 +356,6 @@ def go_to_area():
 def start_battle():
     if area == "forest":
         global characters
-        global enemy
-        global enemy_lv
         global turn
         global battle_over
         global gold_gain
@@ -355,32 +365,30 @@ def start_battle():
         gold_gain = 0
         exp_gain = 0
 
-        amount_of_enemys = 1
-        dif_num = random.randint(1,characters["allied"]["player"]["level"])
-
-        if dif_num <= 3:
-            difficulty = "easy"
-            enemy_lv = random.randint(1,3)
-
-        elif dif_num <= 6:
-            difficulty = "medium"
-            enemy_lv = random.randint(3,4)
-        else:
-            difficulty = "hard"
-            enemy_lv = random.randint(6,6)
-
+        dif_num = characters["allied"]["player"]["level"]
 
         turn = 0
-        enemy = random.choice(enemys_in_area["forest"][difficulty])
 
-        for i in range(amount_of_enemys):
-            characters["enemys"][i] = {}
-            characters["enemys"][i]["name"] = enemy
-            characters["enemys"][i]["level"] = enemy_lv
+        enemy_id = -1
+
+        while dif_num >= 1:
+            enemy_id += 1
+            valid_power = False
+            while valid_power == False:
+                power_of_enemy = random.choice(list(enemys_in_area[area].keys()))
+                if power_of_enemy <= dif_num:
+                    dif_num -= power_of_enemy
+                    valid_power = True
+
+            enemy = random.choice(enemys_in_area[area][power_of_enemy])
+
+            characters["enemys"][enemy_id] = {}
+            characters["enemys"][enemy_id]["name"] = enemy
+            characters["enemys"][enemy_id]["level"] = random.randrange(power_of_enemy,power_of_enemy + 3)
 
 
-            characters["enemys"][i]["max_health"] = int(enemy_stats[characters["enemys"][i]["name"]]["HP"]  + ((enemy_lv - 1) * enemy_stats[characters["enemys"][i]["name"]]["HP"] * 0.2))
-            characters["enemys"][i]["health"] = characters["enemys"][i]["max_health"]
+            characters["enemys"][enemy_id]["max_health"] = int(enemy_stats[characters["enemys"][enemy_id]["name"]]["HP"]  + ((characters["enemys"][enemy_id]["level"] - 1) * enemy_stats[characters["enemys"][enemy_id]["name"]]["HP"] * 0.2))
+            characters["enemys"][enemy_id]["health"] = characters["enemys"][enemy_id]["max_health"]
 
         battle_over = False
         turn_handler()
@@ -492,8 +500,6 @@ def turn_handler():
     global turn
 
     turn = 1
-    stat_menu(True)
-    battle_stat_menu()
 
     turn_in_turn_order = 0
 
@@ -522,6 +528,8 @@ def check_if_ally(char_to_check):
         return False
 
 def do_turn(char_doing_turn,is_ally):
+    global battle_over
+
     if is_ally == True:
         allegiance = "allied"
     else:
@@ -536,6 +544,7 @@ def do_turn(char_doing_turn,is_ally):
         move_type = select_move_type()
         if move_type == "run":
             stat_menu(True)
+            battle_over = True
             print("You ran")
             return
     else:
@@ -695,12 +704,15 @@ def do_attack(attacker,defender,chosen_attack):
     else:
         attacker_allegiance = "enemys"
     attacker_name = characters[attacker_allegiance][attacker]["name"]
+    attacker_level = characters[attacker_allegiance][attacker]["level"]
 
     if check_if_ally(defender) == True:
         defender_allegiance = "allied"
     else:
         defender_allegiance = "enemys"
     defender_name = characters[defender_allegiance][defender]["name"]
+    defender_level = characters[defender_allegiance][defender]["level"]
+
     #-----------------------------
 
     if attacker_name == characters["allied"]["player"]["name"]:
@@ -708,7 +720,7 @@ def do_attack(attacker,defender,chosen_attack):
         damage_to_deal = int(base_damage * characters["allied"]["player"]["power_modifier"])
     else:
         base_damage = random.randint(move_stats["enemys"][chosen_attack][0],move_stats["enemys"][chosen_attack][1])
-        enemy_power_modifier = (enemy_lv * 0.2) + 0.8
+        enemy_power_modifier = (attacker_level * 0.2) + 0.8
         damage_to_deal = int(base_damage * enemy_power_modifier)
 
     #deals damage
@@ -724,10 +736,10 @@ def do_attack(attacker,defender,chosen_attack):
     input()
 
     if characters[defender_allegiance][defender]["health"] <= 0:
-        character_died(defender_allegiance,defender)
+        character_died(defender_allegiance,defender,attacker_level)
     return
 
-def character_died(allegiance,char):
+def character_died(allegiance,char,level):
     global exp_gain
     global gold_gain
 
@@ -735,8 +747,8 @@ def character_died(allegiance,char):
         player_died()
         return
     else:
-        exp_gain += int(enemy_stats[characters[allegiance][char]["name"]]["EXP"] + ((enemy_lv - 1) * enemy_stats[characters[allegiance][char]["name"]]["EXP"] * 0.2))
-        gold_gain += int(enemy_stats[characters[allegiance][char]["name"]]["gold"] + ((enemy_lv - 1) * enemy_stats[characters[allegiance][char]["name"]]["gold"] * 0.2))
+        exp_gain += int(enemy_stats[characters[allegiance][char]["name"]]["EXP"] + ((level - 1) * enemy_stats[characters[allegiance][char]["name"]]["EXP"] * 0.2))
+        gold_gain += int(enemy_stats[characters[allegiance][char]["name"]]["gold"] + ((level - 1) * enemy_stats[characters[allegiance][char]["name"]]["gold"] * 0.2))
         characters[allegiance].pop(char)
 
         if characters["enemys"] == {}:

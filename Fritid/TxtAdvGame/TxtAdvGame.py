@@ -30,7 +30,13 @@ enemy = str
 enemy_hp = 0
 enemy_max_hp = 0
 enemy_lv = 0
+
+exp_gain = 0
+gold_gain = 0
 turn = 0
+turn_order = []
+turn_in_turn_order = 0
+battle_over = True
 
 char_choice_class = ["mage","knight"]
 char_class_stats = {
@@ -200,7 +206,8 @@ raw_item_value = {
 shop_items = [raw_item_value["iron sword"],raw_item_value["health potion"],raw_item_value["gold crown of doom"],raw_item_value["sleeping bag"]]
 
 
-
+#stat menus
+#----------------------------
 def stat_menu(clear):
     if clear == True:
         print("\033c", end="")
@@ -216,9 +223,32 @@ def stat_menu(clear):
 
 def battle_stat_menu():
     print("Battle turn: " + str(turn))
-    print(f"Enemy: {enemy.capitalize()} LV:{enemy_lv} | ({enemy_hp}/{enemy_max_hp})")
     print("---------------------------")
 
+    for i in turn_order:
+        if check_if_ally(i) == True:
+            allegiance = "allied"
+        else:
+            allegiance = "enemys"
+
+        char_name = characters[allegiance][i]["name"]
+        char_lv = characters[allegiance][i]["level"]
+        char_hp = characters[allegiance][i]["health"]
+        char_max_hp = characters[allegiance][i]["max_health"]
+
+        if check_if_ally(i):
+            print_name = (f"Ally: {char_name.capitalize()} LV:{char_lv} | ({char_hp}/{char_max_hp})")
+        else:
+            print_name = (f"Enemy: {char_name.capitalize()} LV:{char_lv} | ({char_hp}/{char_max_hp})")
+
+        if turn_order[turn_in_turn_order] == i:
+            turn_order_indicator = "--->| "
+        else:
+            turn_order_indicator = "    | "
+
+        print(turn_order_indicator + print_name)
+    print("---------------------------")
+#----------------------------
 def inventory_items_to_moves():
     global available_moves
     global inventory
@@ -228,11 +258,11 @@ def inventory_items_to_moves():
         if raw_item_value[i]["move"] != "N/A":
             available_moves.append(raw_item_value[i]["move"])
 
-
-
 def main_screen(chosen):
     global characters
     global available_moves
+
+
 
     available_moves = ["Punch"]
     
@@ -251,9 +281,11 @@ def main_screen(chosen):
     if leveld_up == True:
         characters["allied"]["player"]["health"] = characters["allied"]["player"]["max_health"]
 
-    stat_menu(True)
 
     inventory_items_to_moves()
+
+    stat_menu(True)
+
 
     if chosen.lower() in commands:
         commands[chosen.lower()]()
@@ -261,9 +293,11 @@ def main_screen(chosen):
         print("Use Help if stuck")
         print("")
 
+
     return
 
 #command menu choices
+#----------------------------
 def help():
         print("")
         print("Go to area - goes to different area if possible")
@@ -295,7 +329,8 @@ def check_inventory():
 
 #more of a debug thing rn, subject to change
 def check_stats():
-    print(characters["allied"]["player"]["power_modifier"])
+    print("Power modifier: " + str(characters["allied"]["player"]["power_modifier"]))
+    print("")
 
 def go_to_area():
     global area
@@ -308,9 +343,19 @@ def go_to_area():
 
 def start_battle():
     if area == "forest":
+        global characters
         global enemy
         global enemy_lv
         global turn
+        global battle_over
+        global gold_gain
+        global exp_gain
+
+        characters["enemys"] = {}
+        gold_gain = 0
+        exp_gain = 0
+
+        amount_of_enemys = 1
         dif_num = random.randint(1,characters["allied"]["player"]["level"])
 
         if dif_num <= 3:
@@ -327,7 +372,18 @@ def start_battle():
 
         turn = 0
         enemy = random.choice(enemys_in_area["forest"][difficulty])
-        battle_screen()
+
+        for i in range(amount_of_enemys):
+            characters["enemys"][i] = {}
+            characters["enemys"][i]["name"] = enemy
+            characters["enemys"][i]["level"] = enemy_lv
+
+
+            characters["enemys"][i]["max_health"] = int(enemy_stats[characters["enemys"][i]["name"]]["HP"]  + ((enemy_lv - 1) * enemy_stats[characters["enemys"][i]["name"]]["HP"] * 0.2))
+            characters["enemys"][i]["health"] = characters["enemys"][i]["max_health"]
+
+        battle_over = False
+        turn_handler()
     else:
         print("No enemys around")
         main_screen(input())
@@ -416,7 +472,7 @@ def sleep():
         print("No where to sleep around here")
         input("")
         main_screen("")
-
+#----------------------------
 commands = {
     "help" : help,
     "go to area" : go_to_area,
@@ -429,56 +485,72 @@ commands = {
     "sleep" : sleep,
     }
 #Battle stuff
-def battle_screen():
-
+def turn_handler():
     global characters
-    global area
-    global enemy_hp
-    global enemy_max_hp
+    global turn_in_turn_order
+    global turn_order
     global turn
 
-    turn += 1
+    turn = 1
+    stat_menu(True)
+    battle_stat_menu()
 
-    if turn == 1:
-        enemy_hp = int(enemy_stats[enemy]["HP"]  + ((enemy_lv - 1) * enemy_stats[enemy]["HP"] * 0.2))
-        enemy_max_hp = int(enemy_stats[enemy]["HP"]  + ((enemy_lv - 1) * enemy_stats[enemy]["HP"] * 0.2))
+    turn_in_turn_order = 0
+
+    while battle_over == False:
+        turn_order = ["player"]
+        for i in characters["enemys"]:
+            turn_order.append(i)
+
+        turn_char = turn_order[turn_in_turn_order]
+
+        do_turn(turn_char,check_if_ally(turn_char))
+
+        if turn_in_turn_order == len(turn_order) - 1:
+            turn_in_turn_order = 0
+            turn += 1
+
+        else:
+            turn_in_turn_order += 1
+
+    return    
+
+def check_if_ally(char_to_check):
+    if char_to_check in characters["allied"]:
+        return True
+    else:
+        return False
+
+def do_turn(char_doing_turn,is_ally):
+    if is_ally == True:
+        allegiance = "allied"
+    else:
+        allegiance = "enemys"
+
+    char_name = characters[allegiance][char_doing_turn]["name"]
 
     stat_menu(True)
     battle_stat_menu()
 
-    move_type = select_move_type()
-    if move_type == "run":
-        stat_menu(True)
-        return
-    
-    #
-    if enemy_hp <= 0:
-        print("Battle over. Well done :)")
-        #rewards for winning
-        exp_gain = int(enemy_stats[enemy]["EXP"] + ((enemy_lv - 1) * enemy_stats[enemy]["EXP"] * 0.2))
-        gold_gain = int(enemy_stats[enemy]["gold"] + ((enemy_lv - 1) * enemy_stats[enemy]["gold"] * 0.2))
-        print("EXP gained: " + str(exp_gain))
-        print("Gold gained: " + str(gold_gain))
-        characters["allied"]["player"]["exp"] += exp_gain
-        characters["allied"]["player"]["gold"] += gold_gain
-        input("")
-        main_screen("")
+    if is_ally:
+        move_type = select_move_type()
+        if move_type == "run":
+            stat_menu(True)
+            print("You ran")
+            return
     else:
-        #Enemy Attack
-        enemy_chosen_move = random.choice(enemy_stats[enemy]["moves"])
-        do_attack("enemy","player",enemy_chosen_move)
-        
-        if characters["allied"]["player"]["health"] <= 0:
-            print("")
-            print("You lost. To bad so sad :(")
-            print("Lost half your Gold")
-            characters["allied"]["player"]["health"] = characters["allied"]["player"]["max_health"]
-            area = "home"
-            characters["allied"]["player"]["gold"] = int(characters["allied"]["player"]["gold"] / 2)
-            input()
-            main_screen("")
-        else:
-            battle_screen()
+        enemy_choose_attack(char_doing_turn)
+
+    return
+
+def enemy_choose_attack(char_doing_turn):
+
+    target_of_attack = random.choice(list(characters["allied"].keys()))
+    chosen_attack = random.choice(enemy_stats[characters["enemys"][char_doing_turn]["name"]]["moves"])
+
+    do_attack(char_doing_turn,target_of_attack,chosen_attack)
+
+    return
 
 def choose_attack():
     stat_menu(True)
@@ -498,6 +570,45 @@ def choice_in_choose_attack():
             return "back"
         else:
             print("Invalid")
+
+def choose_attack_target():
+    stat_menu(True)
+    battle_stat_menu()
+
+    target_array = []
+    i_local_id = 0
+
+    print("Avaible attack targets. V")
+    for i in characters["enemys"]:
+
+        i_local_id += 1
+        
+        char_name = characters["enemys"][i]["name"]
+        char_lv = characters["enemys"][i]["level"]
+        char_hp = characters["enemys"][i]["health"]
+        char_max_hp = characters["enemys"][i]["max_health"]
+
+
+
+        print_name = (f"{char_name.capitalize()} LV:{char_lv} | ({char_hp}/{char_max_hp})")
+        print("Target ID: " + str(i_local_id) + " | Target: " + print_name)
+
+
+        target_array.append(i)
+    print("---------------------------")
+    if i_local_id != 1:
+        while True:
+            input_id = input("ID of target to attack: ")
+            if input_id.isdigit():
+                input_id = int(input_id)
+                if input_id <= i_local_id and input_id > 0:
+                    return target_array[input_id - 1]
+                else:
+                    print("Invalid")
+            else:
+                print("Invalid")
+    else:
+        return target_array[0]
 
 def select_move_type():
     while True:
@@ -525,7 +636,7 @@ def select_move_type():
         else:
             chosen_attack = choose_attack()
             if chosen_attack != "back":
-                do_attack("player","enemy",chosen_attack)
+                do_attack("player",choose_attack_target(),chosen_attack)
                 return
 
 def item_combat_selector():
@@ -574,19 +685,23 @@ def combat_item_effect(item):
     elif item == "temp":
         return
 
-
 def do_attack(attacker,defender,chosen_attack):
-    global enemy_hp
     global characters
 
-    if attacker == "player":
-        attacker_name = characters["allied"]["player"]["name"]
+    #gets name & allegiance of both attacker and defender
+    #-----------------------------
+    if check_if_ally(attacker) == True:
+        attacker_allegiance = "allied"
     else:
-        attacker_name = enemy
-    if defender == "player":
-        defender_name = characters["allied"]["player"]["name"]
+        attacker_allegiance = "enemys"
+    attacker_name = characters[attacker_allegiance][attacker]["name"]
+
+    if check_if_ally(defender) == True:
+        defender_allegiance = "allied"
     else:
-        defender_name = enemy
+        defender_allegiance = "enemys"
+    defender_name = characters[defender_allegiance][defender]["name"]
+    #-----------------------------
 
     if attacker_name == characters["allied"]["player"]["name"]:
         base_damage = random.randint(move_stats["player"][chosen_attack][0],move_stats["player"][chosen_attack][1])
@@ -596,11 +711,8 @@ def do_attack(attacker,defender,chosen_attack):
         enemy_power_modifier = (enemy_lv * 0.2) + 0.8
         damage_to_deal = int(base_damage * enemy_power_modifier)
 
-
-    if defender_name == enemy:
-        enemy_hp -= damage_to_deal
-    else:
-        characters["allied"]["player"]["health"] -= damage_to_deal
+    #deals damage
+    characters[defender_allegiance][defender]["health"] -= damage_to_deal
 
     stat_menu(True)
     battle_stat_menu()
@@ -610,8 +722,55 @@ def do_attack(attacker,defender,chosen_attack):
     print(f"Dealt damage {damage_to_deal}!")
 
     input()
+
+    if characters[defender_allegiance][defender]["health"] <= 0:
+        character_died(defender_allegiance,defender)
     return
 
+def character_died(allegiance,char):
+    global exp_gain
+    global gold_gain
+
+    if char == "player":
+        player_died()
+        return
+    else:
+        exp_gain += int(enemy_stats[characters[allegiance][char]["name"]]["EXP"] + ((enemy_lv - 1) * enemy_stats[characters[allegiance][char]["name"]]["EXP"] * 0.2))
+        gold_gain += int(enemy_stats[characters[allegiance][char]["name"]]["gold"] + ((enemy_lv - 1) * enemy_stats[characters[allegiance][char]["name"]]["gold"] * 0.2))
+        characters[allegiance].pop(char)
+
+        if characters["enemys"] == {}:
+            victory()
+        return
+
+def victory():
+    global battle_over
+
+    print("Battle over. Well done :)")
+    #rewards for winning
+    print("EXP gained: " + str(exp_gain))
+    print("Gold gained: " + str(gold_gain))
+    characters["allied"]["player"]["exp"] += exp_gain
+    characters["allied"]["player"]["gold"] += gold_gain
+
+    battle_over = True
+
+def player_died():
+    global area
+    global battle_over
+
+    print("")
+    print("You lost. To bad so sad :(")
+    print("Lost half your Gold")
+    print("")
+
+    characters["allied"]["player"]["health"] = characters["allied"]["player"]["max_health"]
+    characters["allied"]["player"]["gold"] = int(characters["allied"]["player"]["gold"] / 2)
+
+    area = "home"
+
+    battle_over = True
+    return
 
 #Pre-game choices
 def name_select(redo):
@@ -665,5 +824,6 @@ characters["allied"]["player"]["health"] = characters["allied"]["player"]["max_h
 main_screen("")
 while True:
     main_screen(input())
+
 
 

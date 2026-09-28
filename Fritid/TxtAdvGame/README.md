@@ -7,14 +7,21 @@
 
 # project log
 
+## 28/9/2026: upd: 0.1.5: ---
+### gameplay additions
+### gameplay fixes / changes
+* game now allows multiple enemys in combat
+### internal changes / bug fixes
+* reworked combat system (only code wise, gameplay is essentily the same)
+### work in progress
+* fix the enemy spawning with the new system
+* and make the combat more dynamic
+
 ## 24/9/2026: upd: 0.1.4: ---
 ### gameplay additions
 * added item(s) - "greater healing potion"
 * changed price of "healing potion"
 * potions can now be used in combat
-### gameplay fixes / changes
-### internal changes / bug fixes
-### work in progress
 
 
 ## 22/9/2026: upd: 0.1.3: ---

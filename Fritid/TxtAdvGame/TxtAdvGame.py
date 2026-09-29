@@ -51,38 +51,43 @@ area = "forest"
 areas = ["home", "store", "forest"]
 enemy_stats = {
     "wolf pup" : {
-        "HP" : 8,
-        "EXP" : 10,
+        "hp" : 8,
+        "exp" : 10,
         "gold" : 3,
         "moves" : ["baby gnaw"],
+        "drops" : [[range(2),"wolf pelt"]]
     },
 
     "wolf" : {
-        "HP" : 15,
-        "EXP" : 12,
+        "hp" : 15,
+        "exp" : 12,
         "gold" : 5,
         "moves" : ["wolf bite"],
+        "drops" : [[range(2),"wolf pelt"],[range(2),"wolf tooth"]]
     },
 
     "alpha wolf" : {
-        "HP" : 18,
-        "EXP" : 15,
+        "hp" : 18,
+        "exp" : 15,
         "gold" : 7,
         "moves" : ["wolf bite","prime alpha howl"],
+        "drops" : [[range(3),"wolf pelt"],[range(3),"wolf tooth"],[range(1,2),"wolf whistle"]]
     },
 
     "bear" : {
-        "HP" : 22,
-        "EXP" : 20,
+        "hp" : 22,
+        "exp" : 20,
         "gold" : 8,
         "moves" : ["bear bite"],
+        "drops" : [[range(3),"bear pelt"]]
     },
 
     "tree beast" : {
-        "HP" : 28,
-        "EXP" : 30,
+        "hp" : 28,
+        "exp" : 30,
         "gold" : 10,
         "moves" : ["tree slam","leaf beam"],
+        "drops" : [[range(4),"fire wood"]]
     },
 }
 
@@ -115,13 +120,13 @@ move_stats = {
     },
     "enemys" : {
         "baby gnaw" : [
-            1, 3
+            1, 2
         ],
         "wolf bite" : [
             3, 4
         ],
         "prime alpha howl" : [
-            2,8,
+            2, 8,
         ],
         "bear bite" : [
             4, 5
@@ -171,7 +176,7 @@ raw_item_value = {
         "consumable" : False,
     },
 
-    #Potions
+    #Potions & consumables
     "health potion" : {
         "name" : "health potion",
         "value" : 13,
@@ -188,12 +193,41 @@ raw_item_value = {
         "consumable" : True,
         "consumable_effect" : ["heal",30],
     },
+    "wolf whistle" : {
+        "name" : "wolf whistle",
+        "value" : 30,
+        "description" : "A small fragile bone from an alpha, summons a wolf in combat to aid you",
+        "move" : "N/A",
+        "consumable" : True,
+        "consumable_effect" : ["summon","wolf"],
+    },
 
     #Item Drops
     "wolf tooth" : {
         "name" : "wolf tooth",
         "value" : 4,
         "description" : "The tooth from the local wolf population, could be sold",
+        "move" : "N/A",
+        "consumable" : False,
+    },
+    "wolf pelt" : {
+        "name" : "wolf pelt",
+        "value" : 3,
+        "description" : "The pelt from the local wolf population, could be sold",
+        "move" : "N/A",
+        "consumable" : False,
+    },
+    "bear pelt" : {
+        "name" : "bear pelt",
+        "value" : 6,
+        "description" : "The pelt from a mighty bear, could be sold",
+        "move" : "N/A",
+        "consumable" : False,
+    },
+    "wooden log" : {
+        "name" : "wooden log",
+        "value" : 4,
+        "description" : "A log from a tree, could be sold",
         "move" : "N/A",
         "consumable" : False,
     },
@@ -339,7 +373,6 @@ def check_inventory():
     else:
         main_screen("")
 
-#more of a debug thing rn, subject to change
 def check_stats():
     print("Power modifier: " + str(characters["allied"]["player"]["power_modifier"]))
     print("")
@@ -382,13 +415,7 @@ def start_battle():
 
             enemy = random.choice(enemys_in_area[area][power_of_enemy])
 
-            characters["enemys"][enemy_id] = {}
-            characters["enemys"][enemy_id]["name"] = enemy
-            characters["enemys"][enemy_id]["level"] = random.randrange(power_of_enemy,power_of_enemy + 3)
-
-
-            characters["enemys"][enemy_id]["max_health"] = int(enemy_stats[characters["enemys"][enemy_id]["name"]]["HP"]  + ((characters["enemys"][enemy_id]["level"] - 1) * enemy_stats[characters["enemys"][enemy_id]["name"]]["HP"] * 0.2))
-            characters["enemys"][enemy_id]["health"] = characters["enemys"][enemy_id]["max_health"]
+            add_new_char_to_combat(enemy_id,enemy,random.randrange(power_of_enemy,power_of_enemy + 3),False)
 
         battle_over = False
         turn_handler()
@@ -493,6 +520,21 @@ commands = {
     "sleep" : sleep,
     }
 #Battle stuff
+                        #char_id, the id that the new thing is going to have. make sure this is not wrong EVER fricks stuff up
+def add_new_char_to_combat(char_id,char,level,is_ally):
+        if is_ally == True:
+            allegiance = "allied"
+        else:
+            allegiance = "enemys"
+        
+        characters[allegiance][char_id] = {}
+        characters[allegiance][char_id]["name"] = char
+        characters[allegiance][char_id]["level"] = level
+
+
+        characters[allegiance][char_id]["max_health"] = int(enemy_stats[characters[allegiance][char_id]["name"]]["hp"]  + ((characters[allegiance][char_id]["level"] - 1) * enemy_stats[characters[allegiance][char_id]["name"]]["hp"] * 0.2))
+        characters[allegiance][char_id]["health"] = characters[allegiance][char_id]["max_health"]
+
 def turn_handler():
     global characters
     global turn_in_turn_order
@@ -504,7 +546,10 @@ def turn_handler():
     turn_in_turn_order = 0
 
     while battle_over == False:
-        turn_order = ["player"]
+
+        turn_order = []
+        for i in characters["allied"]:
+            turn_order.append(i)
         for i in characters["enemys"]:
             turn_order.append(i)
 
@@ -541,25 +586,26 @@ def do_turn(char_doing_turn,is_ally):
     battle_stat_menu()
 
     if is_ally:
-        move_type = select_move_type()
-        if move_type == "run":
-            stat_menu(True)
-            battle_over = True
-            print("You ran")
-            return
+        if char_doing_turn == "player":
+            move_type = select_move_type()
+            if move_type == "run":
+                stat_menu(True)
+                battle_over = True
+                print("You ran")
+                return
+        else:
+            target_of_attack = random.choice(list(characters["enemys"].keys()))
+            chosen_attack = random.choice(enemy_stats[characters["allied"][char_doing_turn]["name"]]["moves"])
+
+            do_attack(char_doing_turn,target_of_attack,chosen_attack)
+            
     else:
-        enemy_choose_attack(char_doing_turn)
+        target_of_attack = random.choice(list(characters["allied"].keys()))
+        chosen_attack = random.choice(enemy_stats[characters["enemys"][char_doing_turn]["name"]]["moves"])
 
+        do_attack(char_doing_turn,target_of_attack,chosen_attack)
     return
 
-def enemy_choose_attack(char_doing_turn):
-
-    target_of_attack = random.choice(list(characters["allied"].keys()))
-    chosen_attack = random.choice(enemy_stats[characters["enemys"][char_doing_turn]["name"]]["moves"])
-
-    do_attack(char_doing_turn,target_of_attack,chosen_attack)
-
-    return
 
 def choose_attack():
     stat_menu(True)
@@ -691,7 +737,21 @@ def combat_item_effect(item):
         stat_menu(True)
         battle_stat_menu()
         print(f"regained {raw_item_value[item]["consumable_effect"][1]} health")
-    elif item == "temp":
+    elif raw_item_value[item]["consumable_effect"][0] == "summon":
+        char_to_summon = raw_item_value[item]["consumable_effect"][1]
+        char_level = characters["allied"]["player"]["level"]
+
+        ally_list = list(characters["allied"].keys()).remove("player")
+        if ally_list == None:
+            ally_list = range(1)
+        smallest_number = -1
+        for i in ally_list:
+            if int(i) < smallest_number:
+                smallest_number == int(i) - 1
+
+        add_new_char_to_combat(smallest_number,char_to_summon,char_level,True)
+
+
         return
 
 def do_attack(attacker,defender,chosen_attack):
@@ -742,14 +802,28 @@ def do_attack(attacker,defender,chosen_attack):
 def character_died(allegiance,char,level):
     global exp_gain
     global gold_gain
+    global inventory
 
     if char == "player":
         player_died()
         return
     else:
-        exp_gain += int(enemy_stats[characters[allegiance][char]["name"]]["EXP"] + ((level - 1) * enemy_stats[characters[allegiance][char]["name"]]["EXP"] * 0.2))
+        exp_gain += int(enemy_stats[characters[allegiance][char]["name"]]["exp"] + ((level - 1) * enemy_stats[characters[allegiance][char]["name"]]["exp"] * 0.2))
         gold_gain += int(enemy_stats[characters[allegiance][char]["name"]]["gold"] + ((level - 1) * enemy_stats[characters[allegiance][char]["name"]]["gold"] * 0.2))
+
+        drops_var = random.choice(enemy_stats[characters[allegiance][char]["name"]]["drops"])
+        drop_amount = random.choice(drops_var[0])
+        drop_item = drops_var[1]
+
+        for i in range(drop_amount):
+            inventory.append(drop_item)
+
+        if drop_amount != 0:
+            print(characters[allegiance][char]["name"] + " Has died dropped: " + str(drop_amount) + " " + drop_item)
+            input()
         characters[allegiance].pop(char)
+
+
 
         if characters["enemys"] == {}:
             victory()
@@ -757,6 +831,8 @@ def character_died(allegiance,char,level):
 
 def victory():
     global battle_over
+
+    stat_menu(True)
 
     print("Battle over. Well done :)")
     #rewards for winning

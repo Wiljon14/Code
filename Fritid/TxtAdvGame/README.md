@@ -7,7 +7,18 @@
 
 # project log
 
-## 28/9/2026: upd: 0.1.5: --- (current)
+## 29/9/2026: upd: 0.1.6: --- (current)
+### gameplay additions
+* new item - wolf whistle (summons allied wolf)
+* added item drops to enemys (some new sellable items from that)
+### gameplay fixes / changes
+* allies can now fight with you
+### internal changes / bug fixes
+* small changes here and there
+### work in progress
+* and make the combat more dynamic
+
+## 28/9/2026: upd: 0.1.5: ---
 ### gameplay additions
 * new enemy - "wolf pup"
 ### gameplay fixes / changes

@@ -6,9 +6,8 @@
 
 ## To Do
 
-#### add item drops to enemys
-<!-- id: task-1789711991238-16 -->
-<!-- priority: low -->
+#### add crafting (do after item drops)
+<!-- id: task-1790668092285-138 -->
 
 #### status effects for combat
 <!-- id: task-1789987094820-45 -->
@@ -41,3 +40,7 @@ put both players and enemys inside of a big dictonary
 #### fix, enemy spawning.
 <!-- id: task-1790589061999-38 -->
 <!-- workload: hard -->
+
+#### add item drops to enemys
+<!-- id: task-1789711991238-16 -->
+<!-- priority: low -->

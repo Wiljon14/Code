@@ -9,13 +9,12 @@
 #### add crafting (do after item drops)
 <!-- id: task-1790668092285-138 -->
 
-#### status effects for combat
-<!-- id: task-1789987094820-45 -->
-<!-- priority: low -->
-
-#### translate, item/enemy stat dics to JSON or simalar
+#### translate, item/enemy stat dics to YAML or JSON
 <!-- id: task-1790589983426-81 -->
 <!-- priority: low -->
+
+#### add AOE attacks
+<!-- id: task-1790853169554-81 -->
 
 ## In Progress
 
@@ -43,4 +42,8 @@ put both players and enemys inside of a big dictonary
 
 #### add item drops to enemys
 <!-- id: task-1789711991238-16 -->
+<!-- priority: low -->
+
+#### status effects for combat
+<!-- id: task-1789987094820-45 -->
 <!-- priority: low -->

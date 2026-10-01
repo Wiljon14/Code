@@ -7,7 +7,16 @@
 
 # project log
 
-## 29/9/2026: upd: 0.1.6: --- (current)
+## 1/10/2026: upd: 0.1.7: --- (current)
+### gameplay additions
+* certain attacks can now deal status effects (lesser ball of flame for now)
+* new item - flaming scroll (buyable in shop, gives move "ball of flame")
+### gameplay fixes / changes
+### internal changes / bug fixes
+### work in progress
+
+
+## 29/9/2026: upd: 0.1.6: ---
 ### gameplay additions
 * new item - wolf whistle (summons allied wolf)
 * added item drops to enemys (some new sellable items from that)

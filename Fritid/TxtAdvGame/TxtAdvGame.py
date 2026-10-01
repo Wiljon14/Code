@@ -18,6 +18,8 @@ characters = {
             "exp_to_level_up" : 10, # (level*20) - 10 
 
             "power_modifier" : 0,
+
+            "status_effects" : {}
         }
     },
     "enemys" : {
@@ -87,7 +89,7 @@ enemy_stats = {
         "exp" : 30,
         "gold" : 10,
         "moves" : ["tree slam","leaf beam"],
-        "drops" : [[range(4),"fire wood"]]
+        "drops" : [[range(4),"wooden log"]]
     },
 }
 
@@ -103,39 +105,42 @@ available_moves = [] #make it so it changes depending on items in inventory :)
 move_stats = {
     "player" : {
         "iron blade slash" : [
-            5, 7
+            5, 7, []
         ],
         "punch" : [
-            2, 4
+            2, 4, []
         ],
         "golden doom blast" : [
-            1, 20
+            10, 30, []
         ],
         "dull slash" : [
-            4, 6
+            4, 6, []
         ],
         "lesser ball of flame" : [
-            1, 10
+            1, 5, ["on fire", range(0,2)]
+        ],
+        "ball of flame" : [
+            2, 6, ["on fire", range(1,3)]
         ],
     },
     "enemys" : {
         "baby gnaw" : [
-            1, 2
+            1, 2, []
         ],
         "wolf bite" : [
-            3, 4
+            3, 4, []
         ],
         "prime alpha howl" : [
-            2, 8,
+            2, 8, []
         ],
         "bear bite" : [
-            4, 5
+            4, 5, []
         ],
         "tree slam" : [
-            6, 6
+            6, 6, []
         ],
         "leaf beam" : [
-            5, 10
+            5, 10, []
         ]
     }
 }
@@ -163,14 +168,22 @@ raw_item_value = {
     "old spellbook page" : {
         "name" : "old spellbook page",
         "value" : 1,
-        "description" : "A page from your old Spellbook from magic school. Its a bit damaged",
+        "description" : "A page from your old Spellbook from magic school. It is a bit damaged",
         "move" : "lesser ball of flame",
+        "consumable" : False,
+    },
+
+    "flaming scroll" : {
+        "name" : "flaming scroll",
+        "value" : 15,
+        "description" : "A scroll that holds a powerful magic spell. It is also on fire... somehow?",
+        "move" : "ball of flame",
         "consumable" : False,
     },
 
     "gold crown of doom" : {
         "name" : "gold crown of doom",
-        "value" : 100,
+        "value" : 999,
         "description" : "A Golden crown of doom and despair",
         "move" : "golden doom blast",
         "consumable" : False,
@@ -245,12 +258,12 @@ raw_item_value = {
 
 shop_items = [
     raw_item_value["iron sword"],
+    raw_item_value["flaming scroll"],
     raw_item_value["health potion"],
     raw_item_value["greater health potion"],
     raw_item_value["gold crown of doom"],
     raw_item_value["sleeping bag"]
 ]
-
 
 #stat menus
 #----------------------------
@@ -292,7 +305,15 @@ def battle_stat_menu():
         else:
             turn_order_indicator = "    | "
 
-        print(turn_order_indicator + print_name)
+        status_effects_text = ""
+        if characters[allegiance][i]["status_effects"] != {}:
+            for ii in characters[allegiance][i]["status_effects"]:
+                status_amount = characters[allegiance][i]["status_effects"][ii]
+                if status_amount != 1:
+                    status_effects_text = status_effects_text + (" [" + ii.capitalize() + " x" +  str(status_amount) +  "]")
+                else:
+                    status_effects_text = status_effects_text + (" [" + ii.capitalize() + "]")
+        print(turn_order_indicator + print_name + status_effects_text)
     print("---------------------------")
 #----------------------------
 def inventory_items_to_moves():
@@ -534,6 +555,7 @@ def add_new_char_to_combat(char_id,char,level,is_ally):
 
         characters[allegiance][char_id]["max_health"] = int(enemy_stats[characters[allegiance][char_id]["name"]]["hp"]  + ((characters[allegiance][char_id]["level"] - 1) * enemy_stats[characters[allegiance][char_id]["name"]]["hp"] * 0.2))
         characters[allegiance][char_id]["health"] = characters[allegiance][char_id]["max_health"]
+        characters[allegiance][char_id]["status_effects"] = {}
 
 def turn_handler():
     global characters
@@ -574,38 +596,79 @@ def check_if_ally(char_to_check):
 
 def do_turn(char_doing_turn,is_ally):
     global battle_over
+    global turn_in_turn_order
 
     if is_ally == True:
         allegiance = "allied"
     else:
         allegiance = "enemys"
 
-    char_name = characters[allegiance][char_doing_turn]["name"]
+    do_status_effects(char_doing_turn,allegiance)
 
-    stat_menu(True)
-    battle_stat_menu()
+    if characters[allegiance][char_doing_turn]["health"] <= 0:
+        character_died(allegiance,char_doing_turn)
+        turn_in_turn_order -= 1
+        return
+    else:
+        stat_menu(True)
+        battle_stat_menu()
 
-    if is_ally:
-        if char_doing_turn == "player":
-            move_type = select_move_type()
-            if move_type == "run":
-                stat_menu(True)
-                battle_over = True
-                print("You ran")
-                return
+        if is_ally:
+            if char_doing_turn == "player":
+                move_type = select_move_type()
+                if move_type == "run":
+                    stat_menu(True)
+                    battle_over = True
+                    print("You ran")
+                    return
+            else:
+                target_of_attack = random.choice(list(characters["enemys"].keys()))
+                chosen_attack = random.choice(enemy_stats[characters["allied"][char_doing_turn]["name"]]["moves"])
+
+                do_attack(char_doing_turn,target_of_attack,chosen_attack)
+                
         else:
-            target_of_attack = random.choice(list(characters["enemys"].keys()))
-            chosen_attack = random.choice(enemy_stats[characters["allied"][char_doing_turn]["name"]]["moves"])
+            target_of_attack = random.choice(list(characters["allied"].keys()))
+            chosen_attack = random.choice(enemy_stats[characters["enemys"][char_doing_turn]["name"]]["moves"])
 
             do_attack(char_doing_turn,target_of_attack,chosen_attack)
-            
-    else:
-        target_of_attack = random.choice(list(characters["allied"].keys()))
-        chosen_attack = random.choice(enemy_stats[characters["enemys"][char_doing_turn]["name"]]["moves"])
+        return
 
-        do_attack(char_doing_turn,target_of_attack,chosen_attack)
+def do_status_effects(char,allegiance):
+    global characters
+
+    effects_to_remove = []
+    text_to_print = []
+    effects = False
+    if characters[allegiance][char]["status_effects"] != {}:
+        effects = True
+        for i in characters[allegiance][char]["status_effects"]:
+            status_amount = characters[allegiance][char]["status_effects"][i]
+            damage_to_take = 0
+            if i == "on fire":
+                damage_to_take = int(3 + status_amount * 0.5)
+
+            characters[allegiance][char]["health"] -= damage_to_take
+            characters[allegiance][char]["status_effects"][i] -= 1
+            if characters[allegiance][char]["status_effects"][i] == 0:
+                effects_to_remove.append(i)
+
+
+            if damage_to_take > 0:
+                text_to_print.append(characters[allegiance][char]["name"] + " took " + str(damage_to_take) + " damage from [" + i + "]")
+
+
+    if effects == True:
+        for i in effects_to_remove:
+            characters[allegiance][char]["status_effects"].pop(i)
+        stat_menu(True)
+        battle_stat_menu()
+
+        for i in text_to_print:
+            print(i)
+        input()
+
     return
-
 
 def choose_attack():
     stat_menu(True)
@@ -778,10 +841,16 @@ def do_attack(attacker,defender,chosen_attack):
     if attacker_name == characters["allied"]["player"]["name"]:
         base_damage = random.randint(move_stats["player"][chosen_attack][0],move_stats["player"][chosen_attack][1])
         damage_to_deal = int(base_damage * characters["allied"]["player"]["power_modifier"])
+
+        did_status_effect = give_status_effects(defender_allegiance,defender,move_stats["player"][chosen_attack][2])
+
     else:
         base_damage = random.randint(move_stats["enemys"][chosen_attack][0],move_stats["enemys"][chosen_attack][1])
         enemy_power_modifier = (attacker_level * 0.2) + 0.8
         damage_to_deal = int(base_damage * enemy_power_modifier)
+
+        did_status_effect = give_status_effects(defender_allegiance,defender,move_stats["enemys"][chosen_attack][2])
+
 
     #deals damage
     characters[defender_allegiance][defender]["health"] -= damage_to_deal
@@ -792,17 +861,37 @@ def do_attack(attacker,defender,chosen_attack):
     print(str(attacker_name).capitalize() + " attacked " + str(defender_name).capitalize() + " with " + str(chosen_attack).capitalize() + "!")
     print("")
     print(f"Dealt damage {damage_to_deal}!")
+    if did_status_effect[0]:
+        print(f"Applied {did_status_effect[2]} {did_status_effect[1]}")
 
     input()
 
     if characters[defender_allegiance][defender]["health"] <= 0:
-        character_died(defender_allegiance,defender,attacker_level)
+        character_died(defender_allegiance,defender)
     return
 
-def character_died(allegiance,char,level):
+def give_status_effects(allegiance,char,effect : list):
+    global characters
+    if effect != []:
+        effect_amount = random.choice(effect[1])
+        effect_type = effect[0]
+        if effect_amount > 0:
+            if effect[0] in characters[allegiance][char]["status_effects"]:
+                characters[allegiance][char]["status_effects"][effect[0]] += effect_amount
+                return [True,effect_type,effect_amount]
+            else:
+                characters[allegiance][char]["status_effects"][effect[0]] = effect_amount
+                return [True,effect_type,effect_amount]
+        
+    return [False]
+
+def character_died(allegiance,char):
     global exp_gain
     global gold_gain
     global inventory
+    global characters
+
+    level = characters[allegiance][char]["level"]
 
     if char == "player":
         player_died()

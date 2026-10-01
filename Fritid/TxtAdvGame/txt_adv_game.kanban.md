@@ -9,12 +9,23 @@
 #### add crafting (do after item drops)
 <!-- id: task-1790668092285-138 -->
 
-#### translate, item/enemy stat dics to YAML or JSON
-<!-- id: task-1790589983426-81 -->
-<!-- priority: low -->
-
 #### add AOE attacks
 <!-- id: task-1790853169554-81 -->
+
+#### on death effects for certain enemys (wolf pup)
+<!-- id: task-1790854578178-225 -->
+
+#### make allied summons not use enemy stat area
+<!-- id: task-1790854620044-298 -->
+<!-- priority: low -->
+
+#### more enemys variation
+<!-- id: task-1790854567344-202 -->
+<!-- priority: low -->
+
+#### translate, item,enemy etc dics to YAML or JSON
+<!-- id: task-1790589983426-81 -->
+<!-- priority: low -->
 
 ## In Progress
 

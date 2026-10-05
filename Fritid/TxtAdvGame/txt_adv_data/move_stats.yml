@@ -1,0 +1,61 @@
+player:
+    iron blade slash: 
+        - 5 #min damage
+        - 7 #max damage
+        - [] #effect
+    punch: 
+        - 2 #min damage
+        - 4 #max damage
+        - [] #effect
+    golden doom blast:
+        - 10 #min damage
+        - 30 #max damage
+        - [] #effect
+    dull slash: 
+        - 4 #min damage
+        - 6 #max damage
+        - [] #effect
+    lesser ball of flame:
+        - 1 #min damage
+        - 5 #max damage
+        - #effect
+            - on fire
+            - [0,1]
+
+    ball of flame: 
+        - 2 #min damage
+        - 6 #max damage
+        - #effect
+            - on fire
+            - [1,2]
+
+enemys: 
+    baby gnaw: 
+        - 1 #min damage
+        - 2 #max damage
+        - [] #effect
+
+    wolf bite: 
+        - 3 #min damage
+        - 4 #max damage
+        - [] #effect
+
+    prime alpha howl: 
+        - 2 #min damage
+        - 8 #max damage
+        - [] #effect
+
+    bear bite: 
+        - 4 #min damage
+        - 5 #max damage
+        - [] #effect
+
+    tree slam: 
+        - 6 #min damage
+        - 6 #max damage
+        - [] #effect
+
+    leaf beam: 
+        - 5 #min damage
+        - 10 #max damage
+        - [] #effect

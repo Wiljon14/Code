@@ -7,7 +7,15 @@
 
 # project log
 
-## 1/10/2026: upd: 0.1.7: --- (current)
+## 5/10/2026: upd: 0.1.8: ---
+### gameplay additions
+### gameplay fixes / changes
+### internal changes / bug fixes
+* converted "move_stats" and "raw_item_value" to yaml
+### work in progress
+* converting most dictionarys to yaml
+
+## 1/10/2026: upd: 0.1.7: ---
 ### gameplay additions
 * certain attacks can now deal status effects (lesser ball of flame for now)
 * new item - flaming scroll (buyable in shop, gives move "ball of flame")

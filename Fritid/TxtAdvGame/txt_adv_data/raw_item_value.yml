@@ -1,0 +1,103 @@
+#Weapons
+iron sword:
+    name: iron sword
+    value: 5
+    description: A well made sword of iron. Great at cutting down foes
+    move: iron blade slash
+    consumable: False
+
+rusty iron sword:
+    name: rusty iron sword
+    value: 1
+    description: It's a very old sword. Better than nothing, maybe?
+    move: dull slash
+    consumable: False
+
+old spellbook page:
+    name: old spellbook page
+    value: 1
+    description: A page from your old Spellbook from magic school. It is a bit damaged
+    move: lesser ball of flame
+    consumable: False
+
+flaming scroll: 
+    name: flaming scroll
+    value: 15
+    description: A scroll that holds a powerful magic spell. It is also on fire... somehow?
+    move: ball of flame
+    consumable: False
+
+gold crown of doom:
+    name: gold crown of doom
+    value: 999
+    description: A Golden crown of doom and despair
+    move: golden doom blast
+    consumable: False
+
+#Potions & consumables
+health potion:
+    name: health potion
+    value: 13
+    description: A potion that regenerates flesh & mind, even lost limbs
+    move: N/A
+    consumable: True
+    consumable_effect: 
+        - heal
+        - 15
+
+greater health potion:
+    name: greater health potion
+    value: 25
+    description: A greater potion that regenerates flesh & mind, even lost limbs
+    move: N/A
+    consumable: True
+    consumable_effect: 
+        - heal
+        - 30
+
+wolf whistle:
+    name: wolf whistle
+    value: 30
+    description: A small fragile bone from an alpha, summons a wolf in combat to aid you
+    move: N/A
+    consumable: True
+    consumable_effect: 
+        - summon
+        - wolf
+
+#Item Drops
+wolf tooth:
+    name: wolf tooth
+    value: 4
+    description: The tooth from the local wolf population, could be sold
+    move: N/A
+    consumable: False
+
+wolf pelt:
+    name: wolf pelt
+    value: 3
+    description: The pelt from the local wolf population, could be sold
+    move: N/A
+    consumable: False
+
+bear pelt: 
+    name: bear pelt
+    value: 6
+    description: The pelt from a mighty bear, could be sold
+    move: N/A
+    consumable: False
+
+wooden log: 
+    name: wooden log
+    value: 4
+    description: A log from a tree, could be sold
+    move: N/A
+    consumable: False
+
+#Artifacts
+sleeping bag: 
+    name: sleeping bag
+    value: 15
+    description: A potato bag with some wool in it, guess you could sleep in it. (Allows. you to sleep anywhere)
+    move: N/A
+    consumable: False

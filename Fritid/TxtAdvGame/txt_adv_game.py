@@ -1,4 +1,18 @@
 import random
+import pathlib
+from yaml import load, Loader
+
+
+
+parent_path = pathlib.Path(__file__).parent.resolve()
+data_path = parent_path / "txt_adv_data"
+
+def data_loader(name_of_data_file):
+    path_of_data = data_path / (name_of_data_file + ".yml")
+
+    with open(path_of_data ,"r") as f:
+        data = load(f, Loader=Loader)
+    return data
 
 characters = {
     "allied" : {
@@ -102,159 +116,10 @@ enemys_in_area = {
     } 
 }
 available_moves = [] #make it so it changes depending on items in inventory :)
-move_stats = {
-    "player" : {
-        "iron blade slash" : [
-            5, 7, []
-        ],
-        "punch" : [
-            2, 4, []
-        ],
-        "golden doom blast" : [
-            10, 30, []
-        ],
-        "dull slash" : [
-            4, 6, []
-        ],
-        "lesser ball of flame" : [
-            1, 5, ["on fire", range(0,2)]
-        ],
-        "ball of flame" : [
-            2, 6, ["on fire", range(1,3)]
-        ],
-    },
-    "enemys" : {
-        "baby gnaw" : [
-            1, 2, []
-        ],
-        "wolf bite" : [
-            3, 4, []
-        ],
-        "prime alpha howl" : [
-            2, 8, []
-        ],
-        "bear bite" : [
-            4, 5, []
-        ],
-        "tree slam" : [
-            6, 6, []
-        ],
-        "leaf beam" : [
-            5, 10, []
-        ]
-    }
-}
 
-inventory = []
-raw_item_value = {
-    #Weapons
-    "iron sword" : {
-        "name" : "iron sword",
-        "value" : 5,
-        "description" : "A well made sword of iron. Great at cutting down foes.",
-        "move" : "iron blade slash",
-        "consumable" : False,
-    },
+move_stats = data_loader("move_stats")
 
-    "rusty iron sword" : {
-        "name" : "rusty iron sword",
-        "value" : 1,
-        "description" : "It's a very old sword. Better than nothing, maybe?",
-        "move" : "dull slash",
-        "consumable" : False,
-
-    },
-
-    "old spellbook page" : {
-        "name" : "old spellbook page",
-        "value" : 1,
-        "description" : "A page from your old Spellbook from magic school. It is a bit damaged",
-        "move" : "lesser ball of flame",
-        "consumable" : False,
-    },
-
-    "flaming scroll" : {
-        "name" : "flaming scroll",
-        "value" : 15,
-        "description" : "A scroll that holds a powerful magic spell. It is also on fire... somehow?",
-        "move" : "ball of flame",
-        "consumable" : False,
-    },
-
-    "gold crown of doom" : {
-        "name" : "gold crown of doom",
-        "value" : 999,
-        "description" : "A Golden crown of doom and despair",
-        "move" : "golden doom blast",
-        "consumable" : False,
-    },
-
-    #Potions & consumables
-    "health potion" : {
-        "name" : "health potion",
-        "value" : 13,
-        "description" : "A potion that regenerates flesh & mind, even lost limbs",
-        "move" : "N/A",
-        "consumable" : True,
-        "consumable_effect" : ["heal",15],
-    },
-    "greater health potion" : {
-        "name" : "greater health potion",
-        "value" : 25,
-        "description" : "A greater potion that regenerates flesh & mind, even lost limbs",
-        "move" : "N/A",
-        "consumable" : True,
-        "consumable_effect" : ["heal",30],
-    },
-    "wolf whistle" : {
-        "name" : "wolf whistle",
-        "value" : 30,
-        "description" : "A small fragile bone from an alpha, summons a wolf in combat to aid you",
-        "move" : "N/A",
-        "consumable" : True,
-        "consumable_effect" : ["summon","wolf"],
-    },
-
-    #Item Drops
-    "wolf tooth" : {
-        "name" : "wolf tooth",
-        "value" : 4,
-        "description" : "The tooth from the local wolf population, could be sold",
-        "move" : "N/A",
-        "consumable" : False,
-    },
-    "wolf pelt" : {
-        "name" : "wolf pelt",
-        "value" : 3,
-        "description" : "The pelt from the local wolf population, could be sold",
-        "move" : "N/A",
-        "consumable" : False,
-    },
-    "bear pelt" : {
-        "name" : "bear pelt",
-        "value" : 6,
-        "description" : "The pelt from a mighty bear, could be sold",
-        "move" : "N/A",
-        "consumable" : False,
-    },
-    "wooden log" : {
-        "name" : "wooden log",
-        "value" : 4,
-        "description" : "A log from a tree, could be sold",
-        "move" : "N/A",
-        "consumable" : False,
-    },
-
-    #Artifacts
-    "sleeping bag" : {
-        "name" : "sleeping bag",
-        "value" : 15,
-        "description" : "A potato bag with some wool in it, guess you could sleep in it. (Allows. you to sleep anywhere)",
-        "move" : "N/A",
-        "consumable" : False,
-    },
-    
-}
+raw_item_value = data_loader("raw_item_value")
 
 shop_items = [
     raw_item_value["iron sword"],
@@ -264,6 +129,8 @@ shop_items = [
     raw_item_value["gold crown of doom"],
     raw_item_value["sleeping bag"]
 ]
+
+inventory = []
 
 #stat menus
 #----------------------------

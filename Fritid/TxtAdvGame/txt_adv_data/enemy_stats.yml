@@ -1,0 +1,65 @@
+wolf pup:
+    hp: 8
+    exp: 10
+    gold: 3
+    moves: 
+        - baby gnaw
+    drops: 
+        - 
+            - [0,1]
+            - wolf pelt
+
+wolf: 
+    hp: 15
+    exp: 12
+    gold: 5
+    moves: 
+        - wolf bite
+    drops:
+        -
+            - [0,1]
+            - wolf pelt
+        - 
+            - [0,1]
+            - wolf tooth
+
+alpha wolf: 
+    hp: 18
+    exp: 15
+    gold: 7
+    moves: 
+        - wolf bite
+        - prime alpha howl
+    drops: 
+        - 
+            - [0,1,2]
+            - wolf pelt
+        - 
+            - [0,1,2]
+            - wolf tooth
+        - 
+            - [0,1]
+            - wolf whistle
+
+bear: 
+    hp: 22
+    exp: 20
+    gold: 8
+    moves: 
+        - bear bite
+    drops: 
+        -
+            - [0,1,2]
+            - bear pelt
+
+tree beast: 
+    hp: 28
+    exp: 30
+    gold: 10
+    moves: 
+        - tree slam
+        - leaf beam
+    drops: 
+        - 
+            - [1,2,3]
+            - wooden log

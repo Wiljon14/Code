@@ -1,0 +1,9 @@
+mage:
+    power_multi: 0.15 #power gain per level
+    health_multi: 1.0 #1.0 is standard
+    starting_gear: []
+
+knight:
+    power_multi: 0.1 #power gain per level
+    health_multi: 1.2 #1.0 is standard
+    starting_gear: []

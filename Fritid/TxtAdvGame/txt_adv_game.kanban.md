@@ -25,10 +25,6 @@
 
 ## In Progress
 
-#### translate, item,enemy etc dics to YAML or JSON
-<!-- id: task-1790589983426-81 -->
-<!-- priority: low -->
-
 ## Done
 
 #### fix small strutctur things (eg. (Y/N) and other weird stuff)
@@ -57,4 +53,8 @@ put both players and enemys inside of a big dictonary
 
 #### status effects for combat
 <!-- id: task-1789987094820-45 -->
+<!-- priority: low -->
+
+#### translate, item,enemy etc dics to YAML or JSON
+<!-- id: task-1790589983426-81 -->
 <!-- priority: low -->

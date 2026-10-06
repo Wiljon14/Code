@@ -2,12 +2,11 @@ import random
 import pathlib
 from yaml import load, Loader
 
-
-
-parent_path = pathlib.Path(__file__).parent.resolve()
-data_path = parent_path / "txt_adv_data"
-
+#Loads data from txt_adv_data folder. Insert the name of the file, minus file extension. Returns content of file.
 def data_loader(name_of_data_file):
+    parent_path = pathlib.Path(__file__).parent.resolve()
+    data_path = parent_path / "txt_adv_data"
+
     path_of_data = data_path / (name_of_data_file + ".yml")
 
     with open(path_of_data ,"r") as f:
@@ -50,75 +49,14 @@ turn_in_turn_order = 0
 battle_over = True
 
 char_choice_class = ["mage","knight"]
-char_class_stats = {
-    "mage" : {
-        "power_multi" : 0.15, #per level
-        "health_multi" : 1, 
-        "starting_gear" : [],
-    },
-    "knight" : {
-        "power_multi" : 0.1, #per level
-        "health_multi" : 1.2, 
-        "starting_gear" : [],
 
-    },
-}
 area = "forest"
 areas = ["home", "store", "forest"]
-enemy_stats = {
-    "wolf pup" : {
-        "hp" : 8,
-        "exp" : 10,
-        "gold" : 3,
-        "moves" : ["baby gnaw"],
-        "drops" : [[range(2),"wolf pelt"]]
-    },
 
-    "wolf" : {
-        "hp" : 15,
-        "exp" : 12,
-        "gold" : 5,
-        "moves" : ["wolf bite"],
-        "drops" : [[range(2),"wolf pelt"],[range(2),"wolf tooth"]]
-    },
-
-    "alpha wolf" : {
-        "hp" : 18,
-        "exp" : 15,
-        "gold" : 7,
-        "moves" : ["wolf bite","prime alpha howl"],
-        "drops" : [[range(3),"wolf pelt"],[range(3),"wolf tooth"],[range(1,2),"wolf whistle"]]
-    },
-
-    "bear" : {
-        "hp" : 22,
-        "exp" : 20,
-        "gold" : 8,
-        "moves" : ["bear bite"],
-        "drops" : [[range(3),"bear pelt"]]
-    },
-
-    "tree beast" : {
-        "hp" : 28,
-        "exp" : 30,
-        "gold" : 10,
-        "moves" : ["tree slam","leaf beam"],
-        "drops" : [[range(4),"wooden log"]]
-    },
-}
-
-enemys_in_area = {
-    "forest" : {
-        1 : ["wolf pup"],
-        2 : ["wolf"],
-        3 : ["bear","alpha wolf"],
-        5 : ["tree beast"],
-    } 
-}
-available_moves = [] #make it so it changes depending on items in inventory :)
-
+char_class_stats = data_loader("char_class_stats")
+enemys_in_area = data_loader("enemys_in_area")
+enemy_stats = data_loader("enemy_stats")
 move_stats = data_loader("move_stats")
-
 raw_item_value = data_loader("raw_item_value")
 
 shop_items = [
@@ -130,7 +68,9 @@ shop_items = [
     raw_item_value["sleeping bag"]
 ]
 
+
 inventory = []
+available_moves = []
 
 #stat menus
 #----------------------------
@@ -868,6 +808,3 @@ characters["allied"]["player"]["health"] = characters["allied"]["player"]["max_h
 main_screen("")
 while True:
     main_screen(input())
-
-
-

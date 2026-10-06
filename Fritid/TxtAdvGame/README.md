@@ -9,9 +9,12 @@
 ## 6/10/2026: upd: 0.1.9: ---
 ### gameplay additions
 ### gameplay fixes / changes
+* inventory and selling menu is prettier and more usable
 ### internal changes / bug fixes
+* finally changed starting equipment stuff to be more flexible and usable
 * converted rest of the dictionarys to yaml
 ### work in progress
+* adding crafting
 
 ## 5/10/2026: upd: 0.1.8: ---
 ### gameplay additions

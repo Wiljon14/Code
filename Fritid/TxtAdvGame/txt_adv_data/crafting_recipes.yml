@@ -1,0 +1,4 @@
+greater health potion:
+    -
+        - health potion # material
+        - 2 # amount

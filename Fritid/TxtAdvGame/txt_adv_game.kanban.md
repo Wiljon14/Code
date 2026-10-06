@@ -6,14 +6,14 @@
 
 ## To Do
 
-#### add crafting (do after item drops)
-<!-- id: task-1790668092285-138 -->
-
 #### add AOE attacks
 <!-- id: task-1790853169554-81 -->
 
 #### on death effects for certain enemys (wolf pup)
 <!-- id: task-1790854578178-225 -->
+
+#### more attack effects
+<!-- id: task-1791276072869-507 -->
 
 #### make allied summons not use enemy stat area
 <!-- id: task-1790854620044-298 -->
@@ -24,6 +24,12 @@
 <!-- priority: low -->
 
 ## In Progress
+
+#### add crafting
+<!-- id: task-1790668092285-138 -->
+- [x] add recipe dictonary
+- [ ] create crafting menu
+- [ ] allow crafting
 
 ## Done
 
@@ -58,3 +64,7 @@ put both players and enemys inside of a big dictonary
 #### translate, item,enemy etc dics to YAML or JSON
 <!-- id: task-1790589983426-81 -->
 <!-- priority: low -->
+
+#### make the inventory prettier to look at
+<!-- id: task-1791276286935-648 -->
+<!-- workload: easy -->

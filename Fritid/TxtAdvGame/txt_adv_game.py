@@ -39,7 +39,6 @@ characters = {
         
     }
 }
-characters["allied"]["player"]["class"]
 #battle variables
 exp_gain = 0
 gold_gain = 0
@@ -58,6 +57,7 @@ enemys_in_area = data_loader("enemys_in_area")
 enemy_stats = data_loader("enemy_stats")
 move_stats = data_loader("move_stats")
 raw_item_value = data_loader("raw_item_value")
+crafting_recipes = data_loader("crafting_recipes")
 
 shop_items = [
     raw_item_value["iron sword"],
@@ -71,8 +71,9 @@ shop_items = [
 
 inventory = []
 available_moves = []
+known_crafting_recipes = []
 
-#stat menus
+#stat/other menus
 #----------------------------
 def stat_menu(clear):
     if clear == True:
@@ -122,6 +123,34 @@ def battle_stat_menu():
                     status_effects_text = status_effects_text + (" [" + ii.capitalize() + "]")
         print(turn_order_indicator + print_name + status_effects_text)
     print("---------------------------")
+
+def show_items_in_inventory(show_price):
+    temp_inv = []
+    temp_inv += inventory
+    price = ""
+    
+
+    while temp_inv != []:
+        item_amount = temp_inv.count(temp_inv[0])
+        item_name = temp_inv[0]
+
+        if show_price == True:
+            price = ": With sell value of : " + str(raw_item_value[item_name]["value"] - 1) + " Gold"
+
+        print(str(item_amount) + "x " + item_name + price)
+        while item_name in temp_inv:
+            temp_inv.remove(item_name)
+    return
+
+def availble_crafting_recipes():
+    shown_recipes = []
+    for i in crafting_recipes:
+        # this is ment for craftig fix ts please
+        for ii in crafting_recipes[i]:
+            print(ii[0])
+            print(ii[1])
+    return
+
 #----------------------------
 def inventory_items_to_moves():
     global available_moves
@@ -174,9 +203,11 @@ def main_screen(chosen):
 #----------------------------
 def help():
         print("")
-        print("Go to area - goes to different area if possible")
+        print("Go to area - Goes to different area if possible")
         print("Inventory - See inventory")
+        print("Craft - Create new items using other items")
         print("Stats - See additional stats")
+        print("")
         print("Location specific stuff. V")
         if area == "store":
             print("  Shop - See what the store has")
@@ -189,7 +220,9 @@ def help():
         main_screen(input())
 
 def check_inventory():
-    print(inventory)
+    
+    show_items_in_inventory(False)
+
     if input("Look closer at an item? (Y/N) ").lower() == "y":
         item_looked_closer_at = input("Item Name: ").lower()
         if item_looked_closer_at in inventory:
@@ -200,6 +233,12 @@ def check_inventory():
             main_screen("")
     else:
         main_screen("")
+
+def craft():
+    print("Items owned. V")
+    show_items_in_inventory(False)
+    print("Available recipes. V")
+    availble_crafting_recipes()
 
 def check_stats():
     print("Power modifier: " + str(characters["allied"]["player"]["power_modifier"]))
@@ -288,25 +327,31 @@ def sell():
     if area == "store":
         print("")
         if inventory != []:
-            print("Items in inventory. V")
-            i_num = 0
-            for i in inventory:
-                i_num += 1
-                i2 = raw_item_value[i]
-                print("ID: " + str(i_num) + " | " + str(i) + ": With sell value of : " + str(i2["value"] - 1) + " Gold")
+            show_items_in_inventory(True)
 
-            sold_item_ID = input("ID of item to sell: ")
-            if sold_item_ID.isdigit():
-                sold_item_ID = int(sold_item_ID)
-                if sold_item_ID <= i_num and sold_item_ID > 0:
-                    sold_item_ID -= 1
-                    sell_value = raw_item_value[inventory[sold_item_ID]]["value"] - 1
+            sold_item_ID = input("Item to sell: ")
+            if sold_item_ID in inventory:
+                amount_to_sell = input("How many do you want to sell?")
+                if amount_to_sell.isdigit():
+                    amount_to_sell = int(amount_to_sell)
+                    if amount_to_sell <= 0:
+                        return
+                    elif amount_to_sell > inventory.count(sold_item_ID):
+                        amount_to_sell = inventory.count(sold_item_ID)
 
-                    print("Sold Item: " + inventory[sold_item_ID] + " for " + str(sell_value) + " Gold")
+                    sell_value = (raw_item_value[sold_item_ID]["value"] - 1) * amount_to_sell
+    
+                    print("Sold Item(s): " + sold_item_ID + " for " + str(sell_value) + " Gold")
                     characters["allied"]["player"]["gold"] += sell_value
                     print("Current Gold: " + str(characters["allied"]["player"]["gold"]))
-                    del inventory[sold_item_ID]
+                    for i in range(amount_to_sell + 1):
+                        inventory.remove(sold_item_ID)
                     input("")
+
+                else:
+                    return
+
+                
 
         else:
             print("Nothing to sell...")
@@ -340,6 +385,7 @@ commands = {
     "help" : help,
     "go to area" : go_to_area,
     "inventory" : check_inventory,
+    "craft" : craft,
     "stats" : check_stats,
     #area specific
     "battle" : start_battle,
@@ -795,11 +841,8 @@ def class_select(redo):
         class_select(True)
 class_select(False)
 
-if characters["allied"]["player"]["class"] == "knight":
-    inventory.append("rusty iron sword")
-if characters["allied"]["player"]["class"] == "mage":
-    inventory.append("old spellbook page")
-
+for i in char_class_stats[characters["allied"]["player"]["class"]]["starting_gear"]:
+    inventory.append(i)
 
 characters["allied"]["player"]["gold"] = 15
 characters["allied"]["player"]["max_health"] = characters["allied"]["player"]["starting_max_health"]

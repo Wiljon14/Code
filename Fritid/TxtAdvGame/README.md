@@ -8,8 +8,9 @@
 # project log
 ## 7/10/2026: upd: 0.1.10: ---
 ### gameplay additions
-### gameplay fixes / changes
 * added crafting
+* added crafting recipe for "greater health potion"
+### gameplay fixes / changes
 ### internal changes / bug fixes
 * fixed selling more items than inputed
 ### work in progress

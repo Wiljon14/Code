@@ -25,12 +25,6 @@
 
 ## In Progress
 
-#### add crafting
-<!-- id: task-1790668092285-138 -->
-- [x] add recipe dictonary
-- [ ] create crafting menu
-- [ ] allow crafting
-
 ## Done
 
 #### fix small strutctur things (eg. (Y/N) and other weird stuff)
@@ -44,6 +38,12 @@
 <!-- id: task-1790237439979-106 -->
 put both players and enemys inside of a big dictonary
 <!-- workload: hard -->
+
+#### add crafting
+<!-- id: task-1790668092285-138 -->
+- [x] add recipe dictonary
+- [x] create crafting menu
+- [x] allow crafting
 
 #### fix, run in battle
 <!-- id: task-1790589047433-25 -->

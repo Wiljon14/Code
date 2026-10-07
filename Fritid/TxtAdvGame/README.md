@@ -6,6 +6,14 @@
 ## After beating a few enemys you should go to the shop, using "Go to area" than "Shop". In the shop use "Browse" to look in the shop or "Sell" to sell stuff"
 
 # project log
+## 7/10/2026: upd: 0.1.10: ---
+### gameplay additions
+### gameplay fixes / changes
+* added crafting
+### internal changes / bug fixes
+* fixed selling more items than inputed
+### work in progress
+
 ## 6/10/2026: upd: 0.1.9: ---
 ### gameplay additions
 ### gameplay fixes / changes

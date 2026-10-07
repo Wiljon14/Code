@@ -143,14 +143,62 @@ def show_items_in_inventory(show_price):
     return
 
 def availble_crafting_recipes():
+    global known_crafting_recipes
     shown_recipes = []
     for i in crafting_recipes:
-        # this is ment for craftig fix ts please
+        recipe_requires = 0
+        recipe_fulfilled = 0
         for ii in crafting_recipes[i]:
-            print(ii[0])
-            print(ii[1])
-    return
+            recipe_requires += ii[1]
+            if inventory.count(ii[0]) >= ii[1]:
+                shown_recipes.append(i)
+                if i not in known_crafting_recipes:
+                    known_crafting_recipes.append(i)
+                recipe_fulfilled += ii[1]
+                print(f"{i}: ({recipe_fulfilled}/{recipe_requires})")
 
+            else:
+                recipe_fulfilled += inventory.count(ii[0])
+
+
+    for i in known_crafting_recipes:
+        if i not in shown_recipes:
+            recipe_requires = 0
+            recipe_fulfilled = 0
+            for ii in crafting_recipes[i]:
+                recipe_requires += ii[1]
+                if inventory.count(ii[0]) >= ii[1]:
+                    recipe_fulfilled += ii[1]
+                else:
+                    recipe_fulfilled += inventory.count(ii[0])
+
+            print(f"{i}: ({recipe_fulfilled}/{recipe_requires})")
+    
+    return shown_recipes
+
+def crafting_menu(item_to_craft):
+    items_has = 0
+    items_need = 0
+    recipe = crafting_recipes[item_to_craft]
+    stat_menu(True)
+    print(item_to_craft)
+    for i in recipe:
+        amount_in_inv = inventory.count(i[0])
+
+        items_need += 1
+        print(f"{i[0]} ({amount_in_inv}/{i[1]})")
+
+        if amount_in_inv >= i[1]:
+            items_has += 1
+
+    if items_has == items_need:
+        if input("Craft (Y/N) ").lower() == "y":
+            for i in recipe:
+                for ii in range(i[1]):
+                    inventory.remove(i[0])
+            inventory.append(item_to_craft)
+            print(f"Crafted {item_to_craft}")
+    return
 #----------------------------
 def inventory_items_to_moves():
     global available_moves
@@ -237,9 +285,16 @@ def check_inventory():
 def craft():
     print("Items owned. V")
     show_items_in_inventory(False)
+    print("")
     print("Available recipes. V")
-    availble_crafting_recipes()
+    recipes = availble_crafting_recipes()
+    if recipes == []:
+        print("No available recipes, try again later")
 
+    craft_item_input = input("recipe to look at: ")
+    if craft_item_input in recipes:
+        crafting_menu(craft_item_input)
+    return
 def check_stats():
     print("Power modifier: " + str(characters["allied"]["player"]["power_modifier"]))
     print("")
@@ -331,7 +386,7 @@ def sell():
 
             sold_item_ID = input("Item to sell: ")
             if sold_item_ID in inventory:
-                amount_to_sell = input("How many do you want to sell?")
+                amount_to_sell = input("How many do you want to sell? ")
                 if amount_to_sell.isdigit():
                     amount_to_sell = int(amount_to_sell)
                     if amount_to_sell <= 0:
@@ -344,7 +399,7 @@ def sell():
                     print("Sold Item(s): " + sold_item_ID + " for " + str(sell_value) + " Gold")
                     characters["allied"]["player"]["gold"] += sell_value
                     print("Current Gold: " + str(characters["allied"]["player"]["gold"]))
-                    for i in range(amount_to_sell + 1):
+                    for i in range(amount_to_sell):
                         inventory.remove(sold_item_ID)
                     input("")
 

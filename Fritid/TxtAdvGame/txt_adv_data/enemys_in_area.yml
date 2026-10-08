@@ -8,3 +8,9 @@ forest:
         - alpha wolf
     5: 
         - tree beast
+elemental fields:
+    2:
+        - elemental of heat
+        - elemental of rivers
+        - elemental of soil
+        - elemental of gusts

@@ -2,7 +2,9 @@ player:
     iron blade slash: 
         - 5 #min damage
         - 7 #max damage
-        - [] #effect
+        - #effect
+            - bleeding
+            - [0,1]
     punch: 
         - 2 #min damage
         - 4 #max damage
@@ -11,6 +13,7 @@ player:
         - 10 #min damage
         - 30 #max damage
         - [] #effect
+
     dull slash: 
         - 4 #min damage
         - 6 #max damage

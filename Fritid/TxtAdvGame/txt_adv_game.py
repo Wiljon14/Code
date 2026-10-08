@@ -50,7 +50,7 @@ battle_over = True
 char_choice_class = ["mage","knight"]
 
 area = "forest"
-areas = ["home", "store", "forest"]
+areas = ["home", "store", "forest", "elemental fields"]
 
 char_class_stats = data_loader("char_class_stats")
 enemys_in_area = data_loader("enemys_in_area")
@@ -263,7 +263,7 @@ def help():
         if area == "store":
             print("  Shop - See what the store has")
             print("  Sell - Sell stuff from your inventory")
-        if area == "forest":
+        if area in enemys_in_area.keys():
             print("  Battle - Starts a battle against a random enemy")
         if area == "home":
             print("  Sleep - Take a nap and heal to full HP")
@@ -313,7 +313,7 @@ def go_to_area():
         main_screen("")
 
 def start_battle():
-    if area == "forest":
+    if area in enemys_in_area.keys():
         global characters
         global turn
         global battle_over
@@ -329,22 +329,26 @@ def start_battle():
         turn = 0
 
         enemy_id = -1
+        lowest_enemy_strength = min(enemys_in_area[area].keys())
+        if lowest_enemy_strength > dif_num:
+            print("you are not strong enough to fight here")
+            main_screen(input())
+        else:
+            while dif_num >= lowest_enemy_strength:
+                enemy_id += 1
+                valid_power = False
+                while valid_power == False:
+                    power_of_enemy = random.choice(list(enemys_in_area[area].keys()))
+                    if power_of_enemy <= dif_num:
+                        dif_num -= power_of_enemy
+                        valid_power = True
 
-        while dif_num >= 1:
-            enemy_id += 1
-            valid_power = False
-            while valid_power == False:
-                power_of_enemy = random.choice(list(enemys_in_area[area].keys()))
-                if power_of_enemy <= dif_num:
-                    dif_num -= power_of_enemy
-                    valid_power = True
+                enemy = random.choice(enemys_in_area[area][power_of_enemy])
 
-            enemy = random.choice(enemys_in_area[area][power_of_enemy])
+                add_new_char_to_combat(enemy_id,enemy,random.randrange(power_of_enemy,power_of_enemy + 3),False)
 
-            add_new_char_to_combat(enemy_id,enemy,random.randrange(power_of_enemy,power_of_enemy + 3),False)
-
-        battle_over = False
-        turn_handler()
+                battle_over = False
+                turn_handler()
     else:
         print("No enemys around")
         main_screen(input())

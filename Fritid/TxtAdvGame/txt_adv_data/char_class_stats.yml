@@ -4,7 +4,6 @@ mage:
     starting_gear: 
         - old spellbook page
         - health potion
-        - health potion
 
 knight:
     power_multi: 0.1 #power gain per level

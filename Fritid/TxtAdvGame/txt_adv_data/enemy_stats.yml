@@ -8,6 +8,9 @@ wolf pup:
         - 
             - [0,1]
             - wolf pelt
+        -
+            - [1]
+            - wolf tooth
 
 wolf: 
     hp: 15
@@ -20,7 +23,7 @@ wolf:
             - [0,1]
             - wolf pelt
         - 
-            - [0,1]
+            - [1]
             - wolf tooth
 
 alpha wolf: 
@@ -63,3 +66,52 @@ tree beast:
         - 
             - [1,2,3]
             - wooden log
+
+
+elemental of heat:
+    hp: 15
+    exp: 15
+    gold: 5
+    moves: 
+        - flame strike
+        - burning vortex
+    drops: 
+        - 
+            - [1]
+            - flame crystal
+
+elemental of rivers:
+    hp: 14
+    exp: 12
+    gold: 5
+    moves: 
+        - water strike
+        - minor flood
+    drops: 
+        - 
+            - [1]
+            - water crystal
+
+elemental of soil:
+    hp: 17
+    exp: 14
+    gold: 5
+    moves: 
+        - earth strike
+        - growing plant
+    drops: 
+        - 
+            - [1]
+            - earth crystal
+
+elemental of gusts:
+    hp: 11
+    exp: 11
+    gold: 5
+    moves: 
+        - air strike
+        - blown away
+    drops: 
+        - 
+            - [1]
+            - air crystal

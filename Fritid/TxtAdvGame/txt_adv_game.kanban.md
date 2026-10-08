@@ -19,11 +19,11 @@
 <!-- id: task-1790854620044-298 -->
 <!-- priority: low -->
 
+## In Progress
+
 #### more enemys variation
 <!-- id: task-1790854567344-202 -->
 <!-- priority: low -->
-
-## In Progress
 
 ## Done
 

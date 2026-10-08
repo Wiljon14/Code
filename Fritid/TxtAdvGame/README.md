@@ -2,18 +2,23 @@
 ## A classic rpg with different classes and mosters. Level up to get stronger and beat Timmy the Evil Overlord of Darkness and Dispair (TM). (Not added just yet)
 
 # tips for new players
-## Use the command "Go to area" than choose "Forest". This puts you in the forest, after that use "Battle" to start a battle.
-## After beating a few enemys you should go to the shop, using "Go to area" than "Shop". In the shop use "Browse" to look in the shop or "Sell" to sell stuff"
+## Use the command "Go to area" than choose "Forest". This puts you in the forest, after that use "Battle" to start a battle. 
+## After beating a few enemys you should go to the shop, using "Go to area" than "Store". In the store use "Shop" to look in the shop or "Sell" to sell stuff"
 
 # project log
 ## 8/10/2026: upd: 0.1.11: ---
 ### gameplay additions
 * added bleed effect (replaced temp burn on wolf tooth dagger)
 * new item - serrated wolf sager
+* new area - elemental fields
 ### gameplay fixes / changes
 ### internal changes / bug fixes
 * fixed crash when last enemy dies to status effect
 ### work in progress
+* new enemys to elemental fields
+* do not touch the elemental fields!!!!
+* they are not working!
+* do not do touch damn it!
 
 ## 7/10/2026: upd: 0.1.10: ---
 ### gameplay additions

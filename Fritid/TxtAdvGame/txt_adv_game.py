@@ -567,7 +567,7 @@ def do_status_effects(char,allegiance):
             if i == "on fire":
                 damage_to_take = int(3 + status_amount * 0.5)
             if i == "bleeding":
-                damage_to_take = int(1 + (0.05 * characters[allegiance][char]["max_health"]))
+                damage_to_take = int(1 + ((0.04 + 0.01 * status_amount) * characters[allegiance][char]["max_health"]))
 
             characters[allegiance][char]["health"] -= damage_to_take
             characters[allegiance][char]["status_effects"][i] -= 1

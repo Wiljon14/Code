@@ -21,6 +21,12 @@ player:
         - #effect
             - bleeding
             - [0,1,2]
+    bloody wolf slice: 
+        - 6 #min damage
+        - 9 #max damage
+        - #effect
+            - bleeding
+            - [1,2,3]
     lesser ball of flame:
         - 1 #min damage
         - 5 #max damage

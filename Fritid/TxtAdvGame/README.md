@@ -9,6 +9,7 @@
 ## 8/10/2026: upd: 0.1.11: ---
 ### gameplay additions
 * added bleed effect (replaced temp burn on wolf tooth dagger)
+* new item - serrated wolf sager
 ### gameplay fixes / changes
 ### internal changes / bug fixes
 * fixed crash when last enemy dies to status effect

@@ -16,8 +16,15 @@ rusty iron sword:
 wolf tooth dagger:
     name: wolf tooth dagger
     value: 10
-    description: A sword made of the teeth from wolfs
+    description: A dagger made of the teeth from wolfs
     move: tooth dagger slash
+    consumable: False
+
+serrated wolf saber:
+    name: serrated wolf saber
+    value: 20
+    description: A serrated sword made of the teeth from wolfs, probebly a war crime in geneva.
+    move: bloody wolf slice
     consumable: False
 
 old spellbook page:

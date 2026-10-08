@@ -9,3 +9,17 @@ wolf tooth dagger:
     -
         - wolf pelt # material
         - 1 # amount
+
+serrated wolf saber:
+    -
+        - wolf tooth # material
+        - 4 # amount
+    -
+        - wolf pelt # material
+        - 2 # amount
+    -
+        - wooden log # material
+        - 1 # amount
+    -
+        - wolf tooth dagger # material
+        - 1 # amount

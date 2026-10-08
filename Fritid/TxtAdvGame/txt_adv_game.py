@@ -151,14 +151,16 @@ def availble_crafting_recipes():
         for ii in crafting_recipes[i]:
             recipe_requires += ii[1]
             if inventory.count(ii[0]) >= ii[1]:
-                shown_recipes.append(i)
-                if i not in known_crafting_recipes:
-                    known_crafting_recipes.append(i)
-                recipe_fulfilled += ii[1]
-                print(f"{i}: ({recipe_fulfilled}/{recipe_requires})")
-
+                    recipe_fulfilled += ii[1]
             else:
                 recipe_fulfilled += inventory.count(ii[0])
+
+        if recipe_requires == recipe_fulfilled:
+            shown_recipes.append(i)
+            if i not in known_crafting_recipes:
+                known_crafting_recipes.append(i)
+
+            print(f"{i}: ({recipe_fulfilled}/{recipe_requires})")
 
 
     for i in known_crafting_recipes:
@@ -173,6 +175,7 @@ def availble_crafting_recipes():
                     recipe_fulfilled += inventory.count(ii[0])
 
             print(f"{i}: ({recipe_fulfilled}/{recipe_requires})")
+            shown_recipes.append(i)
     
     return shown_recipes
 
@@ -295,6 +298,7 @@ def craft():
     if craft_item_input in recipes:
         crafting_menu(craft_item_input)
     return
+
 def check_stats():
     print("Power modifier: " + str(characters["allied"]["player"]["power_modifier"]))
     print("")
@@ -435,6 +439,10 @@ def sleep():
         print("No where to sleep around here")
         input("")
         main_screen("")
+
+def cheat_item_give():
+    global inventory
+    inventory.append(input("Give item: ").lower())
 #----------------------------
 commands = {
     "help" : help,
@@ -447,6 +455,8 @@ commands = {
     "shop" : shop,
     "sell" : sell,
     "sleep" : sleep,
+    #cheats
+    "give" : cheat_item_give,
     }
 #Battle stuff
                         #char_id, the id that the new thing is going to have. make sure this is not wrong EVER fricks stuff up
@@ -487,10 +497,9 @@ def turn_handler():
 
         do_turn(turn_char,check_if_ally(turn_char))
 
-        if turn_in_turn_order == len(turn_order) - 1:
+        if turn_in_turn_order >= len(turn_order) - 1:
             turn_in_turn_order = 0
             turn += 1
-
         else:
             turn_in_turn_order += 1
 
@@ -505,6 +514,7 @@ def check_if_ally(char_to_check):
 def do_turn(char_doing_turn,is_ally):
     global battle_over
     global turn_in_turn_order
+    global turn_order
 
     if is_ally == True:
         allegiance = "allied"
@@ -516,6 +526,7 @@ def do_turn(char_doing_turn,is_ally):
     if characters[allegiance][char_doing_turn]["health"] <= 0:
         character_died(allegiance,char_doing_turn)
         turn_in_turn_order -= 1
+        turn_order.remove(char_doing_turn)
         return
     else:
         stat_menu(True)
@@ -555,6 +566,8 @@ def do_status_effects(char,allegiance):
             damage_to_take = 0
             if i == "on fire":
                 damage_to_take = int(3 + status_amount * 0.5)
+            if i == "bleeding":
+                damage_to_take = int(1 + (0.05 * characters[allegiance][char]["max_health"]))
 
             characters[allegiance][char]["health"] -= damage_to_take
             characters[allegiance][char]["status_effects"][i] -= 1

@@ -15,13 +15,18 @@ player:
         - 4 #min damage
         - 6 #max damage
         - [] #effect
+    tooth dagger slash: 
+        - 4 #min damage
+        - 8 #max damage
+        - #effect
+            - bleeding
+            - [0,1,2]
     lesser ball of flame:
         - 1 #min damage
         - 5 #max damage
         - #effect
             - on fire
             - [0,1]
-
     ball of flame: 
         - 2 #min damage
         - 6 #max damage

@@ -13,6 +13,13 @@ rusty iron sword:
     move: dull slash
     consumable: False
 
+wolf tooth dagger:
+    name: wolf tooth dagger
+    value: 10
+    description: A sword made of the teeth from wolfs
+    move: tooth dagger slash
+    consumable: False
+
 old spellbook page:
     name: old spellbook page
     value: 1

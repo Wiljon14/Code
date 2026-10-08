@@ -6,6 +6,14 @@
 ## After beating a few enemys you should go to the shop, using "Go to area" than "Shop". In the shop use "Browse" to look in the shop or "Sell" to sell stuff"
 
 # project log
+## 8/10/2026: upd: 0.1.11: ---
+### gameplay additions
+* added bleed effect (replaced temp burn on wolf tooth dagger)
+### gameplay fixes / changes
+### internal changes / bug fixes
+* fixed crash when last enemy dies to status effect
+### work in progress
+
 ## 7/10/2026: upd: 0.1.10: ---
 ### gameplay additions
 * added crafting

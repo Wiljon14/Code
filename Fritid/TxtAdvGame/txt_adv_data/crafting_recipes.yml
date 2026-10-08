@@ -2,3 +2,10 @@ greater health potion:
     -
         - health potion # material
         - 2 # amount
+wolf tooth dagger:
+    -
+        - wolf tooth # material
+        - 3 # amount
+    -
+        - wolf pelt # material
+        - 1 # amount

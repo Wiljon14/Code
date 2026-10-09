@@ -8,6 +8,7 @@
 # project log
 ## 8/10/2026: upd: 0.1.12: ---
 ### gameplay additions
+* elemental fields can now be used
 * new enemys - elemental of soil/gusts/rivers/heat
 * new items - earth/air/water/flame crystal
 * new status effects - guard-broken (take 20% more damage), off-balance (deal 20% less damage)

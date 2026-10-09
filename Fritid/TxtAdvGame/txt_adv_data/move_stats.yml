@@ -10,9 +10,11 @@ player:
         - 4 #max damage
         - [] #effect
     golden doom blast:
-        - 10 #min damage
-        - 30 #max damage
-        - [] #effect
+        - -1 #min damage
+        - 999 #max damage
+        - #effect
+            - doomed & despaired
+            - [999]
 
     dull slash: 
         - 4 #min damage

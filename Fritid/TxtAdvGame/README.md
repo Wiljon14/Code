@@ -13,6 +13,7 @@
 * new items - earth/air/water/flame crystal
 * new status effects - guard-broken (take 20% more damage), off-balance (deal 20% less damage)
 ### gameplay fixes / changes
+* made "gold crown of doom" deserve the title of it
 ### internal changes / bug fixes
 ### work in progress
 * second attack to elemental(s)

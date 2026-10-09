@@ -74,7 +74,7 @@ elemental of heat:
     gold: 5
     moves: 
         - flame strike
-        - burning vortex
+        #- burning vortex
     drops: 
         - 
             - [1]
@@ -86,7 +86,7 @@ elemental of rivers:
     gold: 5
     moves: 
         - water strike
-        - minor flood
+        #- minor flood
     drops: 
         - 
             - [1]
@@ -98,7 +98,7 @@ elemental of soil:
     gold: 5
     moves: 
         - earth strike
-        - growing plant
+        #- growing plant
     drops: 
         - 
             - [1]
@@ -110,7 +110,7 @@ elemental of gusts:
     gold: 5
     moves: 
         - air strike
-        - blown away
+        #- blown away
     drops: 
         - 
             - [1]

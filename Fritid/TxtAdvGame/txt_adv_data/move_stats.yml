@@ -73,3 +73,29 @@ enemys:
         - 5 #min damage
         - 10 #max damage
         - [] #effect
+
+    flame strike:
+        - 2 #min damage
+        - 4 #max damage
+        - #effect
+            - on fire
+            - [1]
+
+    water strike:
+        - 4 #min damage
+        - 6 #max damage
+        - [] #effect
+
+    earth strike:
+        - 3 #min damage
+        - 5 #max damage
+        - #effect
+            - broken-guard
+            - [1,2]
+
+    air strike:
+        - 1 #min damage
+        - 5 #max damage
+        - #effect
+            - off-balance
+            - [2]

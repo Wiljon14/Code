@@ -6,6 +6,17 @@
 ## After beating a few enemys you should go to the shop, using "Go to area" than "Store". In the store use "Shop" to look in the shop or "Sell" to sell stuff"
 
 # project log
+## 8/10/2026: upd: 0.1.12: ---
+### gameplay additions
+* new enemys - elemental of soil/gusts/rivers/heat
+* new items - earth/air/water/flame crystal
+* new status effects - guard-broken (take 20% more damage), off-balance (deal 20% less damage)
+### gameplay fixes / changes
+### internal changes / bug fixes
+### work in progress
+* second attack to elemental(s)
+* stuff to craft with the crystals
+
 ## 8/10/2026: upd: 0.1.11: ---
 ### gameplay additions
 * added bleed effect (replaced temp burn on wolf tooth dagger)

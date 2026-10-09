@@ -108,6 +108,34 @@ wooden log:
     move: N/A
     consumable: False
 
+flame crystal: 
+    name: flame crystal
+    value: 6
+    description: A burning crystal, holds magic power
+    move: N/A
+    consumable: False
+
+water crystal: 
+    name: water crystal
+    value: 6
+    description: A moist crystal, holds magic power
+    move: N/A
+    consumable: False
+
+earth crystal: 
+    name: earth crystal
+    value: 6
+    description: A dirty crystal, holds magic power
+    move: N/A
+    consumable: False
+
+air crystal: 
+    name: air crystal
+    value: 6
+    description: A weightless crystal, holds magic power
+    move: N/A
+    consumable: False
+
 #Artifacts
 sleeping bag: 
     name: sleeping bag

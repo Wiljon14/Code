@@ -321,6 +321,7 @@ def start_battle():
         global exp_gain
 
         characters["enemys"] = {}
+        characters["allied"]["player"]["status_effects"] = {}
         gold_gain = 0
         exp_gain = 0
 
@@ -348,7 +349,7 @@ def start_battle():
                 add_new_char_to_combat(enemy_id,enemy,random.randrange(power_of_enemy,power_of_enemy + 3),False)
 
                 battle_over = False
-                turn_handler()
+            turn_handler()
     else:
         print("No enemys around")
         main_screen(input())
@@ -591,7 +592,8 @@ def do_status_effects(char,allegiance):
 
         for i in text_to_print:
             print(i)
-        input()
+        if damage_to_take > 0:
+            input()
 
     return
 
@@ -763,16 +765,22 @@ def do_attack(attacker,defender,chosen_attack):
 
     #-----------------------------
 
+    status_effect_attack_modifier = 1
+    if "broken-guard" in characters[defender_allegiance][defender]["status_effects"]:
+        status_effect_attack_modifier += 0.2
+    if "off-balance" in characters[attacker_allegiance][attacker]["status_effects"]:
+        status_effect_attack_modifier -= 0.2
+
     if attacker_name == characters["allied"]["player"]["name"]:
         base_damage = random.randint(move_stats["player"][chosen_attack][0],move_stats["player"][chosen_attack][1])
-        damage_to_deal = int(base_damage * characters["allied"]["player"]["power_modifier"])
+        damage_to_deal = int(base_damage * characters["allied"]["player"]["power_modifier"] * status_effect_attack_modifier)
 
         did_status_effect = give_status_effects(defender_allegiance,defender,move_stats["player"][chosen_attack][2])
 
     else:
         base_damage = random.randint(move_stats["enemys"][chosen_attack][0],move_stats["enemys"][chosen_attack][1])
         enemy_power_modifier = (attacker_level * 0.2) + 0.8
-        damage_to_deal = int(base_damage * enemy_power_modifier)
+        damage_to_deal = int(base_damage * enemy_power_modifier * status_effect_attack_modifier)
 
         did_status_effect = give_status_effects(defender_allegiance,defender,move_stats["enemys"][chosen_attack][2])
 

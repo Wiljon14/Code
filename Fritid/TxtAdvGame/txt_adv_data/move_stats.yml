@@ -15,7 +15,6 @@ player:
         - #effect
             - doomed & despaired
             - [999]
-
     dull slash: 
         - 4 #min damage
         - 6 #max damage
@@ -101,3 +100,29 @@ enemys:
         - #effect
             - off-balance
             - [2]
+    
+    burning vortex:
+        - 0 #min damage
+        - 0 #max damage
+        - #effect
+            - on fire
+            - [3,4]
+
+    minor flood:
+        - 5 #min damage
+        - 7 #max damage
+        - [] #effect
+    
+    uproot:
+        - 1 #min damage
+        - 4 #max damage
+        - #effect
+            - broken-guard
+            - [3]
+    
+    blown away:
+        - 2 #min damage
+        - 4 #max damage
+        - #effect
+            - off-balance
+            - [3]

@@ -21,11 +21,17 @@
 
 ## In Progress
 
+#### Playing around with pygame
+<!-- id: task-1792010420962-180 -->
+important :3
+<!-- priority: critical -->
+<!-- workload: extreme -->
+
+## Done
+
 #### more enemys variation
 <!-- id: task-1790854567344-202 -->
 <!-- priority: low -->
-
-## Done
 
 #### fix small strutctur things (eg. (Y/N) and other weird stuff)
 <!-- id: task-1789987075188-22 -->

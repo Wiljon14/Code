@@ -1,6 +1,8 @@
 import random
 import pathlib
+import pygame
 from yaml import load, Loader
+
 
 #Loads data from txt_adv_data folder. Insert the name of the file, minus file extension. Returns content of file.
 def data_loader(name_of_data_file):
@@ -73,9 +75,42 @@ inventory = []
 available_moves = []
 known_crafting_recipes = []
 
+#pygame setup
+pygame.init()
+screen_x = 1280
+screen_y = 720
+screen = pygame.display.set_mode((screen_x, screen_y))
+clock = pygame.time.Clock()
+running = True
 #stat/other menus
 #----------------------------
+def update_visual():
+    #pygame
+    if area == "forest":
+        background_colour = "green"
+    elif area == "elemental fields":
+        background_colour = "purple"
+    elif area == "store":
+        background_colour = "orange"
+    elif area == "home":
+        background_colour = "yellow"
+    else:
+        background_colour = "black"
+
+
+    #area name in corner
+    font = pygame.font.Font("freesansbold.ttf", 16)
+    text = font.render(f"Area {area}", True, "black")
+    textRect = text.get_rect()
+    textRect.center = (100,16)
+
+    screen.fill(background_colour)
+    screen.blit(text, textRect)
+    return
+
 def stat_menu(clear):
+    global screen
+
     if clear == True:
         print("\033c", end="")
     print("---------------------------")
@@ -448,6 +483,10 @@ def sleep():
 def cheat_item_give():
     global inventory
     inventory.append(input("Give item: ").lower())
+
+def quit():
+    global running
+    running = False
 #----------------------------
 commands = {
     "help" : help,
@@ -455,6 +494,7 @@ commands = {
     "inventory" : check_inventory,
     "craft" : craft,
     "stats" : check_stats,
+    "quit" : quit,
     #area specific
     "battle" : start_battle,
     "shop" : shop,
@@ -462,7 +502,7 @@ commands = {
     "sleep" : sleep,
     #cheats
     "give" : cheat_item_give,
-    }
+}
 #Battle stuff
                         #char_id, the id that the new thing is going to have. make sure this is not wrong EVER fricks stuff up
 def add_new_char_to_combat(char_id,char,level,is_ally):
@@ -882,6 +922,7 @@ def player_died():
     battle_over = True
     return
 
+
 #Pre-game choices
 def name_select(redo):
     global characters
@@ -929,5 +970,20 @@ characters["allied"]["player"]["max_health"] = characters["allied"]["player"]["s
 characters["allied"]["player"]["health"] = characters["allied"]["player"]["max_health"]
 
 main_screen("")
-while True:
+pygame.key.start_text_input()
+while running:
+    
     main_screen(input())
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        if event.type == pygame.TEXTINPUT:
+            print("input gotten")
+
+    screen.fill("black")
+    update_visual()
+
+    pygame.display.flip()    
+    
+    clock.tick(30) #fps limit
+pygame.quit()

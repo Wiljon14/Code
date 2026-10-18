@@ -6,6 +6,22 @@
 ## After beating a few enemys you should go to the shop, using "Go to area" than "Store". In the store use "Shop" to look in the shop or "Sell" to sell stuff"
 
 # project log
+## 18/10/2026: upd: 0.1.15: ---
+### gameplay additions
+### gameplay fixes / changes
+* made the game not need an epilepsi warning (don't try to render 2 screens at once)
+### internal changes / bug fixes
+### work in progress
+
+## 14/10/2026: upd: 0.1.14: ---
+### gameplay additions
+* visual colour screen added (not interactable)
+### gameplay fixes / changes
+### internal changes / bug fixes
+### work in progress
+* getting visual stuff to work
+
+
 ## 12/10/2026: upd: 0.1.13: ---
 ### gameplay additions
 * new attacks for elementals: might need tweeking

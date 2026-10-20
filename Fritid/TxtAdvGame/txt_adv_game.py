@@ -83,6 +83,10 @@ screen = pygame.display.set_mode((screen_x, screen_y))
 clock = pygame.time.Clock()
 running = True
 
+characters["allied"]["player"]["gold"] = 15
+characters["allied"]["player"]["max_health"] = characters["allied"]["player"]["starting_max_health"]
+characters["allied"]["player"]["health"] = characters["allied"]["player"]["max_health"]
+
 #Input functions
 #----------------------------
 def game_input(info_text):
@@ -105,7 +109,8 @@ def game_input(info_text):
                 if event.key == pygame.K_BACKSPACE:
                     if input_text != "":
                         input_text = input_text[: -1]
-        update_visual(input_text)
+        update_visual(info_text + input_text)
+        pygame.display.flip()
     pygame.key.stop_text_input()
     print(input_text)
     return input_text
@@ -129,15 +134,26 @@ def update_visual(*input_text):
 
 
     #area name in corner
-    font = pygame.font.Font("freesansbold.ttf", 16)
-    text = font.render(f"Area: {area}, {input_text}", True, "black")
-    textRect = text.get_rect()
-    textRect.center = (100,16)
+    text = f"Area: {area}, {input_text}"
 
     screen.fill(background_colour)
-    screen.blit(text, textRect)
+    #screen.blit(text, textRect)
+    visual_text(text,[20,50])
 
-    pygame.display.flip()
+    stat_menu(True)
+
+    return
+
+def visual_text(text,position):
+    font = pygame.font.Font("freesansbold.ttf", 16)
+    text = font.render(text, True, "black")
+    rect = text.get_rect()
+    rect.left = position[0]
+    rect.top = position[1]
+    
+
+    screen.blit(text,rect)
+
     return
 
 def stat_menu(clear):
@@ -145,6 +161,15 @@ def stat_menu(clear):
 
     if clear == True:
         print("\033c", end="")
+    rect = pygame.rect.Rect(screen_x * 0.09, screen_y - 200 - screen_x * 0.01, screen_x * 0.82, 200 + screen_x * 0.02)
+    pygame.draw.rect(screen,"black",rect)
+
+    rect = pygame.rect.Rect(screen_x * 0.1, screen_y - 200, screen_x * 0.8, 200)
+    pygame.draw.rect(screen,"gray",rect)
+
+    health = int(characters["allied"]["player"]["health"])
+    max_health = int(characters["allied"]["player"]["max_health"])
+
     print("---------------------------")
     print("Player: " + str(characters["allied"]["player"]["name"]))
     print("Class: " + str(characters["allied"]["player"]["class"]).capitalize())
@@ -154,6 +179,20 @@ def stat_menu(clear):
     print("Level: " + str(characters["allied"]["player"]["level"]) + "("+ str(characters["allied"]["player"]["exp"]) +"/"+ str(characters["allied"]["player"]["exp_to_level_up"]) +")")
     print("Area: " + str(area).capitalize())
     print("---------------------------")
+
+    rect = pygame.rect.Rect(screen_x * 0.09, screen_y - 200 - screen_x * 0.01, screen_x * 0.82, 200 + screen_x * 0.02)
+    pygame.draw.rect(screen,"black",rect)
+
+    rect = pygame.rect.Rect(screen_x * 0.1, screen_y - 200, screen_x * 0.8, 200)
+    pygame.draw.rect(screen,"gray",rect)
+
+    rect = pygame.rect.Rect(screen_x * 0.1, screen_y - 200, screen_x * 0.8, 40)
+    pygame.draw.rect(screen,"brown",rect)
+
+    rect = pygame.rect.Rect(screen_x * 0.1, screen_y - 200, (screen_x * 0.8) * health / max_health, 40)
+    pygame.draw.rect(screen,"red",rect)
+    health_text = str(health) + "/" + str(max_health)
+    visual_text(health_text,[screen_x/2 - len(health_text)/2, screen_y - 185])
 
 def battle_stat_menu():
     print("Battle turn: " + str(turn))
@@ -923,7 +962,7 @@ def character_died(allegiance,char):
             victory()
         return
 
-def victory():
+def victory(): 
     global battle_over
 
     stat_menu(True)
@@ -997,19 +1036,18 @@ class_select(False)
 for i in char_class_stats[characters["allied"]["player"]["class"]]["starting_gear"]:
     inventory.append(i)
 
-characters["allied"]["player"]["gold"] = 15
-characters["allied"]["player"]["max_health"] = characters["allied"]["player"]["starting_max_health"]
-characters["allied"]["player"]["health"] = characters["allied"]["player"]["max_health"]
-
 main_screen("")
 while running:
     
-    main_screen(game_input(""))
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+
     screen.fill("black")
     update_visual()
     
+    main_screen(game_input(""))
+
+    pygame.display.flip()
     clock.tick(30) #fps limit
 pygame.quit()

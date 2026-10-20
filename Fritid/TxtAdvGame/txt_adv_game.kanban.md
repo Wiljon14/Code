@@ -8,12 +8,15 @@
 
 #### add AOE attacks
 <!-- id: task-1790853169554-81 -->
+<!-- priority: low -->
 
 #### on death effects for certain enemys (wolf pup)
 <!-- id: task-1790854578178-225 -->
+<!-- priority: low -->
 
 #### more attack effects
 <!-- id: task-1791276072869-507 -->
+<!-- priority: low -->
 
 #### make allied summons not use enemy stat area
 <!-- id: task-1790854620044-298 -->
@@ -21,11 +24,11 @@
 
 ## In Progress
 
-#### Playing around with pygame
-<!-- id: task-1792010420962-180 -->
-important :3
-<!-- priority: critical -->
-<!-- workload: extreme -->
+#### Stats display on game screen
+<!-- id: task-1792485042183-93 -->
+- [ ] Design
+- [ ] Implement
+- [ ] Make it pretty
 
 ## Done
 

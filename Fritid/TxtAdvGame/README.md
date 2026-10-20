@@ -6,6 +6,13 @@
 ## After beating a few enemys you should go to the shop, using "Go to area" than "Store". In the store use "Shop" to look in the shop or "Sell" to sell stuff"
 
 # project log
+## 20/10/2026: upd: 0.1.17: ---
+### gameplay additions
+* gameplay window now has health bar, also small box for info
+### gameplay fixes / changes
+### internal changes / bug fixes
+### work in progress
+
 ## 19/10/2026: upd: 0.1.16: ---
 ### gameplay additions
 * input is now done in pygame window not terminal Yippy

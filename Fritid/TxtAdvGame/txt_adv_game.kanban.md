@@ -6,6 +6,9 @@
 
 ## To Do
 
+#### fix monospace font & center hp stuff
+<!-- id: task-1792660934076-48 -->
+
 #### add AOE attacks
 <!-- id: task-1790853169554-81 -->
 <!-- priority: low -->
@@ -26,7 +29,7 @@
 
 #### Stats display on game screen
 <!-- id: task-1792485042183-93 -->
-- [ ] Design
+- [x] Design
 - [ ] Implement
 - [ ] Make it pretty
 

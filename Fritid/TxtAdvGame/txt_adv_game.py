@@ -119,7 +119,8 @@ def game_input(info_text):
 
 #stat/other menus
 #----------------------------
-def update_visual(*input_text):
+def update_visual(*input_text : str):
+    screen.fill("black")
     #pygame
     if area == "forest":
         background_colour = "green"
@@ -138,18 +139,24 @@ def update_visual(*input_text):
 
     screen.fill(background_colour)
     #screen.blit(text, textRect)
-    visual_text(text,[20,50])
+    visual_text(text, 20, 50, 24, None)
 
     stat_menu(True)
 
     return
 
-def visual_text(text,position):
-    font = pygame.font.Font("freesansbold.ttf", 16)
-    text = font.render(text, True, "black")
+def visual_text(text : str, position_left : int, position_top : int, text_size, color):
+    #leave text_size and/or color as None for defult size/color
+    if text_size == None:
+        text_size = 16
+    if color == None:
+        color = "black"
+
+    font = pygame.font.Font("freesansbold.ttf", int(text_size))
+    text = font.render(text, True, color)
     rect = text.get_rect()
-    rect.left = position[0]
-    rect.top = position[1]
+    rect.left = position_left
+    rect.top = position_top
     
 
     screen.blit(text,rect)
@@ -161,14 +168,15 @@ def stat_menu(clear):
 
     if clear == True:
         print("\033c", end="")
-    rect = pygame.rect.Rect(screen_x * 0.09, screen_y - 200 - screen_x * 0.01, screen_x * 0.82, 200 + screen_x * 0.02)
-    pygame.draw.rect(screen,"black",rect)
-
-    rect = pygame.rect.Rect(screen_x * 0.1, screen_y - 200, screen_x * 0.8, 200)
-    pygame.draw.rect(screen,"gray",rect)
+    
 
     health = int(characters["allied"]["player"]["health"])
     max_health = int(characters["allied"]["player"]["max_health"])
+    exp = int(characters["allied"]["player"]["exp"])
+    max_exp = int(characters["allied"]["player"]["exp_to_level_up"])
+    exp_procent = exp / max_exp
+    if exp_procent > 1:
+        exp_procent = 1
 
     print("---------------------------")
     print("Player: " + str(characters["allied"]["player"]["name"]))
@@ -180,19 +188,59 @@ def stat_menu(clear):
     print("Area: " + str(area).capitalize())
     print("---------------------------")
 
-    rect = pygame.rect.Rect(screen_x * 0.09, screen_y - 200 - screen_x * 0.01, screen_x * 0.82, 200 + screen_x * 0.02)
-    pygame.draw.rect(screen,"black",rect)
+    menu_start = screen_x * 0.2
+    menu_length = screen_x * 0.6 #0.8
+    menu_hight = screen_y * 0.2 #0.25
+    menu_boarder = screen_x * 0.01
+    menu_part_size = menu_hight * 0.25
 
-    rect = pygame.rect.Rect(screen_x * 0.1, screen_y - 200, screen_x * 0.8, 200)
-    pygame.draw.rect(screen,"gray",rect)
+    #statmanu background
+    rect = pygame.rect.Rect(menu_start - menu_boarder, (screen_y - menu_hight - menu_boarder), menu_length + menu_boarder*2, menu_hight + menu_boarder*2)
+    pygame.draw.rect(screen, "black", rect)
 
-    rect = pygame.rect.Rect(screen_x * 0.1, screen_y - 200, screen_x * 0.8, 40)
-    pygame.draw.rect(screen,"brown",rect)
+    rect = pygame.rect.Rect(menu_start, (screen_y - menu_hight), menu_length, menu_hight)
+    pygame.draw.rect(screen, "gray", rect)
+    
+    #healthbar
+    rect = pygame.rect.Rect(menu_start, (screen_y - menu_hight), menu_length, menu_part_size)
+    pygame.draw.rect(screen, "brown", rect)
 
-    rect = pygame.rect.Rect(screen_x * 0.1, screen_y - 200, (screen_x * 0.8) * health / max_health, 40)
-    pygame.draw.rect(screen,"red",rect)
+    rect = pygame.rect.Rect(menu_start, (screen_y - menu_hight), (menu_length) * health / max_health, menu_part_size)
+    pygame.draw.rect(screen, "red", rect)
+
+    rect = pygame.rect.Rect(menu_start, (screen_y - menu_hight + menu_part_size), menu_length, menu_boarder)
+    pygame.draw.rect(screen, "black", rect)
+    
     health_text = str(health) + "/" + str(max_health)
-    visual_text(health_text,[screen_x/2 - len(health_text)/2, screen_y - 185])
+    visual_text(health_text, screen_x/2 - (len(health_text)/2 ), screen_y - menu_hight, menu_part_size, "green")
+
+    #Player & class & gold
+    visual_text(str(characters["allied"]["player"]["name"]), menu_start, (screen_y - menu_hight + menu_part_size + menu_boarder), menu_part_size, "black")
+
+    rect = pygame.rect.Rect(menu_start + menu_length * 0.33, (screen_y - menu_hight + menu_part_size + menu_boarder)-1, menu_boarder, menu_part_size+2)
+    pygame.draw.rect(screen, "black", rect)
+
+    visual_text(str(characters["allied"]["player"]["class"]).capitalize(), menu_start + menu_length * 0.33 + menu_boarder, (screen_y - menu_hight + menu_part_size + menu_boarder), menu_part_size, "black")
+
+    rect = pygame.rect.Rect(menu_start + menu_length * 0.66, (screen_y - menu_hight + menu_part_size + menu_boarder)-1, menu_boarder, menu_part_size+2)
+    pygame.draw.rect(screen, "black", rect)
+
+    visual_text("Gold: " + str(characters["allied"]["player"]["gold"]).capitalize(), menu_start + menu_length * 0.66 + menu_boarder, (screen_y - menu_hight + menu_part_size + menu_boarder), menu_part_size, "black")
+
+    rect = pygame.rect.Rect(menu_start, (screen_y - menu_hight + menu_part_size*2 + menu_boarder), menu_length, menu_boarder + 1)
+    pygame.draw.rect(screen, "black", rect)
+
+    #Level & expbar
+    rect = pygame.rect.Rect(menu_start, (screen_y - menu_hight + menu_part_size*2 + menu_boarder*2), menu_length, menu_part_size)
+    pygame.draw.rect(screen, "blue", rect)
+
+    rect = pygame.rect.Rect(menu_start, (screen_y - menu_hight + menu_part_size*2 + menu_boarder*2), menu_length * exp_procent, menu_part_size)
+    pygame.draw.rect(screen, "aqua", rect)
+
+    rect = pygame.rect.Rect(menu_start, (screen_y - menu_hight + menu_part_size*3 + menu_boarder*2), menu_length, menu_boarder + 1)
+    pygame.draw.rect(screen, "black", rect)
+
+    visual_text("Level: " + str(characters["allied"]["player"]["level"]).capitalize(), menu_start, (screen_y - menu_hight + menu_part_size*2 + menu_boarder*2), menu_part_size, "white")
 
 def battle_stat_menu():
     print("Battle turn: " + str(turn))
@@ -1017,7 +1065,8 @@ def age_select(redo):
     characters["allied"]["player"]["age"] = game_input("")
     if not characters["allied"]["player"]["age"].isdigit():
         age_select(True)
-age_select(False)
+#age_select(False)
+#age select disabled as age is not doing anything turn on later if needed
 
 def class_select(redo):
     global characters
@@ -1028,9 +1077,11 @@ def class_select(redo):
     if redo is True:
         print("Please enter a valid class")
         print("Valid choices: " + str(char_choice_class))
-    characters["allied"]["player"]["class"] = game_input("").lower()
-    if not characters["allied"]["player"]["class"] in char_choice_class:
+    class_choice = game_input("").lower()
+    if not class_choice in char_choice_class:
         class_select(True)
+    else:
+        characters["allied"]["player"]["class"] = class_choice
 class_select(False)
 
 for i in char_class_stats[characters["allied"]["player"]["class"]]["starting_gear"]:
@@ -1043,7 +1094,6 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    screen.fill("black")
     update_visual()
     
     main_screen(game_input(""))

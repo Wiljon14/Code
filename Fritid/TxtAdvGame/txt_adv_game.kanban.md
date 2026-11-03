@@ -27,13 +27,25 @@
 
 ## In Progress
 
+#### enemy_hp screen
+<!-- id: task-1793703256958-424 -->
+- [ ] design
+- [ ] implement
+- [ ] make it look less bad
+
+#### print text screen thingy mcbob stuff
+<!-- id: task-1793695675821-153 -->
+- [x] design
+- [x] implement
+- [ ] fancy up abit (if needed)
+
+## Done
+
 #### Stats display on game screen
 <!-- id: task-1792485042183-93 -->
 - [x] Design
-- [ ] Implement
-- [ ] Make it pretty
-
-## Done
+- [x] Implement
+- [x] Make it pretty
 
 #### more enemys variation
 <!-- id: task-1790854567344-202 -->

@@ -18,8 +18,8 @@ def data_loader(name_of_data_file):
 characters = {
     "allied" : {
         "player" : {
-            "name" : str,
-            "age" : str,
+            "name" : "",
+            "age" : 16,
             "gold" : int,
 
             "class" : "Not chosen",
@@ -74,6 +74,7 @@ shop_items = [
 inventory = []
 available_moves = []
 known_crafting_recipes = []
+text_list = ["test","text"]
 
 #pygame setup
 pygame.init()
@@ -87,12 +88,11 @@ characters["allied"]["player"]["gold"] = 15
 characters["allied"]["player"]["max_health"] = characters["allied"]["player"]["starting_max_health"]
 characters["allied"]["player"]["health"] = characters["allied"]["player"]["max_health"]
 
-#Input functions
+#"Game" functions / functions that are remade versions of base python functions to work with the game
 #----------------------------
 def game_input(info_text):
     global running
 
-    print(info_text)
     pygame.key.start_text_input()
     game_inputing = True
     input_text = ""
@@ -112,9 +112,16 @@ def game_input(info_text):
         update_visual(info_text + input_text)
         pygame.display.flip()
     pygame.key.stop_text_input()
-    print(input_text)
     return input_text
 
+def game_print(text):
+    global text_list
+
+    text_list.append(text)
+    if text == "clear_text":
+        text_list.clear()
+    while len(text_list) > 25:
+        text_list.pop(0)
 
 
 #stat/other menus
@@ -135,13 +142,17 @@ def update_visual(*input_text : str):
 
 
     #area name in corner
-    text = f"Area: {area}, {input_text}"
+    text = f"Area: {area}"
 
     screen.fill(background_colour)
     #screen.blit(text, textRect)
-    visual_text(text, 20, 50, 24, None)
+    visual_text(text, screen_x * 0.01, screen_x * 0.01, 24, "Black")
 
-    stat_menu(True)
+    visual_text(str(input_text), screen_x * 0.2, screen_y * 0.7,24,"black")
+
+    stat_menu()
+
+    text_menu()
 
     return
 
@@ -163,13 +174,9 @@ def visual_text(text : str, position_left : int, position_top : int, text_size, 
 
     return
 
-def stat_menu(clear):
+def stat_menu():
     global screen
-
-    if clear == True:
-        print("\033c", end="")
     
-
     health = int(characters["allied"]["player"]["health"])
     max_health = int(characters["allied"]["player"]["max_health"])
     exp = int(characters["allied"]["player"]["exp"])
@@ -177,16 +184,6 @@ def stat_menu(clear):
     exp_procent = exp / max_exp
     if exp_procent > 1:
         exp_procent = 1
-
-    print("---------------------------")
-    print("Player: " + str(characters["allied"]["player"]["name"]))
-    print("Class: " + str(characters["allied"]["player"]["class"]).capitalize())
-    print("Age: " + str(characters["allied"]["player"]["age"]))
-    print("Gold: " + str(characters["allied"]["player"]["gold"]))
-    print("HP: " + str(characters["allied"]["player"]["health"]) +"/"+ str(characters["allied"]["player"]["max_health"]))
-    print("Level: " + str(characters["allied"]["player"]["level"]) + "("+ str(characters["allied"]["player"]["exp"]) +"/"+ str(characters["allied"]["player"]["exp_to_level_up"]) +")")
-    print("Area: " + str(area).capitalize())
-    print("---------------------------")
 
     menu_start = screen_x * 0.2
     menu_length = screen_x * 0.6 #0.8
@@ -212,7 +209,7 @@ def stat_menu(clear):
     pygame.draw.rect(screen, "black", rect)
     
     health_text = str(health) + "/" + str(max_health)
-    visual_text(health_text, screen_x/2 - (len(health_text)/2 ), screen_y - menu_hight, menu_part_size, "green")
+    visual_text(health_text, screen_x/2 - (len(health_text)/2 ), screen_y - menu_hight, menu_part_size, "black")
 
     #Player & class & gold
     visual_text(str(characters["allied"]["player"]["name"]), menu_start, (screen_y - menu_hight + menu_part_size + menu_boarder), menu_part_size, "black")
@@ -242,9 +239,30 @@ def stat_menu(clear):
 
     visual_text("Level: " + str(characters["allied"]["player"]["level"]).capitalize(), menu_start, (screen_y - menu_hight + menu_part_size*2 + menu_boarder*2), menu_part_size, "white")
 
+def text_menu():
+    menu_start = screen_x * 0.01
+    menu_top = screen_x * 0.03
+    menu_length = screen_x * 0.3
+    menu_hight = screen_y * 0.6
+
+    rect = pygame.rect.Rect(menu_start,menu_top,menu_length,menu_hight)
+    pygame.draw.rect(screen, "darkgray", rect)
+
+    menu_text_size = menu_hight / 25
+
+    i_num = 0
+    for i in text_list:
+        visual_text(i,menu_start, menu_top + i_num * menu_text_size, menu_text_size, "white")
+        
+        
+        i_num +=1
+
+
+    return
+
 def battle_stat_menu():
-    print("Battle turn: " + str(turn))
-    print("---------------------------")
+    game_print("Battle turn: " + str(turn))
+    game_print("---------------------------")
 
     for i in turn_order:
         if check_if_ally(i) == True:
@@ -275,8 +293,8 @@ def battle_stat_menu():
                     status_effects_text = status_effects_text + (" [" + ii.capitalize() + " x" +  str(status_amount) +  "]")
                 else:
                     status_effects_text = status_effects_text + (" [" + ii.capitalize() + "]")
-        print(turn_order_indicator + print_name + status_effects_text)
-    print("---------------------------")
+        game_print(turn_order_indicator + print_name + status_effects_text)
+    game_print("---------------------------")
 
 def show_items_in_inventory(show_price):
     temp_inv = []
@@ -291,7 +309,7 @@ def show_items_in_inventory(show_price):
         if show_price == True:
             price = ": With sell value of : " + str(raw_item_value[item_name]["value"] - 1) + " Gold"
 
-        print(str(item_amount) + "x " + item_name + price)
+        game_print(str(item_amount) + "x " + item_name + price)
         while item_name in temp_inv:
             temp_inv.remove(item_name)
     return
@@ -314,7 +332,7 @@ def availble_crafting_recipes():
             if i not in known_crafting_recipes:
                 known_crafting_recipes.append(i)
 
-            print(f"{i}: ({recipe_fulfilled}/{recipe_requires})")
+            game_print(f"{i}: ({recipe_fulfilled}/{recipe_requires})")
 
 
     for i in known_crafting_recipes:
@@ -328,7 +346,7 @@ def availble_crafting_recipes():
                 else:
                     recipe_fulfilled += inventory.count(ii[0])
 
-            print(f"{i}: ({recipe_fulfilled}/{recipe_requires})")
+            game_print(f"{i}: ({recipe_fulfilled}/{recipe_requires})")
             shown_recipes.append(i)
     
     return shown_recipes
@@ -337,13 +355,13 @@ def crafting_menu(item_to_craft):
     items_has = 0
     items_need = 0
     recipe = crafting_recipes[item_to_craft]
-    stat_menu(True)
-    print(item_to_craft)
+    stat_menu()
+    game_print(item_to_craft)
     for i in recipe:
         amount_in_inv = inventory.count(i[0])
 
         items_need += 1
-        print(f"{i[0]} ({amount_in_inv}/{i[1]})")
+        game_print(f"{i[0]} ({amount_in_inv}/{i[1]})")
 
         if amount_in_inv >= i[1]:
             items_has += 1
@@ -354,7 +372,7 @@ def crafting_menu(item_to_craft):
                 for ii in range(i[1]):
                     inventory.remove(i[0])
             inventory.append(item_to_craft)
-            print(f"Crafted {item_to_craft}")
+            game_print(f"Crafted {item_to_craft}")
     return
 #----------------------------
 def inventory_items_to_moves():
@@ -392,14 +410,13 @@ def main_screen(chosen):
 
     inventory_items_to_moves()
 
-    stat_menu(True)
+    stat_menu()
 
 
     if chosen.lower() in commands:
         commands[chosen.lower()]()
     else:
-        print("Use Help if stuck")
-        print("")
+        game_print("Use Help if stuck")
 
 
     return
@@ -407,20 +424,19 @@ def main_screen(chosen):
 #command menu choices
 #----------------------------
 def help():
-        print("")
-        print("Go to area - Goes to different area if possible")
-        print("Inventory - See inventory")
-        print("Craft - Create new items using other items")
-        print("Stats - See additional stats")
-        print("")
-        print("Location specific stuff. V")
+        game_print("Go to area - Goes to different area if possible")
+        game_print("Inventory - See inventory")
+        game_print("Craft - Create new items using other items")
+        game_print("Stats - See additional stats")
+        game_print("Clear text - clear this window")
+        game_print("Location specific stuff. V")
         if area == "store":
-            print("  Shop - See what the store has")
-            print("  Sell - Sell stuff from your inventory")
+            game_print("  Shop - See what the store has")
+            game_print("  Sell - Sell stuff from your inventory")
         if area in enemys_in_area.keys():
-            print("  Battle - Starts a battle against a random enemy")
+            game_print("  Battle - Starts a battle against a random enemy")
         if area == "home":
-            print("  Sleep - Take a nap and heal to full HP")
+            game_print("  Sleep - Take a nap and heal to full HP")
         
         main_screen(game_input(""))
 
@@ -431,22 +447,20 @@ def check_inventory():
     if game_input("Look closer at an item? (Y/N) ").lower() == "y":
         item_looked_closer_at = game_input("Item Name: ").lower()
         if item_looked_closer_at in inventory:
-            print("")
-            print("Description: " + str(raw_item_value[item_looked_closer_at]["description"]))
-            print("Move it gives: " + str(raw_item_value[item_looked_closer_at]["move"]))
+            game_print("Description: " + str(raw_item_value[item_looked_closer_at]["description"]))
+            game_print("Move it gives: " + str(raw_item_value[item_looked_closer_at]["move"]))
         else:
             main_screen("")
     else:
         main_screen("")
 
 def craft():
-    print("Items owned. V")
+    game_print("Items owned. V")
     show_items_in_inventory(False)
-    print("")
-    print("Available recipes. V")
+    game_print("Available recipes. V")
     recipes = availble_crafting_recipes()
     if recipes == []:
-        print("No available recipes, try again later")
+        game_print("No available recipes, try again later")
 
     craft_item_input = game_input("recipe to look at: ")
     if craft_item_input in recipes:
@@ -454,13 +468,12 @@ def craft():
     return
 
 def check_stats():
-    print("Power modifier: " + str(characters["allied"]["player"]["power_modifier"]))
-    print("")
+    game_print("Power modifier: " + str(characters["allied"]["player"]["power_modifier"]))
 
 def go_to_area():
     global area
 
-    print("Areas: " + str(areas))
+    game_print("Areas: " + str(areas))
     select = game_input("Select a area: ")
     if select.lower() in areas:
         area = select
@@ -486,7 +499,7 @@ def start_battle():
         enemy_id = -1
         lowest_enemy_strength = min(enemys_in_area[area].keys())
         if lowest_enemy_strength > dif_num:
-            print("you are not strong enough to fight here")
+            game_print("you are not strong enough to fight here")
             main_screen(game_input(""))
         else:
             while dif_num >= lowest_enemy_strength:
@@ -505,7 +518,7 @@ def start_battle():
                 battle_over = False
             turn_handler()
     else:
-        print("No enemys around")
+        game_print("No enemys around")
         main_screen(game_input(""))
 
 def shop():
@@ -513,28 +526,26 @@ def shop():
     global characters
 
     if area == "store":
-        print("")
-        print("Items in the shop. V")
+        game_print("Items in the shop. V")
         i_num = 0
         for i in shop_items:
             i_num += 1
-            print("ID: " + str(i_num) + " | " + str(i["name"]) + ": With cost of: " + str(i["value"]) + " Gold")
-        print("")
+            game_print("ID: " + str(i_num) + " | " + str(i["name"]) + ": With cost of: " + str(i["value"]) + " Gold")
         buy_choice = game_input("Insert Item ID to buy: ")
         if buy_choice.isdigit():
             if int(buy_choice) <= i_num and int(buy_choice) > 0:
                 if characters["allied"]["player"]["gold"] >= shop_items[int(buy_choice) - 1]["value"]:
                     characters["allied"]["player"]["gold"] -= shop_items[int(buy_choice) - 1]["value"]
-                    print("Remaining Gold: " + str(characters["allied"]["player"]["gold"]))
-                    print("Bought: " + shop_items[int(buy_choice) - 1]["name"])
+                    game_print("Remaining Gold: " + str(characters["allied"]["player"]["gold"]))
+                    game_print("Bought: " + shop_items[int(buy_choice) - 1]["name"])
                     inventory.append(shop_items[int(buy_choice) - 1]["name"])
                 else:
-                    print("Not enough Gold")
+                    game_print("Not enough Gold")
                 game_input("")
 
 
     else:
-        print("there is no store around")
+        game_print("there is no store around")
         main_screen(game_input(""))
     main_screen("")
 
@@ -543,7 +554,6 @@ def sell():
     global characters
 
     if area == "store":
-        print("")
         if inventory != []:
             show_items_in_inventory(True)
 
@@ -559,9 +569,9 @@ def sell():
 
                     sell_value = (raw_item_value[sold_item_ID]["value"] - 1) * amount_to_sell
     
-                    print("Sold Item(s): " + sold_item_ID + " for " + str(sell_value) + " Gold")
+                    game_print("Sold Item(s): " + sold_item_ID + " for " + str(sell_value) + " Gold")
                     characters["allied"]["player"]["gold"] += sell_value
-                    print("Current Gold: " + str(characters["allied"]["player"]["gold"]))
+                    game_print("Current Gold: " + str(characters["allied"]["player"]["gold"]))
                     for i in range(amount_to_sell):
                         inventory.remove(sold_item_ID)
                     game_input("")
@@ -572,10 +582,10 @@ def sell():
                 
 
         else:
-            print("Nothing to sell...")
+            game_print("Nothing to sell...")
             game_input("Done?")
     else:
-        print("Theres is no one here to sell to")
+        game_print("Theres is no one here to sell to")
         game_input("")
 
 
@@ -585,19 +595,23 @@ def sleep():
     global characters
     if area == "home":
         characters["allied"]["player"]["health"] = characters["allied"]["player"]["max_health"]
-        print("You took a nice nap in your bed, and feel refreshed")
+        game_print("You took a nice nap in your bed, and feel refreshed")
         game_input("")
         main_screen("")
     elif "sleeping bag" in inventory:
         characters["allied"]["player"]["health"] = characters["allied"]["player"]["max_health"]
-        print("You took a nap in a potato bag(?), at least you feel refreshed")
+        game_print("You took a nap in a potato bag(?), at least you feel refreshed")
         game_input("")
         main_screen("")
         
     else:
-        print("No where to sleep around here")
+        game_print("No where to sleep around here")
         game_input("")
         main_screen("")
+
+def clear_text():
+    global text_list
+    text_list.clear()
 
 def cheat_item_give():
     global inventory
@@ -614,6 +628,7 @@ commands = {
     "craft" : craft,
     "stats" : check_stats,
     "quit" : quit,
+    "clear text" : clear_text,
     #area specific
     "battle" : start_battle,
     "shop" : shop,
@@ -693,16 +708,16 @@ def do_turn(char_doing_turn,is_ally):
         turn_order.remove(char_doing_turn)
         return
     else:
-        stat_menu(True)
+        stat_menu()
         battle_stat_menu()
 
         if is_ally:
             if char_doing_turn == "player":
                 move_type = select_move_type()
                 if move_type == "run":
-                    stat_menu(True)
+                    stat_menu()
                     battle_over = True
-                    print("You ran")
+                    game_print("You ran")
                     return
             else:
                 target_of_attack = random.choice(list(characters["enemys"].keys()))
@@ -746,22 +761,22 @@ def do_status_effects(char,allegiance):
     if effects == True:
         for i in effects_to_remove:
             characters[allegiance][char]["status_effects"].pop(i)
-        stat_menu(True)
+        stat_menu()
         battle_stat_menu()
 
         for i in text_to_print:
-            print(i)
+            game_print(i)
         if damage_to_take > 0:
             game_input("")
 
     return
 
 def choose_attack():
-    stat_menu(True)
+    stat_menu()
     battle_stat_menu()
-    print("Input (Back) to go back to choices")
-    print("Avaible Moves: " + str(available_moves))
-    print("---------------------------")
+    game_print("Input (Back) to go back to choices")
+    game_print("Avaible Moves: " + str(available_moves))
+    game_print("---------------------------")
 
     return choice_in_choose_attack()
 
@@ -773,16 +788,16 @@ def choice_in_choose_attack():
         elif chosen_attack == "back":
             return "back"
         else:
-            print("Invalid")
+            game_print("Invalid")
 
 def choose_attack_target():
-    stat_menu(True)
+    stat_menu()
     battle_stat_menu()
 
     target_array = []
     i_local_id = 0
 
-    print("Avaible attack targets. V")
+    game_print("Avaible attack targets. V")
     for i in characters["enemys"]:
 
         i_local_id += 1
@@ -795,11 +810,11 @@ def choose_attack_target():
 
 
         print_name = (f"{char_name.capitalize()} LV:{char_lv} | ({char_hp}/{char_max_hp})")
-        print("Target ID: " + str(i_local_id) + " | Target: " + print_name)
+        game_print("Target ID: " + str(i_local_id) + " | Target: " + print_name)
 
 
         target_array.append(i)
-    print("---------------------------")
+    game_print("---------------------------")
     if i_local_id != 1:
         while True:
             input_id = game_input("ID of target to attack: ")
@@ -808,17 +823,17 @@ def choose_attack_target():
                 if input_id <= i_local_id and input_id > 0:
                     return target_array[input_id - 1]
                 else:
-                    print("Invalid")
+                    game_print("Invalid")
             else:
-                print("Invalid")
+                game_print("Invalid")
     else:
         return target_array[0]
 
 def select_move_type():
     while True:
-        stat_menu(True)
+        stat_menu()
         battle_stat_menu()
-        print("Move choice options: attack / item / run")
+        game_print("Move choice options: attack / item / run")
         select_input = game_input("").lower()
 
         if select_input == "run":
@@ -835,7 +850,7 @@ def select_move_type():
                     do_item_combat(selected_combat_item)
                     return
             else:
-                print("No usable items")
+                game_print("No usable items")
                 game_input("")
         else:
             chosen_attack = choose_attack()
@@ -845,16 +860,16 @@ def select_move_type():
 
 def item_combat_selector():
     while True:
-        stat_menu(True)
+        stat_menu()
         battle_stat_menu()
         i_num = 0
         usable_items = []
-        print("Input (Back) to go back to choices")
-        print("Usable items. V")
+        game_print("Input (Back) to go back to choices")
+        game_print("Usable items. V")
         for i in inventory:
             if raw_item_value[i]["consumable"] == True:
                 i_num += 1
-                print("ID: " + str(i_num) + " | " + str(i))
+                game_print("ID: " + str(i_num) + " | " + str(i))
                 usable_items.append(i)
 
         selected_item_id = game_input("Insert Item ID to use: ")
@@ -869,9 +884,9 @@ def item_combat_selector():
 def do_item_combat(combat_selected_item):
     global inventory
     inventory.remove(combat_selected_item)
-    stat_menu(True)
+    stat_menu()
     battle_stat_menu() 
-    print(f"Used {combat_selected_item}")
+    game_print(f"Used {combat_selected_item}")
     combat_item_effect(combat_selected_item)
 
     game_input("")
@@ -883,9 +898,9 @@ def combat_item_effect(item):
         characters["allied"]["player"]["health"] += raw_item_value[item]["consumable_effect"][1]
         if characters["allied"]["player"]["health"] > characters["allied"]["player"]["max_health"]:
             characters["allied"]["player"]["health"] = characters["allied"]["player"]["max_health"]
-        stat_menu(True)
+        stat_menu()
         battle_stat_menu()
-        print(f"regained {raw_item_value[item]["consumable_effect"][1]} health")
+        game_print(f"regained {raw_item_value[item]["consumable_effect"][1]} health")
     elif raw_item_value[item]["consumable_effect"][0] == "summon":
         char_to_summon = raw_item_value[item]["consumable_effect"][1]
         char_level = characters["allied"]["player"]["level"]
@@ -947,14 +962,13 @@ def do_attack(attacker,defender,chosen_attack):
     #deals damage
     characters[defender_allegiance][defender]["health"] -= damage_to_deal
 
-    stat_menu(True)
+    stat_menu()
     battle_stat_menu()
     
-    print(str(attacker_name).capitalize() + " attacked " + str(defender_name).capitalize() + " with " + str(chosen_attack).capitalize() + "!")
-    print("")
-    print(f"Dealt damage {damage_to_deal}!")
+    game_print(str(attacker_name).capitalize() + " attacked " + str(defender_name).capitalize() + " with " + str(chosen_attack).capitalize() + "!")
+    game_print(f"Dealt damage {damage_to_deal}!")
     if did_status_effect[0]:
-        print(f"Applied {did_status_effect[2]} {did_status_effect[1]}")
+        game_print(f"Applied {did_status_effect[2]} {did_status_effect[1]}")
 
     game_input("")
 
@@ -1000,7 +1014,7 @@ def character_died(allegiance,char):
             inventory.append(drop_item)
 
         if drop_amount != 0:
-            print(characters[allegiance][char]["name"] + " Has died dropped: " + str(drop_amount) + " " + drop_item)
+            game_print(characters[allegiance][char]["name"] + " Has died dropped: " + str(drop_amount) + " " + drop_item)
             game_input("")
         characters[allegiance].pop(char)
 
@@ -1013,12 +1027,12 @@ def character_died(allegiance,char):
 def victory(): 
     global battle_over
 
-    stat_menu(True)
+    stat_menu()
 
-    print("Battle over. Well done :)")
+    game_print("Battle over. Well done :)")
     #rewards for winning
-    print("EXP gained: " + str(exp_gain))
-    print("Gold gained: " + str(gold_gain))
+    game_print("EXP gained: " + str(exp_gain))
+    game_print("Gold gained: " + str(gold_gain))
     characters["allied"]["player"]["exp"] += exp_gain
     characters["allied"]["player"]["gold"] += gold_gain
 
@@ -1028,10 +1042,8 @@ def player_died():
     global area
     global battle_over
 
-    print("")
-    print("You lost. To bad so sad :(")
-    print("Lost half your Gold")
-    print("")
+    game_print("You lost. To bad so sad :(")
+    game_print("Lost half your Gold")
 
     characters["allied"]["player"]["health"] = characters["allied"]["player"]["max_health"]
     characters["allied"]["player"]["gold"] = int(characters["allied"]["player"]["gold"] / 2)
@@ -1045,11 +1057,11 @@ def player_died():
 #Pre-game choices
 def name_select(redo):
     global characters
-    print("\033c", end="")
+    game_print("clear_text")
     if redo is False:
-        print("What's your name?")
+        game_print("What's your name?")
     if redo is True:
-        print("Please enter name")
+        game_print("Please enter name")
     characters["allied"]["player"]["name"] = game_input("").capitalize()
     if characters["allied"]["player"]["name"] == "":
         name_select(True)
@@ -1057,11 +1069,11 @@ name_select(False)
 
 def age_select(redo):
     global characters
-    print("\033c", end="")
+    game_print("clear_text")
     if redo is False:
-        print("And your age?")
+        game_print("And your age?")
     if redo is True:
-        print("Please enter a whole number (ex. 16, 35)")
+        game_print("Please enter a whole number (ex. 16, 35)")
     characters["allied"]["player"]["age"] = game_input("")
     if not characters["allied"]["player"]["age"].isdigit():
         age_select(True)
@@ -1070,13 +1082,13 @@ def age_select(redo):
 
 def class_select(redo):
     global characters
-    print("\033c", end="")
+    game_print("clear_text")
     if redo is False:
-        print("Lastly what class do you whant to play?")
-        print("Valid choices: " + str(char_choice_class))
+        game_print("Lastly what class do you whant to play?")
+        game_print("Valid choices: " + str(char_choice_class))
     if redo is True:
-        print("Please enter a valid class")
-        print("Valid choices: " + str(char_choice_class))
+        game_print("Please enter a valid class")
+        game_print("Valid choices: " + str(char_choice_class))
     class_choice = game_input("").lower()
     if not class_choice in char_choice_class:
         class_select(True)

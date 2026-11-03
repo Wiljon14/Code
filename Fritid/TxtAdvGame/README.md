@@ -6,6 +6,15 @@
 ## After beating a few enemys you should go to the shop, using "Go to area" than "Store". In the store use "Shop" to look in the shop or "Sell" to sell stuff"
 
 # project log
+## 3/11/2026: upd: 0.1.19: ---
+### gameplay additions
+* added text panel to game screen
+### gameplay fixes / changes
+### internal changes / bug fixes
+* added/changed print() func to game_print()
+### work in progress
+* enemy health window/screen thingy
+
 ## 22/10/2026: upd: 0.1.18: ---
 ### gameplay additions
 * gameplay window is now finished in its entirety

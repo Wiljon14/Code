@@ -61,7 +61,7 @@ move_stats = data_loader("move_stats")
 raw_item_value = data_loader("raw_item_value")
 crafting_recipes = data_loader("crafting_recipes")
 
-shop_items = [
+shop_items = [ #items in the shop
     raw_item_value["iron sword"],
     raw_item_value["flaming scroll"],
     raw_item_value["health potion"],
@@ -71,10 +71,10 @@ shop_items = [
 ]
 
 
-inventory = []
-available_moves = []
-known_crafting_recipes = []
-text_list = ["test","text"]
+inventory = [] #list of items in the players inventory
+available_moves = [] #moves/attacks the player can use in combat
+known_crafting_recipes = [] #recipes the player knows
+text_list = [] #list of all the text in the text window
 
 #pygame setup
 pygame.init()
@@ -146,11 +146,13 @@ def update_visual(*input_text : str):
 
     screen.fill(background_colour)
     #screen.blit(text, textRect)
-    visual_text(text, screen_x * 0.01, screen_x * 0.01, 24, "Black")
+    visual_text(text, 0, 0, 24, "Black")
 
     visual_text(str(input_text), screen_x * 0.2, screen_y * 0.7,24,"black")
 
     stat_menu()
+    if battle_over == False:
+        battle_stat_menu()
 
     text_menu()
 
@@ -186,10 +188,11 @@ def stat_menu():
         exp_procent = 1
 
     menu_start = screen_x * 0.2
-    menu_length = screen_x * 0.6 #0.8
-    menu_hight = screen_y * 0.2 #0.25
-    menu_boarder = screen_x * 0.01
+    menu_length = screen_x * 0.6
+    menu_hight = screen_y * 0.2
+    menu_boarder = screen_x * 0.005
     menu_part_size = menu_hight * 0.25
+    menu_hight -= menu_boarder * 4
 
     #statmanu background
     rect = pygame.rect.Rect(menu_start - menu_boarder, (screen_y - menu_hight - menu_boarder), menu_length + menu_boarder*2, menu_hight + menu_boarder*2)
@@ -244,9 +247,13 @@ def text_menu():
     menu_top = screen_x * 0.03
     menu_length = screen_x * 0.3
     menu_hight = screen_y * 0.6
+    menu_boarder = screen_x * 0.005
+
+    rect = pygame.rect.Rect(menu_start - menu_boarder, menu_top - menu_boarder, menu_length + menu_boarder*2, menu_hight + menu_boarder*2)
+    pygame.draw.rect(screen, "black", rect)
 
     rect = pygame.rect.Rect(menu_start,menu_top,menu_length,menu_hight)
-    pygame.draw.rect(screen, "darkgray", rect)
+    pygame.draw.rect(screen, "gray25", rect)
 
     menu_text_size = menu_hight / 25
 
@@ -261,8 +268,23 @@ def text_menu():
     return
 
 def battle_stat_menu():
-    game_print("Battle turn: " + str(turn))
-    game_print("---------------------------")
+    menu_top = screen_x * 0.03
+    menu_length = screen_x * 0.3
+    menu_hight = 32
+    menu_start = screen_x - menu_length - screen_x * 0.01
+    menu_boarder = screen_x * 0.005
+
+    profile_pos = menu_boarder + menu_hight + menu_top
+
+
+
+
+    #turn counter
+    rect = pygame.rect.Rect(menu_start - menu_boarder, menu_top - menu_boarder, menu_length + menu_boarder*2, menu_hight + menu_boarder*2)
+    pygame.draw.rect(screen, "black", rect)
+    rect = pygame.rect.Rect(menu_start,menu_top,menu_length,menu_hight)
+    pygame.draw.rect(screen, "gray25", rect)
+    visual_text(("Turn: " + str(turn)),menu_start,menu_top,menu_hight,"white")
 
     for i in turn_order:
         if check_if_ally(i) == True:
@@ -275,26 +297,49 @@ def battle_stat_menu():
         char_hp = characters[allegiance][i]["health"]
         char_max_hp = characters[allegiance][i]["max_health"]
 
-        if check_if_ally(i):
-            print_name = (f"Ally: {char_name.capitalize()} LV:{char_lv} | ({char_hp}/{char_max_hp})")
-        else:
-            print_name = (f"Enemy: {char_name.capitalize()} LV:{char_lv} | ({char_hp}/{char_max_hp})")
-
         if turn_order[turn_in_turn_order] == i:
-            turn_order_indicator = "--->| "
+            name_colour = "white"
         else:
-            turn_order_indicator = "    | "
+            name_colour = "gray64"
 
-        status_effects_text = ""
+        if allegiance == "allied":
+            allegiance_colour = "green"
+        else:
+            allegiance_colour = "red"
+
+        #healthbar
+        rect = pygame.rect.Rect(menu_start - menu_boarder, profile_pos, menu_length + menu_boarder*2, menu_hight + menu_boarder)
+        pygame.draw.rect(screen, "black", rect)
+        rect = pygame.rect.Rect(menu_start, profile_pos, menu_length, menu_hight)
+        pygame.draw.rect(screen, "brown", rect)
+        rect = pygame.rect.Rect(menu_start, profile_pos, (menu_length * (char_hp / char_max_hp)), menu_hight)
+        pygame.draw.rect(screen, "red", rect)
+        #ally indicator
+        rect = pygame.rect.Rect(menu_start - menu_boarder, profile_pos, menu_boarder, menu_hight)
+        pygame.draw.rect(screen, allegiance_colour, rect)
+
+        #name & level indicator
+        visual_text((char_name + f" LV {char_lv}"), menu_start, profile_pos, menu_hight, name_colour)
+
+        profile_pos += menu_hight + menu_boarder - 1
+
         if characters[allegiance][i]["status_effects"] != {}:
-            for ii in characters[allegiance][i]["status_effects"]:
-                status_amount = characters[allegiance][i]["status_effects"][ii]
-                if status_amount != 1:
-                    status_effects_text = status_effects_text + (" [" + ii.capitalize() + " x" +  str(status_amount) +  "]")
-                else:
-                    status_effects_text = status_effects_text + (" [" + ii.capitalize() + "]")
-        game_print(turn_order_indicator + print_name + status_effects_text)
-    game_print("---------------------------")
+            status_hight = 24
+
+            for effect in characters[allegiance][i]["status_effects"]:
+                rect = pygame.rect.Rect(menu_start - menu_boarder, profile_pos, menu_length + menu_boarder*2, status_hight + menu_boarder)
+                pygame.draw.rect(screen, "black", rect)
+                rect = pygame.rect.Rect(menu_start, profile_pos, menu_length, status_hight)
+                pygame.draw.rect(screen, "gray25", rect)
+                visual_text((str(effect) + " " + str(characters[allegiance][i]["status_effects"][effect]) + "x"),menu_start, profile_pos, status_hight, "white")
+                profile_pos += status_hight
+            profile_pos += menu_boarder
+            # for ii in characters[allegiance][i]["status_effects"]:
+            #     status_amount = characters[allegiance][i]["status_effects"][ii]
+            #     if status_amount != 1:
+            #         status_effects_text = status_effects_text + (" [" + ii.capitalize() + " x" +  str(status_amount) +  "]")
+            #     else:
+            #         status_effects_text = status_effects_text + (" [" + ii.capitalize() + "]")
 
 def show_items_in_inventory(show_price):
     temp_inv = []
@@ -424,11 +469,12 @@ def main_screen(chosen):
 #command menu choices
 #----------------------------
 def help():
+        game_print("clear_text")
         game_print("Go to area - Goes to different area if possible")
         game_print("Inventory - See inventory")
         game_print("Craft - Create new items using other items")
         game_print("Stats - See additional stats")
-        game_print("Clear text - clear this window")
+        game_print("Clear - clear this window")
         game_print("Location specific stuff. V")
         if area == "store":
             game_print("  Shop - See what the store has")
@@ -628,7 +674,7 @@ commands = {
     "craft" : craft,
     "stats" : check_stats,
     "quit" : quit,
-    "clear text" : clear_text,
+    "clear" : clear_text,
     #area specific
     "battle" : start_battle,
     "shop" : shop,
@@ -1084,7 +1130,7 @@ def class_select(redo):
     global characters
     game_print("clear_text")
     if redo is False:
-        game_print("Lastly what class do you whant to play?")
+        game_print("What class do you whant to play?")
         game_print("Valid choices: " + str(char_choice_class))
     if redo is True:
         game_print("Please enter a valid class")
@@ -1099,6 +1145,7 @@ class_select(False)
 for i in char_class_stats[characters["allied"]["player"]["class"]]["starting_gear"]:
     inventory.append(i)
 
+game_print("clear_text")
 main_screen("")
 while running:
     

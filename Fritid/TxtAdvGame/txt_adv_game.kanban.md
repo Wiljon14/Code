@@ -6,7 +6,10 @@
 
 ## To Do
 
-#### fix monospace font & center hp stuff
+#### add place to store data on if a certain window should be open
+<!-- id: task-1793873651565-57 -->
+
+#### add monospace font & center hp stuff
 <!-- id: task-1792660934076-48 -->
 
 #### add AOE attacks
@@ -29,9 +32,10 @@
 
 #### enemy_hp screen
 <!-- id: task-1793703256958-424 -->
-- [ ] design
-- [ ] implement
+- [x] design
+- [x] implement
 - [ ] make it look less bad
+- [x] FIX THE STATUS EFFECTS POSITION!!! :p
 
 #### print text screen thingy mcbob stuff
 <!-- id: task-1793695675821-153 -->

@@ -5,38 +5,45 @@ player:
         - #effect
             - bleeding
             - [0,1]
+
     punch: 
         - 2 #min damage
         - 4 #max damage
         - [] #effect
+
     golden doom blast:
         - -1 #min damage
         - 999 #max damage
         - #effect
             - doomed & despaired
             - [999]
+
     dull slash: 
         - 4 #min damage
         - 6 #max damage
         - [] #effect
+
     tooth dagger slash: 
         - 4 #min damage
         - 8 #max damage
         - #effect
             - bleeding
             - [0,1,2]
+
     bloody wolf slice: 
         - 6 #min damage
         - 9 #max damage
         - #effect
             - bleeding
             - [1,2,3]
+
     lesser ball of flame:
         - 1 #min damage
         - 5 #max damage
         - #effect
             - on fire
             - [0,1]
+
     ball of flame: 
         - 2 #min damage
         - 6 #max damage
@@ -44,6 +51,12 @@ player:
             - on fire
             - [1,2]
 
+    greater ball of flame: 
+        - 4 #min damage
+        - 8 #max damage
+        - #effect
+            - on fire
+            - [2,3]
 enemys: 
     baby gnaw: 
         - 1 #min damage

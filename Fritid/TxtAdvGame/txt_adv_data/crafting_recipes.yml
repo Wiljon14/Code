@@ -23,3 +23,17 @@ serrated wolf saber:
     -
         - wolf tooth dagger # material
         - 1 # amount
+
+staff of burning:
+    -
+        - flame crystal # material
+        - 3 # amount
+    -
+        - wolf pelt # material
+        - 1 # amount
+    -
+        - wooden log # material
+        - 1 # amount
+    -
+        - flaming scroll # material
+        - 1 # amount

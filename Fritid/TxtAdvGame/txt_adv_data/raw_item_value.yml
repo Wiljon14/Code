@@ -2,7 +2,7 @@
 iron sword:
     name: iron sword
     value: 5
-    description: A well made sword of iron. Great at cutting down foes
+    description: A well made sword of iron. Great at cutting down foes.
     move: iron blade slash
     consumable: False
 
@@ -16,13 +16,13 @@ rusty iron sword:
 wolf tooth dagger:
     name: wolf tooth dagger
     value: 10
-    description: A dagger made of the teeth from wolfs
+    description: A dagger made of the teeth from wolfs.
     move: tooth dagger slash
     consumable: False
 
 serrated wolf saber:
     name: serrated wolf saber
-    value: 20
+    value: 30
     description: A serrated sword made of the teeth from wolfs, probebly a war crime in geneva.
     move: bloody wolf slice
     consumable: False
@@ -30,7 +30,7 @@ serrated wolf saber:
 old spellbook page:
     name: old spellbook page
     value: 1
-    description: A page from your old Spellbook from magic school. It is a bit damaged
+    description: A page from your old Spellbook from magic school. It is a bit damaged.
     move: lesser ball of flame
     consumable: False
 
@@ -41,10 +41,18 @@ flaming scroll:
     move: ball of flame
     consumable: False
 
+staff of burning:
+    name: staff of burning
+    value: 30
+    description: A hand held wand, hold burning power within it.
+    move: greater ball of flame
+    consumable: False
+
+
 gold crown of doom:
     name: gold crown of doom
     value: 999
-    description: A Golden crown of doom and despair
+    description: A Golden crown of doom and despair.
     move: golden doom blast
     consumable: False
 
@@ -52,7 +60,7 @@ gold crown of doom:
 health potion:
     name: health potion
     value: 13
-    description: A potion that regenerates flesh & mind, even lost limbs
+    description: A potion that regenerates flesh & mind, even lost limbs.
     move: N/A
     consumable: True
     consumable_effect: 
@@ -62,7 +70,7 @@ health potion:
 greater health potion:
     name: greater health potion
     value: 25
-    description: A greater potion that regenerates flesh & mind, even lost limbs
+    description: A greater potion that regenerates flesh & mind, even lost limbs.
     move: N/A
     consumable: True
     consumable_effect: 
@@ -72,7 +80,7 @@ greater health potion:
 wolf whistle:
     name: wolf whistle
     value: 30
-    description: A small fragile bone from an alpha, summons a wolf in combat to aid you
+    description: A small fragile bone from an alpha, summons a wolf in combat to aid you.
     move: N/A
     consumable: True
     consumable_effect: 
@@ -83,56 +91,56 @@ wolf whistle:
 wolf tooth:
     name: wolf tooth
     value: 4
-    description: The tooth from the local wolf population, could be sold
+    description: The tooth from the local wolf population, could be sold.
     move: N/A
     consumable: False
 
 wolf pelt:
     name: wolf pelt
     value: 3
-    description: The pelt from the local wolf population, could be sold
+    description: The pelt from the local wolf population, could be sold.
     move: N/A
     consumable: False
 
 bear pelt: 
     name: bear pelt
     value: 6
-    description: The pelt from a mighty bear, could be sold
+    description: The pelt from a mighty bear, could be sold.
     move: N/A
     consumable: False
 
 wooden log: 
     name: wooden log
     value: 4
-    description: A log from a tree, could be sold
+    description: A log from a tree, could be sold.
     move: N/A
     consumable: False
 
 flame crystal: 
     name: flame crystal
     value: 6
-    description: A burning crystal, holds magic power
+    description: A burning crystal, holds magic power.
     move: N/A
     consumable: False
 
 water crystal: 
     name: water crystal
     value: 6
-    description: A moist crystal, holds magic power
+    description: A moist crystal, holds magic power.
     move: N/A
     consumable: False
 
 earth crystal: 
     name: earth crystal
     value: 6
-    description: A dirty crystal, holds magic power
+    description: A dirty crystal, holds magic power.
     move: N/A
     consumable: False
 
 air crystal: 
     name: air crystal
     value: 6
-    description: A weightless crystal, holds magic power
+    description: A weightless crystal, holds magic power.
     move: N/A
     consumable: False
 
@@ -140,6 +148,6 @@ air crystal:
 sleeping bag: 
     name: sleeping bag
     value: 15
-    description: A potato bag with some wool in it, guess you could sleep in it. (Allows. you to sleep anywhere)
+    description: A potato bag with some wool in it, guess you could sleep in it. (Allows you to sleep anywhere).
     move: N/A
     consumable: False

@@ -9,8 +9,9 @@
 #### add place to store data on if a certain window should be open
 <!-- id: task-1793873651565-57 -->
 
-#### add monospace font & center hp stuff
+#### center hp
 <!-- id: task-1792660934076-48 -->
+<!-- priority: low -->
 
 #### add AOE attacks
 <!-- id: task-1790853169554-81 -->
@@ -37,13 +38,13 @@
 - [ ] make it look less bad
 - [x] FIX THE STATUS EFFECTS POSITION!!! :p
 
+## Done
+
 #### print text screen thingy mcbob stuff
 <!-- id: task-1793695675821-153 -->
 - [x] design
 - [x] implement
-- [ ] fancy up abit (if needed)
-
-## Done
+- [x] fancy up abit (if needed)
 
 #### Stats display on game screen
 <!-- id: task-1792485042183-93 -->

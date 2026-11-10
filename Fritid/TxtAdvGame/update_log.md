@@ -1,12 +1,24 @@
 # update log
-## 3/11/2026: upd: 0.1.19: ---
+## 10/11/2026: upd: 0.1.23: ---
+### gameplay additions
+### gameplay fixes / changes
+* made text window text wrap around
+* fixed minor thing in text window, in combat (forgot to clear text at a certain part)
+* changed colour of text between lines
+* crafting menu is more effective
+* removed inventory in craft menu
+* crafting menu now starts showing recipes once half of the requirements are fullfiled
+### internal changes / bug fixes
+### work in progress
+
+## x/11/2026: upd: 0.1.22: ---
 ### gameplay additions
 * added an enemy list in combat
 ### gameplay fixes / changes
 ### internal changes / bug fixes
 ### work in progress
 
-## 3/11/2026: upd: 0.1.19: ---
+## x/11/2026: upd: 0.1.21: ---
 ### gameplay additions
 ### gameplay fixes / changes
 * changed "clear screen" command to "clear" for simplicity
@@ -14,7 +26,7 @@
 ### internal changes / bug fixes
 ### work in progress
 
-## 3/11/2026: upd: 0.1.19: ---
+## x/11/2026: upd: 0.1.20: ---
 ### gameplay additions
 * added text panel to game screen
 ### gameplay fixes / changes

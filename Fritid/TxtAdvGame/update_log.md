@@ -1,6 +1,9 @@
 # update log
 ## 10/11/2026: upd: 0.1.23: ---
 ### gameplay additions
+* added new weapon "staff of burning"
+* added new move "greater ball of flame"
+* added crafting recipe for "staff of burning"
 ### gameplay fixes / changes
 * made text window text wrap around
 * fixed minor thing in text window, in combat (forgot to clear text at a certain part)

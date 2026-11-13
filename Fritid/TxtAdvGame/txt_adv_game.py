@@ -1,13 +1,15 @@
 import random
 import pathlib
 import pygame
+import yaml
 from yaml import load, Loader
 
+game_version = "0.1.24"
 
 #Loads data from txt_adv_data folder. Insert the name of the file, minus file extension. Returns content of file.
-def data_loader(name_of_data_file):
+def data_loader(name_of_data_file, file_location):
     parent_path = pathlib.Path(__file__).parent.resolve()
-    data_path = parent_path / "txt_adv_data"
+    data_path = parent_path / file_location
 
     path_of_data = data_path / (name_of_data_file + ".yml")
 
@@ -15,27 +17,40 @@ def data_loader(name_of_data_file):
         data = load(f, Loader=Loader)
     return data
 
+def data_writer(name_of_data_file, file_location, data):
+    parent_path = pathlib.Path(__file__).parent.resolve()
+    data_path = parent_path / file_location
+
+    path_of_data = data_path / (name_of_data_file + ".yml")
+
+    with open(path_of_data ,"w") as f:
+        yaml.dump(data,f)
+
+allied_starting_value = {
+    "player" : {
+        "name" : "",
+        "age" : 16,
+        "gold" : int,
+
+        "class" : "Not chosen",
+        
+        "health" : int,
+        "max_health" : int,
+        "starting_max_health" : 20,
+
+        "exp" : 0,
+        "level" : 1,
+        "exp_to_level_up" : 10, # (level*20) - 10 
+
+        "power_modifier" : 0,
+
+        "status_effects" : {}
+    }
+}
+
 characters = {
     "allied" : {
-        "player" : {
-            "name" : "",
-            "age" : 16,
-            "gold" : int,
 
-            "class" : "Not chosen",
-            
-            "health" : int,
-            "max_health" : int,
-            "starting_max_health" : 20,
-
-            "exp" : 0,
-            "level" : 1,
-            "exp_to_level_up" : 10, # (level*20) - 10 
-
-            "power_modifier" : 0,
-
-            "status_effects" : {}
-        }
     },
     "enemys" : {
         
@@ -54,12 +69,12 @@ char_choice_class = ["mage","knight"]
 area = "forest"
 areas = ["home", "store", "forest", "elemental fields"]
 
-char_class_stats = data_loader("char_class_stats")
-enemys_in_area = data_loader("enemys_in_area")
-enemy_stats = data_loader("enemy_stats")
-move_stats = data_loader("move_stats")
-raw_item_value = data_loader("raw_item_value")
-crafting_recipes = data_loader("crafting_recipes")
+char_class_stats = data_loader("char_class_stats","txt_adv_data")
+enemys_in_area = data_loader("enemys_in_area","txt_adv_data")
+enemy_stats = data_loader("enemy_stats","txt_adv_data")
+move_stats = data_loader("move_stats","txt_adv_data")
+raw_item_value = data_loader("raw_item_value","txt_adv_data")
+crafting_recipes = data_loader("crafting_recipes","txt_adv_data")
 
 shop_items = [ #items in the shop
     raw_item_value["iron sword"],
@@ -76,6 +91,93 @@ available_moves = [] #moves/attacks the player can use in combat
 known_crafting_recipes = [] #recipes the player knows
 text_list = [] #list of all the text in the text window
 
+#existing buttons
+main_menu_buttons = {
+    "start" : {
+        "start" : 100,
+        "top" : 100,
+        "width" : 200,
+        "height" : 100,
+        "colour" : "white",
+        "text" : "Game start",
+        "text_size" : 24,
+        "text_colour" : "black",
+        "effect" : "start",
+
+    },
+    "quit" : {
+        "start" : 100,
+        "top" : 550,
+        "width" : 200,
+        "height" : 100,
+        "colour" : "white",
+        "text" : "Quit",
+        "text_size" : 24,
+        "text_colour" : "black",
+        "effect" : "quit",
+    }
+}
+
+save_file_selector_buttons = {
+    "save_file_1" : {
+        "start" : 100,
+        "top" : 100,
+        "width" : 200,
+        "height" : 100,
+        "colour" : "white",
+        "text" : "Save file - 1",
+        "text_size" : 24,
+        "text_colour" : "black",
+        "effect" : "start_save_file",
+
+    },
+    "save_file_2" : {
+        "start" : 100,
+        "top" : 230,
+        "width" : 200,
+        "height" : 100,
+        "colour" : "white",
+        "text" : "Save file - 2",
+        "text_size" : 24,
+        "text_colour" : "black",
+        "effect" : "start_save_file",
+
+    },
+    "save_file_3" : {
+        "start" : 100,
+        "top" : 360,
+        "width" : 200,
+        "height" : 100,
+        "colour" : "white",
+        "text" : "Save file - 3",
+        "text_size" : 24,
+        "text_colour" : "black",
+        "effect" : "start_save_file",
+
+    },
+    "return_button" : {
+        "start" : 100,
+        "top" : 550,
+        "width" : 200,
+        "height" : 100,
+        "colour" : "white",
+        "text" : "return",
+        "text_size" : 24,
+        "text_colour" : "black",
+        "effect" : "return",
+
+    },
+}
+
+existing_buttons = {
+
+}
+
+#The primary game state. e.g: "main_menu save_files" or "game"
+primary_game_state = "main_menu"
+#save_file game is currently running in
+active_save_file = None
+
 #pygame setup
 pygame.init()
 screen_x = 1280
@@ -83,10 +185,6 @@ screen_y = 720
 screen = pygame.display.set_mode((screen_x, screen_y))
 clock = pygame.time.Clock()
 running = True
-
-characters["allied"]["player"]["gold"] = 15
-characters["allied"]["player"]["max_health"] = characters["allied"]["player"]["starting_max_health"]
-characters["allied"]["player"]["health"] = characters["allied"]["player"]["max_health"]
 
 #"Game" functions / functions that are remade versions of base python functions to work with the game
 #----------------------------
@@ -127,35 +225,41 @@ def game_print(text):
 #stat/other menus
 #----------------------------
 def update_visual(*input_text : str):
+    #resets screen
     screen.fill("black")
-    #pygame
-    if area == "forest":
-        background_colour = "green"
-    elif area == "elemental fields":
-        background_colour = "purple"
-    elif area == "store":
-        background_colour = "orange"
-    elif area == "home":
-        background_colour = "yellow"
-    else:
-        background_colour = "black"
+    #menu visual
+    if "main_menu" in primary_game_state:
+        screen.fill("gray70")
+        visual_text(f"txt_adv_game_version_{game_version}",0,0,24,"black")
+    #game visual
+    elif "game" in primary_game_state:
+        if area == "forest":
+            background_colour = "green"
+        elif area == "elemental fields":
+            background_colour = "purple"
+        elif area == "store":
+            background_colour = "orange"
+        elif area == "home":
+            background_colour = "yellow"
+        else:
+            background_colour = "black"
 
+        #area name in corner
+        text = f"Area: {area}"
 
-    #area name in corner
-    text = f"Area: {area}"
+        screen.fill(background_colour)
+        #screen.blit(text, textRect)
+        visual_text(text, 0, 0, 24, "Black")
 
-    screen.fill(background_colour)
-    #screen.blit(text, textRect)
-    visual_text(text, 0, 0, 24, "Black")
+        visual_text(str(input_text), screen_x * 0.2, screen_y * 0.7,24,"black")
 
-    visual_text(str(input_text), screen_x * 0.2, screen_y * 0.7,24,"black")
+        stat_menu()
+        if battle_over == False:
+            battle_stat_menu()
 
-    stat_menu()
-    if battle_over == False:
-        battle_stat_menu()
+        text_menu()
 
-    text_menu()
-
+    show_buttons()
     return
 
 def visual_text(text : str, position_left : int, position_top : int, text_size, color):
@@ -408,6 +512,45 @@ def crafting_menu(item_to_craft):
             inventory.append(item_to_craft)
             game_print(f"Crafted {item_to_craft}")
     return
+
+def show_buttons():
+    for i in existing_buttons:
+        start = existing_buttons[i]["start"]
+        top = existing_buttons[i]["top"]
+        width = existing_buttons[i]["width"]
+        height = existing_buttons[i]["height"]
+        colour = existing_buttons[i]["colour"]
+        effect = existing_buttons[i]["effect"]
+        text = existing_buttons[i]["text"]
+        text_size = existing_buttons[i]["text_size"]
+        text_colour = existing_buttons[i]["text_colour"]
+
+
+
+        rect = pygame.rect.Rect(start - 10, top - 10, width + 20, height + 20)
+        pygame.draw.rect(screen, "black", rect)
+        rect = pygame.rect.Rect(start, top, width, height)
+        pygame.draw.rect(screen, colour, rect)
+
+        visual_text(text,start,top,text_size,text_colour)
+        if effect == "start_save_file":
+            rect = pygame.rect.Rect(start, (top + text_size), width, 10)
+            pygame.draw.rect(screen, "black", rect)
+
+            file_data = data_loader(i,"save_data")
+
+            if file_data != None:
+                player_data = file_data["allied_char"]["player"]
+                player_name = player_data["name"]
+                player_level = player_data["level"]
+                player_class = player_data["class"]
+
+
+                visual_text(player_name,start,(top + 10 + text_size),text_size,text_colour)
+                visual_text(player_class + " - LV" + str(player_level), start,(top + 10 + text_size*2),text_size,text_colour)
+
+
+
 #----------------------------
 def inventory_items_to_moves():
     global available_moves
@@ -473,6 +616,14 @@ def main_screen(chosen):
 
     return
 
+def is_button_pressed():
+    return_value = (False,False)
+    mouse_x, mouse_y = pygame.mouse.get_pos()
+    for i in existing_buttons:
+        button = existing_buttons[i]
+        if button["start"] <= mouse_x <= button["start"] + button["width"] and button["top"] <= mouse_y <= button["top"] + button["height"]:
+            return_value = (button["effect"], i)            
+    return return_value
 #command menu choices
 #----------------------------
 def help():
@@ -682,6 +833,21 @@ def cheat_item_give():
 def quit():
     global running
     running = False
+
+def return_to_main_menu():
+    global primary_game_state
+    primary_game_state = "main_menu"
+    return
+
+def save_game():
+    data_to_save = {
+        "allied_char" : characters["allied"],
+        "inventory" : inventory,
+        "area" : area,
+    }
+    data_writer(active_save_file,"save_data",data_to_save)
+    game_print(f"game saved to {active_save_file}")
+    return
 #----------------------------
 commands = {
     "help" : help,
@@ -689,8 +855,11 @@ commands = {
     "inventory" : check_inventory,
     "craft" : craft,
     "stats" : check_stats,
-    "quit" : quit,
     "clear" : clear_text,
+    #saves and leaving and stuff
+    "quit" : quit,
+    "main menu" : return_to_main_menu,
+    "save" : save_game,
     #area specific
     "battle" : start_battle,
     "shop" : shop,
@@ -1131,20 +1300,6 @@ def name_select(redo):
     characters["allied"]["player"]["name"] = game_input("").capitalize()
     if characters["allied"]["player"]["name"] == "":
         name_select(True)
-name_select(False)
-
-def age_select(redo):
-    global characters
-    game_print("clear_text")
-    if redo is False:
-        game_print("And your age?")
-    if redo is True:
-        game_print("Please enter a whole number (ex. 16, 35)")
-    characters["allied"]["player"]["age"] = game_input("")
-    if not characters["allied"]["player"]["age"].isdigit():
-        age_select(True)
-#age_select(False)
-#age select disabled as age is not doing anything turn on later if needed
 
 def class_select(redo):
     global characters
@@ -1160,23 +1315,81 @@ def class_select(redo):
         class_select(True)
     else:
         characters["allied"]["player"]["class"] = class_choice
-class_select(False)
 
-for i in char_class_stats[characters["allied"]["player"]["class"]]["starting_gear"]:
-    inventory.append(i)
+def game_start_up():
+    global existing_buttons 
+    global primary_game_state
+    global characters
+    existing_buttons = {}
+    primary_game_state = "game"
+    characters["allied"] = allied_starting_value
 
-game_print("clear_text")
-main_screen("")
+    characters["allied"]["player"]["gold"] = 15
+    characters["allied"]["player"]["max_health"] = characters["allied"]["player"]["starting_max_health"]
+    characters["allied"]["player"]["health"] = characters["allied"]["player"]["max_health"]
+
+    name_select(False)
+    class_select(False)
+    for i in char_class_stats[characters["allied"]["player"]["class"]]["starting_gear"]:
+        inventory.append(i)
+    game_print("clear_text")
+    main_screen("")
+
+def load_save_file(save_file_data):
+    global area
+    global inventory
+    global characters
+
+    characters["allied"] = save_file_date["allied_char"]
+    area = save_file_date["area"]
+    inventory = save_file_date["inventory"]
+
+
+
 while running:
-    
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+#Main menu stuff
+    if "main_menu" in primary_game_state:
+        existing_buttons = main_menu_buttons
+        if "save_files" in primary_game_state:
+            existing_buttons = save_file_selector_buttons
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                button_effect, button = is_button_pressed()
+                if button_effect == "start":
+                    primary_game_state = "main_menu save_files"
+                    break
+                elif button_effect == "quit":
+                    running = False       
+                    break         
+                elif button_effect == "return":
+                    primary_game_state = "main_menu"
+                    break
+                elif button_effect == "start_save_file":
+                    save_file_date = data_loader(button, "save_data")
+                    active_save_file = button
+                    if save_file_date == None:
+                        game_start_up()
+                    else:
+                        load_save_file(save_file_date)
+                        primary_game_state = "game"
+                    break
+
+#Game stuff
+    elif "game" in primary_game_state:
+        existing_buttons = {
+
+        }
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+        
+        main_screen(game_input(""))
 
     update_visual()
-    
-    main_screen(game_input(""))
-
     pygame.display.flip()
     clock.tick(30) #fps limit
 pygame.quit()

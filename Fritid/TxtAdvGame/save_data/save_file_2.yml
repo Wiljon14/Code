@@ -1,0 +1,21 @@
+allied_char:
+  player:
+    age: 16
+    class: mage
+    exp: 49
+    exp_to_level_up: 50
+    gold: 17
+    health: 26
+    level: 3
+    max_health: 26
+    name: William
+    power_modifier: 1.45
+    starting_max_health: 20
+    status_effects: {}
+area: forest
+inventory:
+- flaming scroll
+- sleeping bag
+- wolf tooth
+- wolf pelt
+- wolf tooth

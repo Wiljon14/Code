@@ -31,12 +31,25 @@
 
 ## In Progress
 
+#### main menu
+<!-- id: task-1794402745511-367 -->
+- [ ] Buttons
+- [ ] Fix with save stuff
+- [ ] Pretty YAY!
+
 #### enemy_hp screen
 <!-- id: task-1793703256958-424 -->
 - [x] design
 - [x] implement
 - [ ] make it look less bad
 - [x] FIX THE STATUS EFFECTS POSITION!!! :p
+
+#### safe files
+<!-- id: task-1794402712364-240 -->
+- [x] save file
+- [ ] write safe data
+- [ ] read safe data
+- [ ] system to actualy use them
 
 ## Done
 

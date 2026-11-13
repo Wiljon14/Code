@@ -1,4 +1,12 @@
 # update log
+## 13/11/2026: upd: 0.1.24
+### gameplay additions
+* safe files
+* main menu
+### gameplay fixes / changes
+### internal changes / bug fixes
+### work in progress
+
 ## 10/11/2026: upd: 0.1.23: ---
 ### gameplay additions
 * added new weapon "staff of burning"

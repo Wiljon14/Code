@@ -33,8 +33,8 @@
 
 #### main menu
 <!-- id: task-1794402745511-367 -->
-- [ ] Buttons
-- [ ] Fix with save stuff
+- [x] Buttons
+- [x] Fix with save stuff
 - [ ] Pretty YAY!
 
 #### enemy_hp screen
@@ -47,9 +47,16 @@
 #### safe files
 <!-- id: task-1794402712364-240 -->
 - [x] save file
-- [ ] write safe data
-- [ ] read safe data
-- [ ] system to actualy use them
+- [x] write safe data
+- [x] read safe data
+- [x] system to actualy use them
+- [ ] way to delete save data
+
+#### character creation screen
+<!-- id: task-1794909605395-198 -->
+- [ ] design
+- [ ] make it work
+- [ ] pretty
 
 ## Done
 

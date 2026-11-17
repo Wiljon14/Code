@@ -1,4 +1,11 @@
 # update log
+## xx/xx/xxxx: upd: 0.1.25 (indev)
+### gameplay additions
+### gameplay fixes / changes
+* fixed text going out of text window if the text is more than one line long
+### internal changes / bug fixes
+### work in progress
+
 ## 13/11/2026: upd: 0.1.24
 ### gameplay additions
 * safe files

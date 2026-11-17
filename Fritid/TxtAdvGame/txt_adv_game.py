@@ -4,7 +4,7 @@ import pygame
 import yaml
 from yaml import load, Loader
 
-game_version = "0.1.24"
+game_version = "0.1.25 (indev)"
 
 #Loads data from txt_adv_data folder. Insert the name of the file, minus file extension. Returns content of file.
 def data_loader(name_of_data_file, file_location):
@@ -30,12 +30,12 @@ allied_starting_value = {
     "player" : {
         "name" : "",
         "age" : 16,
-        "gold" : int,
+        "gold" : 15,
 
         "class" : "Not chosen",
         
-        "health" : int,
-        "max_health" : int,
+        "health" : 20,
+        "max_health" : 20,
         "starting_max_health" : 20,
 
         "exp" : 0,
@@ -169,6 +169,10 @@ save_file_selector_buttons = {
     },
 }
 
+character_creation_buttons = {
+
+}
+
 existing_buttons = {
 
 }
@@ -218,8 +222,26 @@ def game_print(text):
     text_list.append(text)
     if text == "clear_text":
         text_list.clear()
-    while len(text_list) > 25:
-        text_list.pop(0)
+
+    menu_hight = screen_y * 0.6
+    menu_text_size = menu_hight / 25
+    menu_length = screen_x * 0.3
+
+    font = pygame.font.Font("freesansbold.ttf", int(menu_text_size))
+
+    text_is_good_length_false = False
+    if text_is_good_length_false == False:
+        text_length = 0
+        for i in text_list:
+            text_length += 1
+            i_text_size = pygame.font.Font.size(font,i)[0]
+            if pygame.font.Font.size(font,i)[0] > menu_length:
+                text_length += int(i_text_size / menu_length) + (i_text_size % menu_length > 0) - 1
+
+        if text_length > 25:
+            text_list.pop(0)
+        else:
+            text_is_good_length_false == True
 
 
 #stat/other menus
@@ -347,6 +369,7 @@ def stat_menu():
     visual_text("Level: " + str(characters["allied"]["player"]["level"]).capitalize(), menu_start, (screen_y - menu_hight + menu_part_size*2 + menu_boarder*2), menu_part_size, "white")
 
 def text_menu():
+    global text_list
     menu_start = screen_x * 0.01
     menu_top = screen_x * 0.03
     menu_length = screen_x * 0.3
@@ -362,6 +385,20 @@ def text_menu():
 
     menu_text_size = menu_hight / 25
     font = pygame.font.Font("freesansbold.ttf", int(menu_text_size))
+
+    text_is_good_length_false = False
+    if text_is_good_length_false == False:
+        text_length = 0
+        for i in text_list:
+            text_length += 1
+            if pygame.font.Font.size(font,i)[0] > menu_length:
+                text_length += 1
+        if text_length > 25:
+            text_list.pop(0)
+        else:
+            text_is_good_length_false == True
+
+
 
     i_num = 0
     text_colour = -1
@@ -1323,19 +1360,23 @@ def game_start_up():
     existing_buttons = {}
     primary_game_state = "game"
     characters["allied"] = allied_starting_value
-
     characters["allied"]["player"]["gold"] = 15
     characters["allied"]["player"]["max_health"] = characters["allied"]["player"]["starting_max_health"]
     characters["allied"]["player"]["health"] = characters["allied"]["player"]["max_health"]
 
-    name_select(False)
-    class_select(False)
-    for i in char_class_stats[characters["allied"]["player"]["class"]]["starting_gear"]:
-        inventory.append(i)
-    game_print("clear_text")
-    main_screen("")
+    primary_game_state = "main_menu character_creation"
 
-def load_save_file(save_file_data):
+    return
+
+    # name_select(False)
+    # class_select(False)
+    # for i in char_class_stats[characters["allied"]["player"]["class"]]["starting_gear"]:
+    #     inventory.append(i)
+    # primary_game_state = "game"
+    # game_print("clear_text")
+    # main_screen("")
+
+def load_save_file():
     global area
     global inventory
     global characters
@@ -1352,6 +1393,9 @@ while running:
         existing_buttons = main_menu_buttons
         if "save_files" in primary_game_state:
             existing_buttons = save_file_selector_buttons
+        if "character_creation" in primary_game_state:
+            existing_buttons = character_creation_buttons
+        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -1360,12 +1404,15 @@ while running:
                 if button_effect == "start":
                     primary_game_state = "main_menu save_files"
                     break
+
                 elif button_effect == "quit":
                     running = False       
                     break         
+
                 elif button_effect == "return":
                     primary_game_state = "main_menu"
                     break
+
                 elif button_effect == "start_save_file":
                     save_file_date = data_loader(button, "save_data")
                     active_save_file = button

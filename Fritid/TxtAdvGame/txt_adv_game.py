@@ -103,6 +103,7 @@ main_menu_buttons = {
         "text_size" : 24,
         "text_colour" : "black",
         "effect" : "start",
+        "effect_2" : ""
 
     },
     "quit" : {
@@ -115,6 +116,8 @@ main_menu_buttons = {
         "text_size" : 24,
         "text_colour" : "black",
         "effect" : "quit",
+        "effect_2" : ""
+
     }
 }
 
@@ -129,6 +132,7 @@ save_file_selector_buttons = {
         "text_size" : 24,
         "text_colour" : "black",
         "effect" : "start_save_file",
+        "effect_2" : ""
 
     },
     "save_file_2" : {
@@ -141,6 +145,7 @@ save_file_selector_buttons = {
         "text_size" : 24,
         "text_colour" : "black",
         "effect" : "start_save_file",
+        "effect_2" : "",
 
     },
     "save_file_3" : {
@@ -153,7 +158,7 @@ save_file_selector_buttons = {
         "text_size" : 24,
         "text_colour" : "black",
         "effect" : "start_save_file",
-
+        "effect_2" : "",
     },
     "return_button" : {
         "start" : 100,
@@ -164,13 +169,61 @@ save_file_selector_buttons = {
         "text" : "return",
         "text_size" : 24,
         "text_colour" : "black",
-        "effect" : "return",
+        "effect" : "go_to",
+        "effect_2" : "main_menu",
 
     },
 }
 
 character_creation_buttons = {
-
+    "name_selector" : {
+        "start" : 100,
+        "top" : 100,
+        "width" : 200,
+        "height" : 100,
+        "colour" : "white",
+        "text" : "Choose name",
+        "text_size" : 24,
+        "text_colour" : "black",
+        "effect" : "selector",
+        "effect_2" : "name",
+    },
+    "class_selector" : {
+        "start" : 100,
+        "top" : 230,
+        "width" : 200,
+        "height" : 100,
+        "colour" : "white",
+        "text" : "Select class",
+        "text_size" : 24,
+        "text_colour" : "black",
+        "effect" : "selector",
+        "effect_2" : "class",
+    },
+    "return_button" : {
+        "start" : 100,
+        "top" : 550,
+        "width" : 200,
+        "height" : 100,
+        "colour" : "white",
+        "text" : "return",
+        "text_size" : 24,
+        "text_colour" : "black",
+        "effect" : "go_to",
+        "effect_2" : "main_menu save_files",
+    },
+    "start_button" : {
+        "start" : 950,
+        "top" : 550,
+        "width" : 200,
+        "height" : 100,
+        "colour" : "white",
+        "text" : "Start",
+        "text_size" : 24,
+        "text_colour" : "black",
+        "effect" : "start_game",
+        "effect_2" : "",
+    },
 }
 
 existing_buttons = {
@@ -253,6 +306,9 @@ def update_visual(*input_text : str):
     if "main_menu" in primary_game_state:
         screen.fill("gray70")
         visual_text(f"txt_adv_game_version_{game_version}",0,0,24,"black")
+        if "character_creation" in primary_game_state:
+            visual_text(active_save_file,0,24,24,"black")
+
     #game visual
     elif "game" in primary_game_state:
         if area == "forest":
@@ -558,6 +614,8 @@ def show_buttons():
         height = existing_buttons[i]["height"]
         colour = existing_buttons[i]["colour"]
         effect = existing_buttons[i]["effect"]
+        effect_2 = existing_buttons[i]["effect_2"]
+
         text = existing_buttons[i]["text"]
         text_size = existing_buttons[i]["text_size"]
         text_colour = existing_buttons[i]["text_colour"]
@@ -585,6 +643,13 @@ def show_buttons():
 
                 visual_text(player_name,start,(top + 10 + text_size),text_size,text_colour)
                 visual_text(player_class + " - LV" + str(player_level), start,(top + 10 + text_size*2),text_size,text_colour)
+        elif effect == "selector":
+            rect = pygame.rect.Rect(start, (top + text_size), width, 10)
+            pygame.draw.rect(screen, "black", rect)
+            if effect_2 == "class":
+                visual_text(characters["allied"]["player"]["class"],start,(top + 10 + text_size),text_size,text_colour)
+
+
 
 
 
@@ -654,12 +719,12 @@ def main_screen(chosen):
     return
 
 def is_button_pressed():
-    return_value = (False,False)
+    return_value = (False,False,False)
     mouse_x, mouse_y = pygame.mouse.get_pos()
     for i in existing_buttons:
         button = existing_buttons[i]
         if button["start"] <= mouse_x <= button["start"] + button["width"] and button["top"] <= mouse_y <= button["top"] + button["height"]:
-            return_value = (button["effect"], i)            
+            return_value = (button["effect"], button["effect_2"], i)          
     return return_value
 #command menu choices
 #----------------------------
@@ -1357,16 +1422,12 @@ def game_start_up():
     global existing_buttons 
     global primary_game_state
     global characters
-    existing_buttons = {}
-    primary_game_state = "game"
     characters["allied"] = allied_starting_value
     characters["allied"]["player"]["gold"] = 15
     characters["allied"]["player"]["max_health"] = characters["allied"]["player"]["starting_max_health"]
     characters["allied"]["player"]["health"] = characters["allied"]["player"]["max_health"]
 
     primary_game_state = "main_menu character_creation"
-
-    return
 
     # name_select(False)
     # class_select(False)
@@ -1385,22 +1446,21 @@ def load_save_file():
     area = save_file_date["area"]
     inventory = save_file_date["inventory"]
 
-
-
 while running:
 #Main menu stuff
     if "main_menu" in primary_game_state:
-        existing_buttons = main_menu_buttons
-        if "save_files" in primary_game_state:
+        if "main_menu" == primary_game_state:
+            existing_buttons = main_menu_buttons
+        elif "save_files" in primary_game_state:
             existing_buttons = save_file_selector_buttons
-        if "character_creation" in primary_game_state:
+        elif "character_creation" in primary_game_state:
             existing_buttons = character_creation_buttons
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                button_effect, button = is_button_pressed()
+                button_effect, button_effect_2, button = is_button_pressed()
                 if button_effect == "start":
                     primary_game_state = "main_menu save_files"
                     break
@@ -1409,8 +1469,8 @@ while running:
                     running = False       
                     break         
 
-                elif button_effect == "return":
-                    primary_game_state = "main_menu"
+                elif button_effect == "go_to":
+                    primary_game_state = button_effect_2
                     break
 
                 elif button_effect == "start_save_file":

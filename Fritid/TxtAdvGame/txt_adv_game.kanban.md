@@ -6,6 +6,9 @@
 
 ## To Do
 
+#### equipment menu / new inventory menu
+<!-- id: task-1794912935955-337 -->
+
 #### add place to store data on if a certain window should be open
 <!-- id: task-1793873651565-57 -->
 
@@ -31,6 +34,12 @@
 
 ## In Progress
 
+#### character creation screen
+<!-- id: task-1794909605395-198 -->
+- [ ] design
+- [ ] make it work
+- [ ] pretty
+
 #### main menu
 <!-- id: task-1794402745511-367 -->
 - [x] Buttons
@@ -51,12 +60,6 @@
 - [x] read safe data
 - [x] system to actualy use them
 - [ ] way to delete save data
-
-#### character creation screen
-<!-- id: task-1794909605395-198 -->
-- [ ] design
-- [ ] make it work
-- [ ] pretty
 
 ## Done
 

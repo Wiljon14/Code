@@ -136,6 +136,20 @@ save_file_selector_buttons = {
         "effect_2" : ""
 
     },
+
+    "delete_save_1" : {
+        "start" : 350,
+        "top" : 110,
+        "width" : 80,
+        "height" : 80,
+        "colour" : "red",
+        "text" : "Delete",
+        "text_size" : 24,
+        "text_colour" : "black",
+        "effect" : "delete_save",
+        "effect_2" : "save_file_1"
+    },
+
     "save_file_2" : {
         "start" : 100,
         "top" : 230,
@@ -149,6 +163,20 @@ save_file_selector_buttons = {
         "effect_2" : "",
 
     },
+
+    "delete_save_2" : {
+        "start" : 350,
+        "top" : 240,
+        "width" : 80,
+        "height" : 80,
+        "colour" : "red",
+        "text" : "Delete",
+        "text_size" : 24,
+        "text_colour" : "black",
+        "effect" : "delete_save",
+        "effect_2" : "save_file_2"
+    },
+
     "save_file_3" : {
         "start" : 100,
         "top" : 360,
@@ -161,6 +189,20 @@ save_file_selector_buttons = {
         "effect" : "start_save_file",
         "effect_2" : "",
     },
+
+    "delete_save_3" : {
+        "start" : 350,
+        "top" : 370,
+        "width" : 80,
+        "height" : 80,
+        "colour" : "red",
+        "text" : "Delete",
+        "text_size" : 24,
+        "text_colour" : "black",
+        "effect" : "delete_save",
+        "effect_2" : "save_file_3"
+    },
+
     "return_button" : {
         "start" : 100,
         "top" : 550,
@@ -1427,13 +1469,6 @@ def game_start_up():
 
     primary_game_state = "main_menu character_creation"
 
-    # name_select(False)
-    # class_select(False)
-
-    # primary_game_state = "game"
-    # game_print("clear_text")
-    # main_screen("")
-
 def load_save_file():
     global area
     global inventory
@@ -1518,6 +1553,9 @@ while running:
                         primary_game_state = "game"
                     break
 
+                elif button_effect == "delete_save":
+                    data_writer(button_effect_2,"save_data",None)
+                
                 elif button_effect == "start_game":
                     for i in char_class_stats[characters["allied"]["player"]["class"]]["starting_gear"]:
                         inventory.append(i)
@@ -1529,6 +1567,7 @@ while running:
                         
                     elif button_effect_2 == "name":
                         pass
+
                 elif button_effect == "class_choice_button":
                     characters["allied"]["player"]["class"] = button_effect_2
                     primary_game_state = "main_menu character_creation"

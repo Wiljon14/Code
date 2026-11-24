@@ -4,6 +4,7 @@
 ### gameplay fixes / changes
 * fixed text going out of text window if the text is more than one line long
 * charactar creation
+* save data delete button
 ### internal changes / bug fixes
 ### work in progress
 

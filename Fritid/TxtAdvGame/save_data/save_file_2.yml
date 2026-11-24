@@ -1,17 +1,2 @@
-allied_char:
-  player:
-    age: 16
-    class: knight
-    exp: 4
-    exp_to_level_up: 30
-    gold: 19
-    health: 23
-    level: 2
-    max_health: 23
-    name: ''
-    power_modifier: 1.2
-    starting_max_health: 20
-    status_effects: {}
-area: forest
-inventory:
-- wolf tooth
+null
+...

@@ -2,6 +2,7 @@ import random
 import pathlib
 import pygame
 import yaml
+from copy import deepcopy
 from yaml import load, Loader
 
 game_version = "0.1.25 (indev)"
@@ -32,7 +33,7 @@ allied_starting_value = {
         "age" : 16,
         "gold" : 15,
 
-        "class" : "Not chosen",
+        "class" : "knight",
         
         "health" : 20,
         "max_health" : 20,
@@ -64,7 +65,7 @@ turn_order = []
 turn_in_turn_order = 0
 battle_over = True
 
-char_choice_class = ["mage","knight"]
+char_choice_class = ["knight","mage"]
 
 area = "forest"
 areas = ["home", "store", "forest", "elemental fields"]
@@ -648,11 +649,6 @@ def show_buttons():
             pygame.draw.rect(screen, "black", rect)
             if effect_2 == "class":
                 visual_text(characters["allied"]["player"]["class"],start,(top + 10 + text_size),text_size,text_colour)
-
-
-
-
-
 #----------------------------
 def inventory_items_to_moves():
     global available_moves
@@ -1422,17 +1418,18 @@ def game_start_up():
     global existing_buttons 
     global primary_game_state
     global characters
-    characters["allied"] = allied_starting_value
-    characters["allied"]["player"]["gold"] = 15
+    global inventory
+
+    characters["allied"] = deepcopy(allied_starting_value)
     characters["allied"]["player"]["max_health"] = characters["allied"]["player"]["starting_max_health"]
     characters["allied"]["player"]["health"] = characters["allied"]["player"]["max_health"]
+    inventory = []
 
     primary_game_state = "main_menu character_creation"
 
     # name_select(False)
     # class_select(False)
-    # for i in char_class_stats[characters["allied"]["player"]["class"]]["starting_gear"]:
-    #     inventory.append(i)
+
     # primary_game_state = "game"
     # game_print("clear_text")
     # main_screen("")
@@ -1446,15 +1443,53 @@ def load_save_file():
     area = save_file_date["area"]
     inventory = save_file_date["inventory"]
 
+def button_loader():
+    global existing_buttons
+    #main menu buttons
+    if "main_menu" == primary_game_state:
+        existing_buttons = main_menu_buttons
+
+    elif "save_files" in primary_game_state:
+        existing_buttons = save_file_selector_buttons
+
+    elif "character_creation" in primary_game_state:
+        existing_buttons = character_creation_buttons
+
+    elif "class_selection" in primary_game_state:
+        existing_buttons = {    
+        "return_button" : {
+        "start" : 100,
+        "top" : 550,
+        "width" : 200,
+        "height" : 100,
+        "colour" : "white",
+        "text" : "return",
+        "text_size" : 24,
+        "text_colour" : "black",
+        "effect" : "go_to",
+        "effect_2" : "main_menu character_creation",
+
+    }}
+        i_num = 0
+        for i in char_choice_class:
+            temp_button = {}
+            temp_button["start"] = 100 + i_num * 350
+            temp_button["top"] = 100
+            temp_button["width"] = 200
+            temp_button["height"] = 100
+            temp_button["colour"] = "white"
+            temp_button["text"] = i
+            temp_button["text_size"] = 24
+            temp_button["text_colour"] = "black"
+            temp_button["effect"] = "class_choice_button"
+            temp_button["effect_2"] = i
+            existing_buttons[i] = temp_button
+            i_num += 1
 while running:
+
 #Main menu stuff
     if "main_menu" in primary_game_state:
-        if "main_menu" == primary_game_state:
-            existing_buttons = main_menu_buttons
-        elif "save_files" in primary_game_state:
-            existing_buttons = save_file_selector_buttons
-        elif "character_creation" in primary_game_state:
-            existing_buttons = character_creation_buttons
+        button_loader()
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -1479,9 +1514,24 @@ while running:
                     if save_file_date == None:
                         game_start_up()
                     else:
-                        load_save_file(save_file_date)
+                        load_save_file()
                         primary_game_state = "game"
                     break
+
+                elif button_effect == "start_game":
+                    for i in char_class_stats[characters["allied"]["player"]["class"]]["starting_gear"]:
+                        inventory.append(i)
+                    primary_game_state = "game"
+                
+                elif button_effect == "selector":
+                    if button_effect_2 == "class":
+                        primary_game_state = "main_menu class_selection"
+                        
+                    elif button_effect_2 == "name":
+                        pass
+                elif button_effect == "class_choice_button":
+                    characters["allied"]["player"]["class"] = button_effect_2
+                    primary_game_state = "main_menu character_creation"
 
 #Game stuff
     elif "game" in primary_game_state:

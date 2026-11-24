@@ -36,7 +36,7 @@
 
 #### character creation screen
 <!-- id: task-1794909605395-198 -->
-- [ ] design
+- [x] design
 - [ ] make it work
 - [ ] pretty
 

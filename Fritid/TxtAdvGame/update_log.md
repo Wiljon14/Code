@@ -3,6 +3,7 @@
 ### gameplay additions
 ### gameplay fixes / changes
 * fixed text going out of text window if the text is more than one line long
+* charactar creation
 ### internal changes / bug fixes
 ### work in progress
 

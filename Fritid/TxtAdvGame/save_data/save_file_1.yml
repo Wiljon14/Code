@@ -1,0 +1,18 @@
+allied_char:
+  player:
+    age: 16
+    class: mage
+    exp: 2
+    exp_to_level_up: 30
+    gold: 18
+    health: 23
+    level: 2
+    max_health: 23
+    name: ''
+    power_modifier: 1.3
+    starting_max_health: 20
+    status_effects: {}
+area: forest
+inventory:
+- old spellbook page
+- health potion

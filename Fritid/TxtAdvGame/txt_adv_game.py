@@ -1383,9 +1383,7 @@ while running:
 
 #Game stuff
     elif "game" in primary_game_state:
-        existing_buttons = {
-
-        }
+        existing_buttons = {}
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

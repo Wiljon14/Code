@@ -45,7 +45,9 @@ allied_starting_value = {
 
         "power_modifier" : 0,
 
-        "status_effects" : {}
+        "status_effects" : {},
+
+        "play_time" : 0
     }
 }
 
@@ -512,10 +514,15 @@ def show_buttons():
                 player_name = player_data["name"]
                 player_level = player_data["level"]
                 player_class = player_data["class"]
+                player_time = player_data["play_time"]
+                player_time = int((player_time / 30 ) / 60)
 
 
-                visual_text(player_name,start,(top + 10 + text_size),text_size,text_colour)
-                visual_text(player_class + " - LV" + str(player_level), start,(top + 10 + text_size*2),text_size,text_colour)
+
+                visual_text(player_name,start,(top + 5 + text_size),text_size,text_colour)
+                visual_text(player_class + " - LV" + str(player_level), start,(top + 5 + text_size*2),text_size,text_colour)
+                visual_text("T: "+ str(player_time)+ " min", start,(top + 5 + text_size*3),text_size,text_colour)
+
         elif effect == "selector":
             rect = pygame.rect.Rect(start, (top + text_size), width, 10)
             pygame.draw.rect(screen, boarder_colour, rect)
@@ -1417,6 +1424,7 @@ while running:
 
         
         main_screen(game_input(""))
+        characters["allied"]["player"]["play_time"] += 1
 
     update_visual()
     pygame.display.flip()

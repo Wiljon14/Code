@@ -34,6 +34,9 @@
 
 ## In Progress
 
+#### make "game_input" work without pausing other stuff
+<!-- id: task-1795696879428-120 -->
+
 #### character creation screen
 <!-- id: task-1794909605395-198 -->
 - [x] design

@@ -22,6 +22,8 @@ main_menu_buttons:
     top: 100
     width: 200
 
+
+
 save_file_selector_buttons:  
   delete_save_1:
     colour: red
@@ -100,6 +102,8 @@ save_file_selector_buttons:
     text_size: 24
     top: 360
     width: 200
+
+
 
 character_creation_buttons:
   class_selector:

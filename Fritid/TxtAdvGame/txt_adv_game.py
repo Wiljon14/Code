@@ -98,6 +98,8 @@ available_moves = [] #moves/attacks the player can use in combat
 known_crafting_recipes = [] #recipes the player knows
 text_list = [] #list of all the text in the text window
 
+#a marker for where text is being written (for example, name selector)
+place_writting_in = ""
 #active buttons on screen
 existing_buttons = {}
 #The primary game state. e.g: "main_menu save_files" or "game"
@@ -488,17 +490,20 @@ def show_buttons():
         text_size = existing_buttons[i]["text_size"]
         text_colour = existing_buttons[i]["text_colour"]
 
-
+        if effect == "selector" and effect_2 == "name" and place_writting_in == "name_selector":
+            boarder_colour = "gray80"
+        else:
+            boarder_colour = "black"
 
         rect = pygame.rect.Rect(start - 10, top - 10, width + 20, height + 20)
-        pygame.draw.rect(screen, "black", rect)
+        pygame.draw.rect(screen, boarder_colour, rect)
         rect = pygame.rect.Rect(start, top, width, height)
         pygame.draw.rect(screen, colour, rect)
 
         visual_text(text,start,top,text_size,text_colour)
         if effect == "start_save_file":
             rect = pygame.rect.Rect(start, (top + text_size), width, 10)
-            pygame.draw.rect(screen, "black", rect)
+            pygame.draw.rect(screen, boarder_colour, rect)
 
             file_data = data_loader(i,"save_data")
 
@@ -513,9 +518,11 @@ def show_buttons():
                 visual_text(player_class + " - LV" + str(player_level), start,(top + 10 + text_size*2),text_size,text_colour)
         elif effect == "selector":
             rect = pygame.rect.Rect(start, (top + text_size), width, 10)
-            pygame.draw.rect(screen, "black", rect)
+            pygame.draw.rect(screen, boarder_colour, rect)
             if effect_2 == "class":
                 visual_text(characters["allied"]["player"]["class"],start,(top + 10 + text_size),text_size,text_colour)
+            if effect_2 == "name":
+                visual_text(characters["allied"]["player"]["name"],start,(top + 10 + text_size),text_size,text_colour)
 #----------------------------
 def inventory_items_to_moves():
     global available_moves
@@ -1339,6 +1346,9 @@ while running:
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
+                pygame.key.stop_text_input()
+                place_writting_in = ""
+
                 button_effect, button_effect_2, button = is_button_pressed()
                 if button_effect == "start":
                     primary_game_state = "main_menu save_files"
@@ -1375,11 +1385,27 @@ while running:
                         primary_game_state = "main_menu class_selection"
                         
                     elif button_effect_2 == "name":
-                        pass
+                        pygame.key.start_text_input()
+                        place_writting_in = "name_selector"
+
 
                 elif button_effect == "class_choice_button":
                     characters["allied"]["player"]["class"] = button_effect_2
                     primary_game_state = "main_menu character_creation"
+
+            #text writting down below
+            elif event.type == pygame.TEXTINPUT:
+                if place_writting_in == "":
+                    pass
+                elif place_writting_in == "name_selector":
+                    characters["allied"]["player"]["name"] += event.text
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    place_writting_in = ""
+                elif event.key == pygame.K_BACKSPACE:
+                    if place_writting_in == "name_selector" and place_writting_in != "":
+                        if characters["allied"]["player"]["name"] != "":
+                            characters["allied"]["player"]["name"] = characters["allied"]["player"]["name"][: -1]
 
 #Game stuff
     elif "game" in primary_game_state:

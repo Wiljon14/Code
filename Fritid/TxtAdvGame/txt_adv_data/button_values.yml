@@ -1,0 +1,148 @@
+main_menu_buttons:
+  quit:
+    colour: white
+    effect: quit
+    effect_2: ''
+    height: 100
+    start: 100
+    text: Quit
+    text_colour: black
+    text_size: 24
+    top: 550
+    width: 200
+  start:
+    colour: white
+    effect: start
+    effect_2: ''
+    height: 100
+    start: 100
+    text: Game start
+    text_colour: black
+    text_size: 24
+    top: 100
+    width: 200
+
+save_file_selector_buttons:  
+  delete_save_1:
+    colour: red
+    effect: delete_save
+    effect_2: save_file_1
+    height: 80
+    start: 350
+    text: Delete
+    text_colour: black
+    text_size: 24
+    top: 110
+    width: 80
+  delete_save_2:
+    colour: red
+    effect: delete_save
+    effect_2: save_file_2
+    height: 80
+    start: 350
+    text: Delete
+    text_colour: black
+    text_size: 24
+    top: 240
+    width: 80
+  delete_save_3:
+    colour: red
+    effect: delete_save
+    effect_2: save_file_3
+    height: 80
+    start: 350
+    text: Delete
+    text_colour: black
+    text_size: 24
+    top: 370
+    width: 80
+  return_button:
+    colour: white
+    effect: go_to
+    effect_2: main_menu
+    height: 100
+    start: 100
+    text: return
+    text_colour: black
+    text_size: 24
+    top: 550
+    width: 200
+  save_file_1:
+    colour: white
+    effect: start_save_file
+    effect_2: ''
+    height: 100
+    start: 100
+    text: Save file - 1
+    text_colour: black
+    text_size: 24
+    top: 100
+    width: 200
+  save_file_2:
+    colour: white
+    effect: start_save_file
+    effect_2: ''
+    height: 100
+    start: 100
+    text: Save file - 2
+    text_colour: black
+    text_size: 24
+    top: 230
+    width: 200
+  save_file_3:
+    colour: white
+    effect: start_save_file
+    effect_2: ''
+    height: 100
+    start: 100
+    text: Save file - 3
+    text_colour: black
+    text_size: 24
+    top: 360
+    width: 200
+
+character_creation_buttons:
+  class_selector:
+    colour: white
+    effect: selector
+    effect_2: class
+    height: 100
+    start: 100
+    text: Select class
+    text_colour: black
+    text_size: 24
+    top: 230
+    width: 200
+  name_selector:
+    colour: white
+    effect: selector
+    effect_2: name
+    height: 100
+    start: 100
+    text: Choose name
+    text_colour: black
+    text_size: 24
+    top: 100
+    width: 200
+  return_button:
+    colour: white
+    effect: go_to
+    effect_2: main_menu save_files
+    height: 100
+    start: 100
+    text: return
+    text_colour: black
+    text_size: 24
+    top: 550
+    width: 200
+  start_button:
+    colour: white
+    effect: start_game
+    effect_2: ''
+    height: 100
+    start: 950
+    text: Start
+    text_colour: black
+    text_size: 24
+    top: 550
+    width: 200

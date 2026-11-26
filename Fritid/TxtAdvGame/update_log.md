@@ -6,6 +6,7 @@
 * charactar creation
 * save data delete button
 ### internal changes / bug fixes
+* buttons moved to seperate file (button_values)
 ### work in progress
 
 ## 13/11/2026: upd: 0.1.24

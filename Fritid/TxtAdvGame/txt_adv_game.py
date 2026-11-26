@@ -70,12 +70,18 @@ char_choice_class = ["knight","mage"]
 area = "forest"
 areas = ["home", "store", "forest", "elemental fields"]
 
+#dataloads
 char_class_stats = data_loader("char_class_stats","txt_adv_data")
 enemys_in_area = data_loader("enemys_in_area","txt_adv_data")
 enemy_stats = data_loader("enemy_stats","txt_adv_data")
 move_stats = data_loader("move_stats","txt_adv_data")
 raw_item_value = data_loader("raw_item_value","txt_adv_data")
 crafting_recipes = data_loader("crafting_recipes","txt_adv_data")
+#dataloads (buttons)
+main_menu_buttons = data_loader("button_values","txt_adv_data")["main_menu_buttons"]
+save_file_selector_buttons = data_loader("button_values","txt_adv_data")["save_file_selector_buttons"]
+character_creation_buttons = data_loader("button_values","txt_adv_data")["character_creation_buttons"]
+
 
 shop_items = [ #items in the shop
     raw_item_value["iron sword"],
@@ -92,187 +98,8 @@ available_moves = [] #moves/attacks the player can use in combat
 known_crafting_recipes = [] #recipes the player knows
 text_list = [] #list of all the text in the text window
 
-#existing buttons
-main_menu_buttons = {
-    "start" : {
-        "start" : 100,
-        "top" : 100,
-        "width" : 200,
-        "height" : 100,
-        "colour" : "white",
-        "text" : "Game start",
-        "text_size" : 24,
-        "text_colour" : "black",
-        "effect" : "start",
-        "effect_2" : ""
-
-    },
-    "quit" : {
-        "start" : 100,
-        "top" : 550,
-        "width" : 200,
-        "height" : 100,
-        "colour" : "white",
-        "text" : "Quit",
-        "text_size" : 24,
-        "text_colour" : "black",
-        "effect" : "quit",
-        "effect_2" : ""
-
-    }
-}
-
-save_file_selector_buttons = {
-    "save_file_1" : {
-        "start" : 100,
-        "top" : 100,
-        "width" : 200,
-        "height" : 100,
-        "colour" : "white",
-        "text" : "Save file - 1",
-        "text_size" : 24,
-        "text_colour" : "black",
-        "effect" : "start_save_file",
-        "effect_2" : ""
-
-    },
-
-    "delete_save_1" : {
-        "start" : 350,
-        "top" : 110,
-        "width" : 80,
-        "height" : 80,
-        "colour" : "red",
-        "text" : "Delete",
-        "text_size" : 24,
-        "text_colour" : "black",
-        "effect" : "delete_save",
-        "effect_2" : "save_file_1"
-    },
-
-    "save_file_2" : {
-        "start" : 100,
-        "top" : 230,
-        "width" : 200,
-        "height" : 100,
-        "colour" : "white",
-        "text" : "Save file - 2",
-        "text_size" : 24,
-        "text_colour" : "black",
-        "effect" : "start_save_file",
-        "effect_2" : "",
-
-    },
-
-    "delete_save_2" : {
-        "start" : 350,
-        "top" : 240,
-        "width" : 80,
-        "height" : 80,
-        "colour" : "red",
-        "text" : "Delete",
-        "text_size" : 24,
-        "text_colour" : "black",
-        "effect" : "delete_save",
-        "effect_2" : "save_file_2"
-    },
-
-    "save_file_3" : {
-        "start" : 100,
-        "top" : 360,
-        "width" : 200,
-        "height" : 100,
-        "colour" : "white",
-        "text" : "Save file - 3",
-        "text_size" : 24,
-        "text_colour" : "black",
-        "effect" : "start_save_file",
-        "effect_2" : "",
-    },
-
-    "delete_save_3" : {
-        "start" : 350,
-        "top" : 370,
-        "width" : 80,
-        "height" : 80,
-        "colour" : "red",
-        "text" : "Delete",
-        "text_size" : 24,
-        "text_colour" : "black",
-        "effect" : "delete_save",
-        "effect_2" : "save_file_3"
-    },
-
-    "return_button" : {
-        "start" : 100,
-        "top" : 550,
-        "width" : 200,
-        "height" : 100,
-        "colour" : "white",
-        "text" : "return",
-        "text_size" : 24,
-        "text_colour" : "black",
-        "effect" : "go_to",
-        "effect_2" : "main_menu",
-
-    },
-}
-
-character_creation_buttons = {
-    "name_selector" : {
-        "start" : 100,
-        "top" : 100,
-        "width" : 200,
-        "height" : 100,
-        "colour" : "white",
-        "text" : "Choose name",
-        "text_size" : 24,
-        "text_colour" : "black",
-        "effect" : "selector",
-        "effect_2" : "name",
-    },
-    "class_selector" : {
-        "start" : 100,
-        "top" : 230,
-        "width" : 200,
-        "height" : 100,
-        "colour" : "white",
-        "text" : "Select class",
-        "text_size" : 24,
-        "text_colour" : "black",
-        "effect" : "selector",
-        "effect_2" : "class",
-    },
-    "return_button" : {
-        "start" : 100,
-        "top" : 550,
-        "width" : 200,
-        "height" : 100,
-        "colour" : "white",
-        "text" : "return",
-        "text_size" : 24,
-        "text_colour" : "black",
-        "effect" : "go_to",
-        "effect_2" : "main_menu save_files",
-    },
-    "start_button" : {
-        "start" : 950,
-        "top" : 550,
-        "width" : 200,
-        "height" : 100,
-        "colour" : "white",
-        "text" : "Start",
-        "text_size" : 24,
-        "text_colour" : "black",
-        "effect" : "start_game",
-        "effect_2" : "",
-    },
-}
-
-existing_buttons = {
-
-}
-
+#active buttons on screen
+existing_buttons = {}
 #The primary game state. e.g: "main_menu save_files" or "game"
 primary_game_state = "main_menu"
 #save_file game is currently running in
@@ -338,8 +165,6 @@ def game_print(text):
             text_list.pop(0)
         else:
             text_is_good_length_false == True
-
-
 #stat/other menus
 #----------------------------
 def update_visual(*input_text : str):
@@ -1428,7 +1253,6 @@ def player_died():
     battle_over = True
     return
 
-
 #Pre-game choices
 def name_select(redo):
     global characters
@@ -1440,21 +1264,6 @@ def name_select(redo):
     characters["allied"]["player"]["name"] = game_input("").capitalize()
     if characters["allied"]["player"]["name"] == "":
         name_select(True)
-
-def class_select(redo):
-    global characters
-    game_print("clear_text")
-    if redo is False:
-        game_print("What class do you whant to play?")
-        game_print("Valid choices: " + str(char_choice_class))
-    if redo is True:
-        game_print("Please enter a valid class")
-        game_print("Valid choices: " + str(char_choice_class))
-    class_choice = game_input("").lower()
-    if not class_choice in char_choice_class:
-        class_select(True)
-    else:
-        characters["allied"]["player"]["class"] = class_choice
 
 def game_start_up():
     global existing_buttons 
